@@ -19,7 +19,7 @@ PredatorView.prototype = {
 	draw( ctx ) {
 		const predator = this.predator
 		const p0 = predator.position
-		const r0 = predator.radius
+		const r0 = predator.radius - 17/2
 		
 		{
 			let slosh = this.slosh
@@ -91,12 +91,12 @@ PredatorView.prototype = {
 					const startAngle = offset + (   i       / n * tau ) + ( gap / 2 )
 					const endAngle   = offset + ( ( i + 1 ) / n * tau ) - ( gap / 2 )
 					
-					ctx.arc( cx, cy, this.predator.radius, startAngle, endAngle )
+					ctx.arc( cx, cy, r0, startAngle, endAngle )
 					ctx.stroke()
 			}
 			
 			ctx.beginPath()
-				ctx.arc( cx, cy, this.predator.radius - ctx.lineWidth/4, 0, Math.PI * 2 )
+				ctx.arc( cx, cy, r0 - ctx.lineWidth/4, 0, Math.PI * 2 )
 				ctx.lineWidth /= 2
 				ctx.stroke()
 		}

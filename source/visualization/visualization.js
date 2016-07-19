@@ -64,14 +64,15 @@ export default function Visualization( world ) {
 		}
 		
 		const view = self.foodViews.find( view => view.food === food )
-		view.doCrumbsEffect().then( () => {
-			self.removeFoodView( view )
-		} )
+		// view.doCrumbsEffect().then( () => {
+		// 	self.removeFoodView( view )
+		// } )
+		self.removeFoodView( view )
 	} )
 	
 	world.on( 'food-destroyed', ( food, direction ) => {
 		const view = self.foodViews.find( view => view.food === food )
-		view.doCrumbsEffect( 8, direction, 115 ).then( () => {
+		view.doCrumbsEffect( 3, direction, 60 ).then( () => {
 			self.removeFoodView( view )
 		} )
 	} )

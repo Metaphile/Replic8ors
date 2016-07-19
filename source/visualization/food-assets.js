@@ -12,7 +12,7 @@ export const CrumbsEffect = ( origin, direction, onDone, opts = {} ) => {
 	
 	for ( let n = self.count; n > 0; n-- ) {
 		const crumb = Physics()
-		crumb.drag = 1
+		crumb.drag = 1.5
 		
 		crumb.position = Vector2.clone( origin )
 		
@@ -42,7 +42,7 @@ CrumbsEffect.prototype = {
 	// default opts
 	duration: 1.8,
 	count: 3,
-	maxRadius: 1.4,
+	maxRadius: 1.6,
 	maxSpeed: 80,
 	
 	update( dt, dt2 ) {
@@ -66,9 +66,9 @@ CrumbsEffect.prototype = {
 		ctx.fillStyle = 'white'
 		
 		for ( let crumb of this.crumbs ) {
-			// const r = crumb.radius * ( 1 - this.progress )
-			const r = crumb.radius
-			ctx.fillRect( crumb.position.x - r, crumb.position.y - r, r * 2, r * 2 )
+			ctx.beginPath()
+				ctx.arc( crumb.position.x, crumb.position.y, crumb.radius, 0, Math.PI * 2 )
+				ctx.fill()
 		}
 		
 		ctx.globalAlpha = globalAlpha
