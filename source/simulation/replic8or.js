@@ -1,0 +1,273 @@
+// TODO dead property
+
+import Flipper from './flipper'
+import Network from './neural-network'
+import Neuron  from './neuron'
+import Events  from '../engine/events'
+import Physics from '../engine/physics'
+import Math2   from '../engine/math-2'
+import Vector2 from '../engine/vector-2'
+
+// can't refer to other members with object literal syntax
+const defaultOpts = new function () {
+	this.radius = 32
+	this.mass = 46
+	this.drag = 110
+	this.elasticity = 1
+	
+	this.energy = 0.5
+	this.metabolism = 1/120
+	
+	this.numBodySegments = 5
+	this.receptorOffset = -Math.PI / 2, // up
+	this.flipperOffset = this.receptorOffset + ( Math.PI / this.numBodySegments )
+}
+
+function createSymmetricSegments() {
+	this.flippers  = []
+	this.receptors = []
+	
+	for ( let i = 0; i < this.numBodySegments; i++ ) {
+		// flipper
+		{
+			const angle = this.flipperOffset + ( i / this.numBodySegments * Math.PI * 2 )
+			const flipper = Flipper( angle )
+			
+			const motorNeuron = Neuron()
+			motorNeuron.on( 'fire', () => flipper.flip() )
+			this.brain.addNeuron( motorNeuron )
+			// TODO the neuron property isn't part of Flipper's interface and
+			// flippers don't need to know about neurons
+			// but it's convenient to store a reference on flipper
+			flipper.neuron = motorNeuron
+			
+			flipper.on( 'flipping', ( force, dt ) => this.applyForce( force, dt ) )
+			
+			this.flippers.push( flipper )
+		}
+		
+		// receptor
+		{
+			const angle = this.receptorOffset + ( i / this.numBodySegments * Math.PI * 2 )
+			const receptor = { angle }
+			
+			const foodNeuron = Neuron()
+			this.brain.addNeuron( foodNeuron )
+			
+			const predatorNeuron = Neuron()
+			this.brain.addNeuron( predatorNeuron )
+			
+			const replicatorNeuron = Neuron()
+			this.brain.addNeuron( replicatorNeuron )
+			
+			receptor.neurons = [ foodNeuron, predatorNeuron, replicatorNeuron ]
+			// receptor.neurons = [ foodNeuron ]
+			receptor.neurons.food = foodNeuron
+			receptor.neurons.replicator = replicatorNeuron
+			receptor.neurons.predator = predatorNeuron
+			
+			this.receptors.push( receptor )
+		}
+	}
+	
+	this.hungerNeuron = Neuron()
+	this.brain.addNeuron( this.hungerNeuron )
+}
+
+function programBasicInstincts( replicator ) {
+	const { numBodySegments: numSegments, receptors, flippers } = replicator
+	
+	// make all sensory input excitatory
+	for ( let neuron of replicator.brain.neurons ) {
+		neuron.weights = neuron.weights.map( ( weight, weightIndex ) => {
+			return weightIndex === neuron.index ? 0.1 : weight
+		} )
+	}
+	
+	// temporarily disabled while working on from-scratch evolution
+	for ( let segmentIndex = 0; segmentIndex < numSegments; segmentIndex++ ) {
+		// start at current segment, add half rotation, wrap overflow
+		const oppositeSegmentIndex = ( segmentIndex + Math.floor( numSegments / 2 ) ) % numSegments
+		
+		const foodNeuron = receptors[ segmentIndex ].neurons.food
+		const oppositeFlipper = flippers[ oppositeSegmentIndex ]
+		
+		oppositeFlipper.neuron.weights[ foodNeuron.index ] = 0.2
+		
+		const otherFoodNeurons = receptors
+			.filter( ( receptor, i ) => i !== segmentIndex ) // other receptors
+			.map( receptor => receptor.neurons.food ) // other food neurons
+		
+		otherFoodNeurons.forEach( otherFoodNeuron => otherFoodNeuron.weights[ foodNeuron.index ] = -0.5 )
+	}
+}
+
+export default function Replic8or( opts = {} ) {
+	const self = Object.create( Replic8or.prototype )
+	Events( self )
+	Physics( self )
+	
+	Object.assign( self, defaultOpts, opts )
+	self.brain = Network()
+	createSymmetricSegments.call( self )
+	
+	programBasicInstincts( self )
+	
+	return self
+}
+
+Replic8or.prototype = {
+	update: function ( dt, t ) {
+		this.brain.update( dt, t )
+		
+		for ( let flipper of this.flippers ) flipper.update( dt )
+		
+		this.updatePhysics( dt )
+		
+		if ( this.energy >= 1 ) {
+			this.energy = 1
+			this.replicate()
+		}
+		
+		this.energy -= this.metabolism * dt
+		
+		this.hungerNeuron.stimulate( Math.pow( 1 - this.energy, 2 ) * 5 * dt )
+		
+		if ( this.energy <= 0 ) this.die()
+	},
+	
+	senseFood: function ( food, dt ) {
+		for ( let receptor of this.receptors ) {
+			const receptorPosition = Vector2.clone( this.position )
+			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
+			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
+			
+			const distance = Vector2.distanceSquared( food.position, receptorPosition )
+			const strength = 1 / distance * 5000
+			
+			receptor.neurons.food.stimulate( strength * dt )
+		}
+	},
+	
+	senseReplicator: function ( replicator, dt ) {
+		for ( let receptor of this.receptors ) {
+			const receptorPosition = Vector2.clone( this.position )
+			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
+			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
+			
+			const distance = Vector2.distanceSquared( replicator.position, receptorPosition )
+			const strength = 1 / distance * 5000
+			
+			receptor.neurons.replicator.stimulate( strength * dt )
+		}
+	},
+	
+	sensePredator: function ( predator, dt ) {
+		for ( let receptor of this.receptors ) {
+			const receptorPosition = Vector2.clone( this.position )
+			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
+			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
+			
+			const distance = Vector2.distanceSquared( predator.position, receptorPosition )
+			const strength = 1 / distance * 50000
+			
+			receptor.neurons.predator.stimulate( strength * dt )
+		}
+	},
+	
+	die: function () {
+		this.emit( 'died', this )
+		
+		// release event handlers
+		this.flippers.forEach( flipper => flipper.off() )
+		this.brain.neurons.forEach( neuron => neuron.off() )
+		this.off()
+	},
+	
+	// TODO quietly -> emitEvent
+	replicate: function ( quietly, mutationRate = 0.03 ) {
+		const parent = this
+		const child = Replic8or()
+		
+		// TEMP mutations
+		parent.brain.neurons.forEach( ( parentNeuron, neuronIndex ) => {
+			// TODO use map
+			parentNeuron.weights.forEach( ( parentWeight, weightIndex ) => {
+				parentWeight += ( mutationRate > Math.random() ? Math2.randRange( -0.1, 0.1 ) : 0 )
+				Math2.clamp( parentWeight, -1, 1 )
+				child.brain.neurons[ neuronIndex ].weights[ weightIndex ] = parentWeight
+			} )
+			
+			child.brain.neurons[ neuronIndex ].potentialDecayRate = parentNeuron.potentialDecayRate + ( mutationRate > Math.random() ? Math2.randRange( -0.1, 0.1 ) : 0 )
+		} )
+		
+		const neuronsPerSegment = 4
+		Replic8or.syncSymmetricWeights( child.brain.neurons, parent.numBodySegments, neuronsPerSegment )
+		
+		// TODO maybe divide parent's actual energy in half?
+		parent.energy = child.energy = 0.5
+		
+		Vector2.set( child.position, parent.position )
+		// Vector2.set( child.velocity, parent.velocity )
+		
+		// TEMP just looks cool
+		child.flippers.forEach( flipper => flipper.flip() )
+		
+		// HACK replicated event causes test 'adds more replicators' to fail
+		// last replicator dying triggers reset before replicator's
+		// event handlers have been released
+		if ( !quietly ) this.emit( 'replicated', parent, child )
+		
+		return child
+	},
+}
+
+// temp? expose sync function for testing
+// maybe refactor into support module
+Replic8or.syncSymmetricWeights = ( neurons, numSegments, neuronsPerSegment ) => {
+	const numSymmetricNeurons = numSegments * neuronsPerSegment
+	
+	for ( let segmentIndex = 1; segmentIndex < numSegments; segmentIndex++ ) {
+		let neuronIndex = segmentIndex * neuronsPerSegment
+		// within the current segment
+		const lastNeuronIndex = neuronIndex + neuronsPerSegment - 1
+		
+		for ( ; neuronIndex <= lastNeuronIndex; neuronIndex++ ) {
+			const neuron = neurons[ neuronIndex ]
+			const equivalentNeuron = neurons[ neuronIndex % neuronsPerSegment ]
+			
+			neuron.potentialDecayRate = equivalentNeuron.potentialDecayRate
+			
+			neuron.weights = equivalentNeuron.weights.map( ( weight, weightIndex ) => {
+				if ( weightIndex < numSymmetricNeurons ) {
+					let equivalentWeightIndex
+					
+					equivalentWeightIndex  = weightIndex
+					equivalentWeightIndex -= segmentIndex * neuronsPerSegment
+					// equivalent indexes for low-index weights will be negative
+					// wrap negative indexes
+					equivalentWeightIndex += numSymmetricNeurons
+					equivalentWeightIndex %= numSymmetricNeurons
+					
+					return equivalentNeuron.weights[ equivalentWeightIndex ]
+				} else {
+					return weight
+				}
+			} )
+		}
+	}
+	
+	// inbound connections for free neurons
+	// TODO this almost certainly doesn't work with more than one free neuron
+	for ( let i = numSymmetricNeurons; i < neurons.length; i++ ) {
+		const neuron = neurons[i]
+		neuron.weights = neuron.weights.map( ( weight, weightIndex, weights ) => {
+			if ( weightIndex < numSymmetricNeurons ) {
+				// equivalent weight from first segment
+				return weights[ weightIndex % neuronsPerSegment ]
+			} else {
+				return weight
+			}
+		} )
+	}
+}

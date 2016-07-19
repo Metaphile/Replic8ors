@@ -1,0 +1,57 @@
+{
+  "name": "replic8ors",
+  "version": "0.0.0",
+  "description": "Behavioral evolution in your browser",
+  "main": "source/main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-preset-es2015": "^6.9.0",
+    "babelify": "^7.3.0",
+    "brfs": "^1.4.3",
+    "browserify": "^13.0.1",
+    "chokidar-cli": "^1.2.0",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.22",
+    "karma-browserify": "^5.0.5",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-jasmine": "^1.0.2",
+    "karma-mocha-reporter": "^2.0.4",
+    "karma-notify-reporter": "^1.0.0",
+    "node-notifier": "^4.5.0",
+    "node-sass": "^3.8.0",
+    "watchify": "^3.7.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
+  "browserify": {
+    "transform": [
+      "babelify",
+      "brfs"
+    ]
+  },
+  "scripts": {
+    "build": "npm run build:clean && npm run build:all && npm run build:success",
+    "watch": "npm run build && chokidar 'source/**/*' -c 'npm run build'",
+    "test": "karma start",
+    "--------": "--------",
+    "build:clean": "rm -rf build && mkdir build && touch build/.gitignore",
+    "build:all": "npm run build:js && npm run build:sass && npm run build:static",
+    "build:static": "cp source/index.html build/",
+    "build:sass": "node-sass --output-style compressed --source-map true source/main.scss build/bundle.css",
+    "build:js": "browserify source/main.js -o build/bundle.js --debug",
+    "build:success": "notify -t 'Build Complete' -m 'One spicy build.'"
+  },
+  "author": "Metaphile",
+  "license": "CC-BY-NC-4.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metaphile/replic8ors.git"
+  },
+  "bugs": {
+    "url": "https://github.com/metaphile/replic8ors/issues"
+  },
+  "homepage": "https://github.com/metaphile/replic8ors#readme"
+}

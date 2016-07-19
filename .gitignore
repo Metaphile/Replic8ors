@@ -1,0 +1,5 @@
+*.log
+build/**/*
+!build/.gitignore
+node_modules
+screenshots

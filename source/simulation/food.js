@@ -1,0 +1,47 @@
+import Physics from '../engine/physics'
+import Events from '../engine/events'
+
+const defaultOpts = {
+	age: 0,
+	calories: 0.2,
+	shelfLife: 60,
+	eaten: false,
+	spoiled: false,
+	radius: 1.6,
+	mass: 3,
+	drag: 2,
+	elasticity: 2,
+}
+
+export default function Food( opts = {} ) {
+	const self = Object.create( Food.prototype )
+	
+	Physics( self )
+	Events( self )
+	
+	Object.assign( self, defaultOpts, opts )
+	
+	return self
+}
+
+Food.prototype = {
+	update: function ( dt ) {
+		this.age += dt
+		
+		if ( this.age >= this.shelfLife ) this.spoil()
+		
+		this.updatePhysics( dt )
+	},
+	
+	chomp: function () {
+		this.eaten = true
+		this.emit( 'eaten', this )
+		this.off()
+	},
+	
+	spoil: function () {
+		this.spoiled = true
+		this.emit( 'spoiled', this )
+		this.off()
+	},
+}

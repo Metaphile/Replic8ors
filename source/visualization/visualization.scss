@@ -1,0 +1,39 @@
+.visualization-container {
+	position: relative;
+	
+	width: 100%;
+	height: 100%;
+	
+	.world {
+		background: radial-gradient( circle at 75% -25%,
+			rgb( 245, 245, 245 )  10%, // white
+			rgb(  20, 144, 206 )  40%, // light blue
+			rgb(  14,  14,  61 )  76%, // dark blue
+			rgb(  24,   0,  49 )  85%, // dark purple
+			rgb(   0,   0,   0 ) 100%  // black
+		);
+		
+		image-rendering: pixelated;
+		
+		position: absolute;
+		
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+	
+	.hud {
+		position: absolute;
+
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		
+		// let mouse events pass through to lower layers
+		pointer-events: none;
+		
+		// ...
+	}
+}
