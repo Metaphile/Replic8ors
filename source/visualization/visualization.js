@@ -4,6 +4,7 @@ import PredatorView from './predator-view'
 import Camera from '../engine/camera'
 import CameraOperator from './camera-operator'
 import $ from '../../third-party/jquery'
+import * as worldAssets from './world-assets'
 // import Hud from './hud'
 import Vector2 from '../engine/vector-2'
 
@@ -156,7 +157,19 @@ export default function Visualization( world ) {
 		for ( let view of this.predatorViews   ) view.draw( worldCtx )
 		for ( let view of this.foodViews       ) view.draw( worldCtx )
 		
+		// drawForeground( worldCtx )
+		
 		// this.hud.draw( hudCtx )
+	}
+	
+	const drawForeground = ( ctx ) => {
+		const center = worldCamera.centerOfView()
+		const scale = worldCamera.getZoomLevel()
+		Vector2.scale( center, -1.3 )
+		const width  = 1024
+		const height = 1024
+		
+		ctx.drawImage( worldAssets.foregroundTile, center.x - width/2, center.y - width/2, width, height )
 	}
 	
 	{
