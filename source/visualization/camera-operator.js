@@ -57,7 +57,7 @@ export default function CameraOperator( camera ) {
 		const viewCenter = camera.centerOfView()
 		
 		var a = ( bobAngle += 0.21 * dt )
-		var m = 0.04
+		var m = 0.06
 		offset.x += Math.cos( a *  7 ) * m
 		offset.y += Math.sin( a * 13 ) * m
 		

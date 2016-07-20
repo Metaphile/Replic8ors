@@ -16,7 +16,7 @@ const defaultOpts = new function () {
 	this.elasticity = 1
 	
 	this.energy = 0.5
-	this.metabolism = 1/120
+	this.metabolism = 1/180
 	
 	this.numBodySegments = 5
 	this.receptorOffset = -Math.PI / 2, // up
@@ -111,7 +111,7 @@ export default function Replic8or( opts = {} ) {
 	self.brain = Network()
 	createSymmetricSegments.call( self )
 	
-	programBasicInstincts( self )
+	// programBasicInstincts( self )
 	
 	return self
 }
