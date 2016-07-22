@@ -3,7 +3,6 @@ import Camera from '../engine/camera'
 import CameraOperator from './camera-operator'
 import $ from '../../third-party/jquery'
 // import Hud from './hud'
-import Vector2 from '../engine/vector-2'
 
 export default function Visualization( world ) {
 	const self = {}
@@ -45,20 +44,11 @@ export default function Visualization( world ) {
 	$( worldCanvas ).click( ( event ) => {
 		// if ( cancelClick ) return;
 		
-		const clickPos = worldCamera.toWorld( event.offsetX, event.offsetY )
-		
-		const pointInCircle = ( point, center, radius ) => {
-			const distance = Vector2.getLength( Vector2.subtract( center, point, {} ) ) - radius
-			return distance < 0
-		}
+		const clickPos_world = worldCamera.toWorld( event.offsetX, event.offsetY )
 		
 		let target
-		
-		target = world.predators.slice().reverse().find( predator =>
-		 	pointInCircle( clickPos, predator.position, predator.radius ) )
-		
-		target = target || world.replicators.slice().reverse().find( replicator =>
-			pointInCircle( clickPos, replicator.position, replicator.radius ) )
+		target = worldView.getPredatorAt( clickPos_world )
+		target = target || worldView.getReplicatorAt( clickPos_world )
 		
 		target ? cameraOp.follow( target ) : cameraOp.unfollow()
 	} )

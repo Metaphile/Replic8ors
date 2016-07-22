@@ -6,6 +6,7 @@ import ReplicatorView from './replicator-view'
 import PredatorView from './predator-view'
 import FoodView from './food-view'
 import * as assets from './world-assets'
+import Vector2 from '../engine/vector-2'
 
 export default function WorldView( world ) {
 	const self = {}
@@ -126,6 +127,24 @@ export default function WorldView( world ) {
 		for ( let view of self.foodViews       ) view.draw( ctx )
 		
 		drawForeground( ctx, camera.centerOfView() )
+	}
+	
+	const pointInCircle = ( point, center, radius ) => {
+		const distance = Vector2.getLength( Vector2.subtract( center, point, {} ) ) - radius
+		return distance < 0
+	}
+	
+	// return topmost replicator view at point or undefined
+	self.getReplicatorAt = ( point_world ) => {
+		return world.replicators.slice().reverse().find( replicator => {
+			return pointInCircle( point_world, replicator.position, replicator.radius )
+		} )
+	}
+	
+	self.getPredatorAt = ( point_world ) => {
+		return world.predators.slice().reverse().find( predator => {
+			return pointInCircle( point_world, predator.position, predator.radius )
+		} )
 	}
 	
 	const drawForeground = ( ctx, cameraOffset ) => {
