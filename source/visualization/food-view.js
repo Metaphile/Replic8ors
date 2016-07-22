@@ -37,6 +37,14 @@ FoodView.prototype = {
 		} )
 	},
 	
+	doDestroyedEffect() {
+		return this.doCrumbsEffect()
+	},
+	
+	doEatenEffect() {
+		return this.doCrumbsEffect()
+	},
+	
 	update( dt, dt2 ) {
 		for ( let key of Object.keys( this.effects ) ) {
 			this.effects[ key ].update( dt, dt2 )

@@ -4,7 +4,7 @@ import Replic8or from '../../source/simulation/replic8or'
 import Food from '../../source/simulation/food'
 import $ from '../../third-party/jquery'
 
-describe( 'visualization', () => {
+xdescribe( 'visualization', () => {
 	it( 'creates views for new/existing replicators', () => {
 		const world = World()
 		world.addReplicator( Replic8or() )

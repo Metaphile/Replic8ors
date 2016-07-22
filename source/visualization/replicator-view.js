@@ -172,6 +172,10 @@ ReplicatorView.prototype = {
 		return new Promise()
 	},
 	
+	doDeathEffect() {
+		return new Promise( resolve => resolve() )
+	},
+	
 	update: function ( dt, dt2 ) {
 		const p0 = this.replicator.position
 		const r0 = this.replicator.radius
