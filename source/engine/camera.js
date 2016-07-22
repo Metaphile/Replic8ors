@@ -44,6 +44,7 @@ export default function Camera( ctx ) {
 	// X scale (X/Y scale should be the same)
 	self.getZoomLevel = () => screenMatrix.a
 	
+	// TODO -> getOffset
 	self.centerOfView = () => {
 		const topLeft = self.toWorld( 0, 0 )
 		const bottomRight = self.toWorld( canvas.width, canvas.height )

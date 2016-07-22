@@ -1,4 +1,6 @@
 // TODO initial position for neuron views
+// TODO fisheye lense effect for neurons
+// apply constant repulsive force; let springiness and collisions do their thing
 
 import * as assets from './replicator-assets'
 import { drawConnections, drawConnection } from './replicator-view-internals'

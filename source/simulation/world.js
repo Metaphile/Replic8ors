@@ -1,3 +1,5 @@
+// TODO ditch prototype
+
 import Events from '../engine/events'
 import Vector2 from '../engine/vector-2'
 
