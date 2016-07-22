@@ -2,35 +2,35 @@ import Physics from '../engine/physics'
 import Vector2 from '../engine/vector-2'
 import Math2 from '../engine/math-2'
 
-export const CrumbsEffect = ( origin, direction, onDone, opts = {} ) => {
+export const CrumbsEffect = ( position, opts = {} ) => {
 	const self = Object.create( CrumbsEffect.prototype )
-	self.onDone = onDone
 	Object.assign( self, opts )
 	
 	self.progress = 0
+	
 	self.crumbs = []
 	
 	for ( let n = self.count; n > 0; n-- ) {
 		const crumb = Physics()
-		crumb.drag = 1.5
+		crumb.drag = self.drag
 		
-		crumb.position = Vector2.clone( origin )
+		const minAngle = self.direction - ( self.spread / 2 )
+		const maxAngle = self.direction + ( self.spread / 2 )
+		const crumbDirection = Math2.randRange( minAngle, maxAngle )
 		
-		const crumbDirection = direction ?
-			Math2.randRange( direction - 0.4, direction + 0.1 ) :
-			Math.random() * Math.PI * 2
-		
-		const speed = Math.random() * self.maxSpeed
+		const minSpeed = self.maxSpeed * 0.5
+		const crumbSpeed = Math2.randRange( minSpeed, self.maxSpeed )
 		
 		crumb.velocity = {
-			x: Math.cos( crumbDirection ) * speed,
-			y: Math.sin( crumbDirection ) * speed,
+			x: Math.cos( crumbDirection ) * crumbSpeed,
+			y: Math.sin( crumbDirection ) * crumbSpeed,
 		}
 		
+		crumb.position = Vector2.clone( position )
 		const offset = Vector2.scale( crumb.velocity, 1/self.maxSpeed * 3, {} )
 		Vector2.add( crumb.position, offset )
 		
-		crumb.radius = Math.random() * self.maxRadius
+		crumb.radius = Math2.randRange( self.maxRadius * 0.3, self.maxRadius )
 		
 		self.crumbs.push( crumb )
 	}
@@ -39,11 +39,15 @@ export const CrumbsEffect = ( origin, direction, onDone, opts = {} ) => {
 }
 
 CrumbsEffect.prototype = {
-	// default opts
-	duration: 1.8,
+	color: 'white',
 	count: 3,
-	maxRadius: 1.6,
-	maxSpeed: 80,
+	direction: 0,
+	drag: 10,
+	duration: 1,
+	maxRadius: 1.9,
+	maxSpeed: 70,
+	onDone: null,
+	spread: Math.PI * 2,
 	
 	update( dt, dt2 ) {
 		if ( this.progress < 1 ) {
@@ -62,7 +66,7 @@ CrumbsEffect.prototype = {
 	
 	draw( ctx ) {
 		const globalAlpha = ctx.globalAlpha
-		ctx.globalAlpha = 1 - this.progress
+		ctx.globalAlpha = Math.pow( 1 - this.progress, 0.5 )
 		ctx.fillStyle = 'white'
 		
 		for ( let crumb of this.crumbs ) {

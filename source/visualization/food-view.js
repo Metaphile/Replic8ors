@@ -9,7 +9,7 @@ export default function FoodView( food ) {
 }
 
 FoodView.prototype = {
-	doCrumbsEffect( count = 3, generalDirection = null, maxSpeed = 80 ) {
+	doCrumbsEffect( count = 3, direction = null, maxSpeed = 80 ) {
 		const self = this
 		
 		return new Promise( resolve => {
@@ -18,7 +18,9 @@ FoodView.prototype = {
 				resolve()
 			}
 			
-			self.effects.crumbs = assets.CrumbsEffect( this.food.position, generalDirection, onDone, { count, maxSpeed } )
+			const opts = { count, direction, maxSpeed, onDone }
+			const effect = assets.CrumbsEffect( this.food.position, opts )
+			self.effects.crumbs = effect
 		} )
 	},
 	
