@@ -30,7 +30,7 @@ export const CrumbsEffect = ( position, opts = {} ) => {
 		const offset = Vector2.scale( crumb.velocity, 1/self.maxSpeed * 3, {} )
 		Vector2.add( crumb.position, offset )
 		
-		crumb.radius = Math2.randRange( self.maxRadius * 0.3, self.maxRadius )
+		crumb.radius = Math2.randRange( self.maxRadius * 0.1, self.maxRadius )
 		
 		self.crumbs.push( crumb )
 	}

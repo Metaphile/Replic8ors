@@ -3,7 +3,7 @@ import Math2 from '../engine/math-2'
 
 const defaultOpts = {
 	potentialDecayRate: 0.0,
-	refractoryPeriod: 0.2,
+	refractoryPeriod: 0.333,
 }
 
 export default function Neuron( opts = {} ) {
