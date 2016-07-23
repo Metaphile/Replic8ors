@@ -63,7 +63,7 @@ export default function Visualization( world ) {
 	
 	self.draw = function () {
 		worldCamera.prepareCanvas()
-		worldView.draw( worldCamera )
+		worldView.draw( worldCamera, worldCamera.toWorld( mousePos_screen ) )
 		// this.hud.draw( hudCtx )
 	}
 	
@@ -96,6 +96,21 @@ export default function Visualization( world ) {
 		
 		$( document ).mouseup( event => { isDragging = false } )
 	}
+	
+	// fisheye
+	$( worldCanvas ).on( 'mousemove', event => {
+		mousePos_screen.x = event.offsetX
+		mousePos_screen.y = event.offsetY
+	} )
+	
+	$( worldCanvas ).on( 'mouseout', () => {
+		mousePos_screen.x = Infinity
+		mousePos_screen.y = Infinity
+	} )
+	
+	const mousePos_screen = {}
+	
+	$( worldCanvas ).trigger( 'mouseout' )
 	
 	return self
 }

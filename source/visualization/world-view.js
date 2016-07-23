@@ -118,11 +118,21 @@ export default function WorldView( world ) {
 		for ( let view of self.foodViews       ) view.update( dt, dt2 )
 	}
 	
-	self.draw = ( camera, fisheyeCenter ) => {
+	self.draw = ( camera, mousePos_world ) => {
 		const ctx = camera.ctx
 		
-		// TODO pass fisheye center only to relevent replicator
-		for ( let view of self.replicatorViews ) view.draw( ctx, fisheyeCenter )
+		for ( let view of self.replicatorViews ) {
+			const replicator = view.replicator
+			const offset = Vector2.subtract( mousePos_world, replicator.position, {} )
+			const distance = Vector2.getLength( offset )
+			
+			if ( distance < replicator.radius ) {
+				view.drawWithFisheye( ctx, mousePos_world )
+			} else {
+				view.draw( ctx )
+			}
+		}
+		
 		for ( let view of self.predatorViews   ) view.draw( ctx )
 		for ( let view of self.foodViews       ) view.draw( ctx )
 		

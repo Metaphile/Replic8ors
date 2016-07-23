@@ -202,6 +202,35 @@ ReplicatorView.prototype = {
 		}
 	},
 	
+	drawWithFisheye: function ( ctx, mousePos_world ) {
+		let focusTarget = null
+		
+		// iterate from front to back
+		for ( let view of this.neuronViews.slice().reverse() ) {
+			const offset = Vector2.subtract( mousePos_world, view.position, {} )
+			const distance = Vector2.getLength( offset )
+			
+			if ( distance < view.radius ) {
+				focusTarget = view
+				view.originalPosition = Vector2.clone( view.position )
+				view.position.x -= offset.x * Math.pow( 1 - distance / view.radius, 0.5 ) * 0.16
+				view.position.y -= offset.y * Math.pow( 1 - distance / view.radius, 0.5 ) * 0.16
+				
+				view.originalRadius = view.radius
+				view.radius += Math.pow( 1 - distance / view.radius, 0.5 ) * view.radius * 0.4
+				
+				break
+			}
+		}
+		
+		this.draw( ctx )
+		
+		if ( focusTarget ) {
+			Vector2.set( focusTarget.position, focusTarget.originalPosition )
+			focusTarget.radius = focusTarget.originalRadius
+		}
+	},
+	
 	// TODO add level-of-detail parameter to (some) draw methods
 	// here, maybe don't draw connections when detail < 1.0
 	draw: function ( ctx, detail = 1 ) {
