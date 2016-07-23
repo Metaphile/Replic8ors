@@ -164,7 +164,7 @@ ReplicatorView.prototype = {
 				resolve()
 			}
 			
-			this.effects.energyUps.push( assets.EnergyUpEffect( 0.3, onDone ) )
+			this.effects.energyUps.push( assets.EnergyUpEffect( 0.4, onDone ) )
 		} )
 	},
 	
