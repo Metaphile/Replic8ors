@@ -154,6 +154,8 @@ export default function ReplicatorView( replicator ) {
 	return self
 }
 
+const distort = x => 0.5 * Math.cos( ( x - 1 ) * Math.PI ) + 0.5
+
 ReplicatorView.prototype = {
 	doEnergyUpEffect() {
 		return new Promise( resolve => {
@@ -203,29 +205,27 @@ ReplicatorView.prototype = {
 	},
 	
 	drawWithFisheye: function ( ctx, mousePos_world ) {
-		let focusTarget = null
+		const focusTargets = []
 		
-		// iterate from front to back
-		for ( let view of this.neuronViews.slice().reverse() ) {
+		for ( let view of this.neuronViews ) {
 			const offset = Vector2.subtract( mousePos_world, view.position, {} )
 			const distance = Vector2.getLength( offset )
+			const collisionRadius = 16
 			
-			if ( distance < view.radius ) {
-				focusTarget = view
+			if ( distance < collisionRadius ) {
+				focusTargets.push( view )
+				
 				view.originalPosition = Vector2.clone( view.position )
-				view.position.x -= offset.x * Math.pow( 1 - distance / view.radius, 0.5 ) * 0.16
-				view.position.y -= offset.y * Math.pow( 1 - distance / view.radius, 0.5 ) * 0.16
+				Vector2.subtract( view.position, Vector2.scale( offset, distort( 1 - distance / collisionRadius ), {} ) )
 				
 				view.originalRadius = view.radius
-				view.radius += Math.pow( 1 - distance / view.radius, 0.5 ) * view.radius * 0.4
-				
-				break
+				view.radius += view.radius * distort( 1 - distance / collisionRadius )
 			}
 		}
 		
 		this.draw( ctx )
 		
-		if ( focusTarget ) {
+		for ( let focusTarget of focusTargets ) {
 			Vector2.set( focusTarget.position, focusTarget.originalPosition )
 			focusTarget.radius = focusTarget.originalRadius
 		}
