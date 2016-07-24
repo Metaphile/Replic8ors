@@ -219,7 +219,7 @@ ReplicatorView.prototype = {
 		}
 	},
 	
-	drawWithFisheye: function ( ctx, mousePos_world ) {
+	drawWithFisheye: function ( ctx, mousePos_world, detail ) {
 		const focusTargets = []
 		
 		for ( let view of this.neuronViews ) {
@@ -238,7 +238,7 @@ ReplicatorView.prototype = {
 			}
 		}
 		
-		this.draw( ctx )
+		this.draw( ctx, detail )
 		
 		for ( let focusTarget of focusTargets ) {
 			Vector2.set( focusTarget.position, focusTarget.originalPosition )
@@ -248,7 +248,7 @@ ReplicatorView.prototype = {
 	
 	// TODO add level-of-detail parameter to (some) draw methods
 	// here, maybe don't draw connections when detail < 1.0
-	draw: function ( ctx, detail = 1 ) {
+	draw: function ( ctx, detail ) {
 		const replicator = this.replicator
 		const p0 = replicator.position
 		const r0 = replicator.radius

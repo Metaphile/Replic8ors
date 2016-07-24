@@ -118,7 +118,7 @@ export default function WorldView( world ) {
 		for ( let view of self.foodViews       ) view.update( dt, dt2 )
 	}
 	
-	self.draw = ( camera, mousePos_world ) => {
+	self.draw = ( camera, mousePos_world, detail ) => {
 		const ctx = camera.ctx
 		
 		for ( let view of self.replicatorViews ) {
@@ -127,9 +127,9 @@ export default function WorldView( world ) {
 			const distance = Vector2.getLength( offset )
 			
 			if ( distance < replicator.radius ) {
-				view.drawWithFisheye( ctx, mousePos_world )
+				view.drawWithFisheye( ctx, mousePos_world, detail )
 			} else {
-				view.draw( ctx )
+				view.draw( ctx, detail )
 			}
 		}
 		

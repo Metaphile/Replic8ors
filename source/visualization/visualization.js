@@ -63,7 +63,10 @@ export default function Visualization( world ) {
 	
 	self.draw = function () {
 		worldCamera.prepareCanvas()
-		worldView.draw( worldCamera, worldCamera.toWorld( mousePos_screen ) )
+		
+		const detail = worldCamera.getZoomLevel() / 18
+		worldView.draw( worldCamera, worldCamera.toWorld( mousePos_screen ), detail )
+		
 		// this.hud.draw( hudCtx )
 	}
 	
