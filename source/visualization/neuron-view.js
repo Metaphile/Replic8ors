@@ -76,8 +76,6 @@ NeuronView.prototype = {
 	},
 	
 	draw( ctx, detail ) {
-		// ctx.drawImage( assets.body, this.position.x - assets.body.width / 2, this.position.y - assets.body.height / 2 )
-		
 		const globalCompositeOperation = ctx.globalCompositeOperation
 		
 		ctx.beginPath()
@@ -85,23 +83,6 @@ NeuronView.prototype = {
 			ctx.globalCompositeOperation = 'screen'
 			ctx.fillStyle = 'rgba(  90, 195, 255, 0.1 )'
 			ctx.fill()
-			
-		/* ctx.beginPath()
-			ctx.arc( this.position.x, this.position.y, this.radius * 0.5, 0, Math.PI * 2 )
-			ctx.fillStyle = 'rgba( 255, 255, 255, 1.0 )'
-			ctx.fill() */
-			
-			// ctx.lineWidth = 0.2
-			// ctx.strokeStyle = 'rgba( 255, 255, 255, 0.5 )'
-			// ctx.stroke()
-		
-		/* ctx.beginPath()
-			const lineWidth = this.radius * ( 1 - 0.666 )
-			
-			ctx.arc( this.position.x, this.position.y, this.radius - lineWidth / 2 + 0.01, 0, Math.PI * 2 )
-			ctx.strokeStyle = 'rgba( 0, 115, 128, 1.0 )'
-			ctx.lineWidth = lineWidth
-			ctx.stroke() */
 		
 		// icon
 		if ( detail > 0.2 ) {
@@ -114,11 +95,6 @@ NeuronView.prototype = {
 		
 		drawGauge( ctx, this.neuron, this.position.x, this.position.y, this.radius )
 		
-		// icon
-		// if ( detail > 0.999 ) {
-		// 	const r = this.radius * 0.3
-		// 	ctx.drawImage( assets.icons.think, this.position.x - r, this.position.y - r, r * 2, r * 2 )
-		// }
 		ctx.globalCompositeOperation = globalCompositeOperation
 	},
 }
