@@ -131,9 +131,24 @@ export default function ReplicatorView( replicator ) {
 	
 	self.neuronViews = []
 	
-	for ( let neuron of replicator.brain.neurons ) {
-		self.neuronViews[ neuron.index ] = NeuronView( neuron )
+	for ( let flipper of replicator.flippers ) {
+		self.neuronViews[ flipper.neuron.index ] = NeuronView( flipper.neuron, 'flipper' )
 	}
+	
+	for ( let receptor of replicator.receptors ) {
+		let neuron
+		
+		neuron = receptor.neurons.replicator
+		self.neuronViews[ neuron.index ] = NeuronView( neuron, 'replicator' )
+		
+		neuron = receptor.neurons.predator
+		self.neuronViews[ neuron.index ] = NeuronView( neuron, 'predator' )
+		
+		neuron = receptor.neurons.food
+		self.neuronViews[ neuron.index ] = NeuronView( neuron, 'food' )
+	}
+	
+	self.neuronViews[ replicator.hungerNeuron.index ] = NeuronView( replicator.hungerNeuron, 'empty' )
 	
 	// for drawing energy level
 	self._apparentEnergy = replicator.energy

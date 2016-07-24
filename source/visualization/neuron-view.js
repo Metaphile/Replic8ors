@@ -1,4 +1,4 @@
-import assets from './neuron-assets'
+import * as assets from './neuron-assets'
 import Math2 from '../engine/math-2'
 
 // gauge.clear()
@@ -38,27 +38,24 @@ function drawGauge( ctx, neuron, ppx, ppy, r ) {
 			ctx.arc( ppx, ppy, r2, a3, a2, true ) // opposite direction
 			
 			ctx.fillStyle = 'rgba( 190,   0,   0, 0.7 )'
-			const gco = ctx.globalCompositeOperation
 			ctx.globalCompositeOperation = 'darken'
 			ctx.fill()
-			ctx.globalCompositeOperation = gco
 	}
 	
 	ctx.beginPath()
 		ctx.arc( ppx, ppy, r1, a1, a2 )
 		ctx.arc( ppx, ppy, r2, a2, a1, true )
 		
-		const gco = ctx.globalCompositeOperation
-		ctx.globalCompositeOperation = 'screen'
 		ctx.fillStyle = 'rgba(  90, 195, 255, 1.0 )'
+		ctx.globalCompositeOperation = 'screen'
 		ctx.fill()
-		ctx.globalCompositeOperation = gco
 }
 
-export default function NeuronView( neuron, opts = {} ) {
+export default function NeuronView( neuron, role = 'think', opts = {} ) {
 	const self = Object.create( NeuronView.prototype )
 	Object.assign( self, defaultOpts, opts )
 	self.neuron = neuron
+	self.icon = assets.icons[ role ]
 	self.position = { x: 0, y: 0 }
 	// TODO relative
 	self.anchor   = { x: 0, y: 0 }
@@ -81,12 +78,12 @@ NeuronView.prototype = {
 	draw( ctx, detail ) {
 		// ctx.drawImage( assets.body, this.position.x - assets.body.width / 2, this.position.y - assets.body.height / 2 )
 		
-		const gco = ctx.globalCompositeOperation
-		ctx.globalCompositeOperation = 'screen'
+		const globalCompositeOperation = ctx.globalCompositeOperation
 		
 		ctx.beginPath()
-			ctx.arc( this.position.x, this.position.y, this.radius * 0.5, 0, Math.PI * 2 )
-			ctx.fillStyle = 'rgba(  90, 195, 255, 0.3 )'
+			ctx.arc( this.position.x, this.position.y, this.radius, 0, Math.PI * 2 )
+			ctx.globalCompositeOperation = 'screen'
+			ctx.fillStyle = 'rgba(  90, 195, 255, 0.1 )'
 			ctx.fill()
 			
 		/* ctx.beginPath()
@@ -106,7 +103,14 @@ NeuronView.prototype = {
 			ctx.lineWidth = lineWidth
 			ctx.stroke() */
 		
-		ctx.globalCompositeOperation = gco
+		// icon
+		if ( detail > 0.2 ) {
+			const r = this.radius * 0.3
+			ctx.globalCompositeOperation = 'screen'
+			ctx.globalAlpha = 1 - ( 1 - detail ) / 0.8
+			ctx.drawImage( this.icon, this.position.x - r + r/16, this.position.y - r + r/16, r * 2, r * 2 )
+			ctx.globalAlpha = 1
+		}
 		
 		drawGauge( ctx, this.neuron, this.position.x, this.position.y, this.radius )
 		
@@ -115,5 +119,6 @@ NeuronView.prototype = {
 		// 	const r = this.radius * 0.3
 		// 	ctx.drawImage( assets.icons.think, this.position.x - r, this.position.y - r, r * 2, r * 2 )
 		// }
+		ctx.globalCompositeOperation = globalCompositeOperation
 	},
 }
