@@ -193,12 +193,12 @@ Replic8or.prototype = {
 		parent.brain.neurons.forEach( ( parentNeuron, neuronIndex ) => {
 			// TODO use map
 			parentNeuron.weights.forEach( ( parentWeight, weightIndex ) => {
-				parentWeight += ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -1.0, 1.0 ), 5 ) : 0 )
-				parentWeight = Math2.clamp( parentWeight, -1, 1 )
+				Math2.clamp( parentWeight, -1, 1 )
+				parentWeight += ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -1.0, 1.0 ), 3 ) : 0 )
 				child.brain.neurons[ neuronIndex ].weights[ weightIndex ] = parentWeight
 			} )
 			
-			child.brain.neurons[ neuronIndex ].potentialDecayRate = parentNeuron.potentialDecayRate + ( mutationRate > Math.random() ? Math2.randRange( -0.08, 0.08 ) : 0 )
+			child.brain.neurons[ neuronIndex ].potentialDecayRate = parentNeuron.potentialDecayRate + ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -1.0, 1.0 ), 3 ) : 0 )
 		} )
 		
 		const neuronsPerSegment = 4
