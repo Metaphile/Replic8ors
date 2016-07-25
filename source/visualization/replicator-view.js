@@ -265,6 +265,46 @@ ReplicatorView.prototype = {
 			ctx.scale( 1 / r0, 1 / r0 )
 			ctx.translate( -p0.x, -p0.y )
 		
+		// indicate symmetric/free sections
+		ctx.lineWidth = 0.27
+		ctx.strokeStyle = 'rgba(  90, 195, 255, 0.18 )'
+		// ctx.globalCompositeOperation = 'screen'
+		for ( let i = 0; i < replicator.numBodySegments; i++ ) {
+			ctx.beginPath()
+				let angle = 0
+				angle += replicator.flipperOffset
+				angle += i / replicator.numBodySegments * Math.PI * 2
+				
+				const p1 = {}
+				p1.x = p0.x + Math.cos( angle ) * replicator.radius * 0.455
+				p1.y = p0.y + Math.sin( angle ) * replicator.radius * 0.455
+				
+				const p2 = {}
+				p2.x = p1.x + Math.cos( angle ) * replicator.radius * 0.1
+				p2.y = p1.y + Math.sin( angle ) * replicator.radius * 0.1
+				
+				const p3 = {}
+				angle += Math.PI * 2 / 3
+				p3.x = p1.x + Math.cos( angle ) * replicator.radius * 0.1
+				p3.y = p1.y + Math.sin( angle ) * replicator.radius * 0.1
+				
+				const p4 = {}
+				angle += Math.PI * 2 / 3
+				p4.x = p1.x + Math.cos( angle ) * replicator.radius * 0.1
+				p4.y = p1.y + Math.sin( angle ) * replicator.radius * 0.1
+				
+				ctx.moveTo( p1.x, p1.y )
+				ctx.lineTo( p2.x, p2.y )
+				
+				ctx.moveTo( p1.x, p1.y )
+				ctx.lineTo( p3.x, p3.y )
+				
+				ctx.moveTo( p1.x, p1.y )
+				ctx.lineTo( p4.x, p4.y )
+				
+				ctx.stroke()
+		}
+		
 		drawConnections( ctx, this.neuronViews, detail )
 		
 		// flipper connections
