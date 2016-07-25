@@ -16,7 +16,7 @@ const defaultOpts = new function () {
 	this.elasticity = 1
 	
 	this.energy = 0.5
-	this.metabolism = 1/180
+	this.metabolism = 1 / ( 4 * 60 )
 	
 	this.numBodySegments = 5
 	this.receptorOffset = -Math.PI / 2, // up
@@ -169,7 +169,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
 			
 			const distance = Vector2.distanceSquared( predator.position, receptorPosition )
-			const strength = 1 / distance * 50000
+			const strength = 1 / distance * 50000 * 10
 			
 			receptor.neurons.predator.stimulate( strength * dt )
 		}
@@ -185,7 +185,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.02 ) {
+	replicate: function ( quietly, mutationRate = 0.01 ) {
 		const parent = this
 		const child = Replic8or()
 		
@@ -193,12 +193,12 @@ Replic8or.prototype = {
 		parent.brain.neurons.forEach( ( parentNeuron, neuronIndex ) => {
 			// TODO use map
 			parentNeuron.weights.forEach( ( parentWeight, weightIndex ) => {
-				parentWeight += ( mutationRate > Math.random() ? Math2.randRange( -0.1, 0.1 ) : 0 )
-				Math2.clamp( parentWeight, -1, 1 )
+				parentWeight += ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -1.0, 1.0 ), 5 ) : 0 )
+				parentWeight = Math2.clamp( parentWeight, -1, 1 )
 				child.brain.neurons[ neuronIndex ].weights[ weightIndex ] = parentWeight
 			} )
 			
-			child.brain.neurons[ neuronIndex ].potentialDecayRate = parentNeuron.potentialDecayRate + ( mutationRate > Math.random() ? Math2.randRange( -0.1, 0.1 ) : 0 )
+			child.brain.neurons[ neuronIndex ].potentialDecayRate = parentNeuron.potentialDecayRate + ( mutationRate > Math.random() ? Math2.randRange( -0.08, 0.08 ) : 0 )
 		} )
 		
 		const neuronsPerSegment = 4

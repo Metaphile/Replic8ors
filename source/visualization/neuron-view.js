@@ -37,7 +37,7 @@ function drawGauge( ctx, neuron, ppx, ppy, r ) {
 			ctx.arc( ppx, ppy, r1, a2, a3 )
 			ctx.arc( ppx, ppy, r2, a3, a2, true ) // opposite direction
 			
-			ctx.fillStyle = 'rgba( 190,   0,   0, 0.7 )'
+			ctx.fillStyle = 'rgba( 190,   0,   0, 0.63 )'
 			ctx.globalCompositeOperation = 'darken'
 			ctx.fill()
 	}
@@ -81,14 +81,14 @@ NeuronView.prototype = {
 		ctx.beginPath()
 			ctx.arc( this.position.x, this.position.y, this.radius, 0, Math.PI * 2 )
 			ctx.globalCompositeOperation = 'screen'
-			ctx.fillStyle = 'rgba(  90, 195, 255, 0.1 )'
+			ctx.fillStyle = 'rgba(  90, 195, 255, 0.18 )'
 			ctx.fill()
 		
 		// icon
-		if ( detail > 0.2 ) {
+		if ( detail > 0.1 ) {
 			const r = this.radius * 0.3
 			ctx.globalCompositeOperation = 'screen'
-			ctx.globalAlpha = 1 - ( 1 - detail ) / 0.8
+			ctx.globalAlpha = 1 - ( 1 - detail ) / 0.9
 			ctx.drawImage( this.icon, this.position.x - r + r/16, this.position.y - r + r/16, r * 2, r * 2 )
 			ctx.globalAlpha = 1
 		}

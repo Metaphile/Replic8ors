@@ -84,9 +84,9 @@ export default function Scenario( world, opts = {} ) {
 			position.x = Math.cos( angle ) * ( self.designatedWidth / 2 )
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
-			self.doBloom( position, 180, 12 )
+			self.doBloom( position, 190, 11 )
 			
-			timer.setAlarm( 23, alwaysBeBlooming )
+			timer.setAlarm( 60, alwaysBeBlooming )
 		}
 		
 		timer.setAlarm( 1, alwaysBeBlooming )

@@ -21,7 +21,7 @@ export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, p
 	const angleB_A = angleA_B + Math.PI
 	
 	const minConnWidth = Math.PI * 0.01
-	const maxConnWidth = Math.PI * 0.16
+	const maxConnWidth = Math.PI * 0.09
 	
 	let offsetB = minConnWidth
 	offsetB += Math.abs( weight ) * Math.pow( 1 - progress, 2 ) * ( maxConnWidth - minConnWidth )
@@ -60,7 +60,7 @@ export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, p
 	pointC2.x += Math.cos( angleA_B - offsetA ) * lengthA_C
 	pointC2.y += Math.sin( angleA_B - offsetA ) * lengthA_C */
 	
-	ctx.fillStyle = weight < 0 ? 'rgba( 190,   0,   0, 0.7 )' : 'rgba(  90, 195, 255, 1.0 )'
+	ctx.fillStyle = weight < 0 ? 'rgba( 190,   0,   0, 0.63 )' : 'rgba(  90, 195, 255, 1.0 )'
 	
 	const gco = ctx.globalCompositeOperation
 	if ( weight < 0 ) ctx.globalCompositeOperation = 'darken'

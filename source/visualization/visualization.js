@@ -38,7 +38,7 @@ export default function Visualization( world ) {
 	$( worldCanvas ).on( 'mousewheel', function ( event ) {
 		event.preventDefault()
 		// worldCamera.zoom( event.originalEvent.wheelDelta / 2000, worldCamera.toWorld( event.offsetX, event.offsetY ) )
-		cameraOp.smoothZoom( event.originalEvent.wheelDelta / 2000, worldCamera.toWorld( event.offsetX, event.offsetY ) )
+		cameraOp.smoothZoom( event.originalEvent.wheelDelta / 1600, worldCamera.toWorld( event.offsetX, event.offsetY ) )
 	} )
 	
 	$( worldCanvas ).click( ( event ) => {

@@ -166,7 +166,7 @@ World.prototype = {
 				predator.collideWith( replicator, dt )
 				
 				if ( distance < minDistance ) {
-					replicator.energy -= dt * 0.1
+					replicator.energy -= dt * 0.3
 				} else {
 					replicator.sensePredator( predator, dt )
 					

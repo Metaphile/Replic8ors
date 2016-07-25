@@ -25,10 +25,10 @@ export const energyGradient = ( () => {
 	
 	const gradient = ctx.createLinearGradient( 0, -1, 0, 1 )
 	
-	gradient.addColorStop( 0.500, 'rgba(  25, 255, 100, 0.00 )' ) // transparent green
-	gradient.addColorStop( 0.500, 'rgba(  25, 255, 100, 0.50 )' ) // green
-	gradient.addColorStop( 0.504, 'rgba(   0,   0,   0, 0.85 )' ) // black
-	gradient.addColorStop( 1.000, 'rgba(  25, 255, 100, 1.00 )' ) // green
+	gradient.addColorStop( 0.500, 'rgba(  13, 255, 106, 0.00 )' ) // transparent green
+	gradient.addColorStop( 0.500, 'rgba(  13, 255, 106, 0.50 )' ) // green
+	gradient.addColorStop( 0.504, 'rgba(   1,  26,  11, 0.85 )' ) // black
+	gradient.addColorStop( 1.000, 'rgba(  13, 255, 106, 1.00 )' ) // green
 	
 	return gradient
 } )()
