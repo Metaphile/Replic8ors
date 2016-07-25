@@ -193,8 +193,8 @@ Replic8or.prototype = {
 		parent.brain.neurons.forEach( ( parentNeuron, neuronIndex ) => {
 			// TODO use map
 			parentNeuron.weights.forEach( ( parentWeight, weightIndex ) => {
-				Math2.clamp( parentWeight, -1, 1 )
 				parentWeight += ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -1.0, 1.0 ), 3 ) : 0 )
+				parentWeight = Math2.clamp( parentWeight, -1, 1 )
 				child.brain.neurons[ neuronIndex ].weights[ weightIndex ] = parentWeight
 			} )
 			
