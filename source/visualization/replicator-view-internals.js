@@ -47,19 +47,6 @@ export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, p
 	pointA2.x += Math.cos( angleA_B - offsetA ) * radiusA
 	pointA2.y += Math.sin( angleA_B - offsetA ) * radiusA
 	
-	
-	/* const lengthA_B = Vector2.getLength( vectorA_B )
-	const lengthA_C = radiusA + progress * ( lengthA_B - radiusA - radiusB )
-	// const lengthA_C =  progress * lengthA_C
-	
-	const pointC1 = Vector2.clone( pointA )
-	pointC1.x += Math.cos( angleA_B + offsetA ) * lengthA_C
-	pointC1.y += Math.sin( angleA_B + offsetA ) * lengthA_C
-	
-	const pointC2 = Vector2.clone( pointA )
-	pointC2.x += Math.cos( angleA_B - offsetA ) * lengthA_C
-	pointC2.y += Math.sin( angleA_B - offsetA ) * lengthA_C */
-	
 	ctx.fillStyle = weight < 0 ? 'rgba( 190,   0,   0, 0.63 )' : 'rgba(  90, 195, 255, 1.0 )'
 	
 	const gco = ctx.globalCompositeOperation
@@ -78,29 +65,6 @@ export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, p
 		ctx.globalAlpha = ga
 	
 	ctx.globalCompositeOperation = gco
-	
-	/* ctx.beginPath()
-		// back end
-		ctx.moveTo( pointA1.x, pointA1.y )
-		ctx.lineTo( pointC1.x, pointC1.y )
-		ctx.lineTo( pointC2.x, pointC2.y )
-		ctx.lineTo( pointA2.x, pointA2.y )
-		
-		ctx.globalAlpha *= 0.6
-		ctx.fill()
-		ctx.globalAlpha /= 0.6
-		
-	ctx.beginPath()
-		// signal
-		ctx.moveTo( pointC1.x, pointC1.y )
-		ctx.lineTo( pointB1.x, pointB1.y )
-		ctx.lineTo( pointB2.x, pointB2.y )
-		ctx.lineTo( pointC2.x, pointC2.y )
-		
-		const old = ctx.globalAlpha
-		ctx.globalAlpha = 0.6
-		ctx.fill()
-		ctx.globalAlpha = old */
 }
 
 function drawConnectionPair( ctx, neuronViewA, neuronViewB, detail = 1 ) {
