@@ -27,7 +27,7 @@ export const energyGradient = ( () => {
 	
 	gradient.addColorStop( 0.500, 'rgba(  13, 255, 106, 0.00 )' ) // transparent green
 	gradient.addColorStop( 0.500, 'rgba(  13, 255, 106, 0.50 )' ) // green
-	gradient.addColorStop( 0.504, 'rgba(   1,  26,  11, 0.85 )' ) // black
+	gradient.addColorStop( 0.504, 'rgba(   1,  26,  11, 0.85 )' ) // dark green
 	gradient.addColorStop( 1.000, 'rgba(  13, 255, 106, 1.00 )' ) // green
 	
 	return gradient
