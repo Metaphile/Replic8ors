@@ -1,5 +1,4 @@
 import Physics from '../engine/physics'
-import Vector2 from '../engine/vector-2'
 
 const defaultOpts = {
 	radius:  128,
