@@ -62,6 +62,13 @@ Object.assign( Vector2, {
 		return ( dx * dx ) + ( dy * dy )
 	},
 	
+	distance( v1, v2 ) {
+		var dx = v2.x - v1.x
+		var dy = v2.y - v1.y
+		
+		return Math.sqrt( ( dx * dx ) + ( dy * dy ) )
+	},
+	
 	angle( v ) {
 		// atan2 returns 0..pi for points above the x-axis; -pi..0 for points below
 		return Math.atan2( v.y, v.x )
