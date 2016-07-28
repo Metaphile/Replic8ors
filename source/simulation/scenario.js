@@ -90,10 +90,10 @@ export default function Scenario( world, opts = {} ) {
 			// for now, bloom at center of spring
 			self.doBloom( { x: 0, y: 0 }, 190, 7 )
 			
-			timer.setAlarm( 60, alwaysBeBlooming )
+			timer.setAlarm( 25, alwaysBeBlooming )
 		}
 		
-		timer.setAlarm( 1, alwaysBeBlooming )
+		timer.setAlarm( 5, alwaysBeBlooming )
 		
 		const addPredator = () => {
 			const predator = Predator()

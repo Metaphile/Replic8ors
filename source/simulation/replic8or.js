@@ -11,8 +11,8 @@ import Vector2 from '../engine/vector-2'
 // can't refer to other members with object literal syntax
 const defaultOpts = new function () {
 	this.radius = 32
-	this.mass = 46
-	this.drag = 110
+	this.mass = 23
+	this.drag = 55
 	this.elasticity = 1
 	
 	this.energy = 0.5

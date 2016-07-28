@@ -1,7 +1,7 @@
 import Events from '../engine/events'
 
 const defaultOpts = {
-	strength: 9000,
+	strength: 4500,
 	flipTime: 1.25,
 }
 

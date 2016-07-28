@@ -8,8 +8,8 @@ const defaultOpts = {
 	eaten: false,
 	spoiled: false,
 	radius: 1.6,
-	mass: 3,
-	drag: 2,
+	mass: 6,
+	drag: 5,
 	elasticity: 2,
 }
 
