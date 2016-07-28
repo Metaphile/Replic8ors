@@ -1,22 +1,55 @@
-export default function Hud( camera ) {
+export default function Hud() {
 	const self = {}
 	
-	self.drawFocusRing = ( center_world, radius_world, animationProgress = 0 ) => {
-		const center_hud = camera.toScreen( center_world )
+	const focusRing = {}
+	focusRing.position = { x: 0, y: 0 }
+	focusRing.radius = 10
+	
+	self.activateFocusRing = ( position = { x: 0, y: 0 }, radius = 1 ) => {
+		Object.assign( focusRing.position, position )
+		focusRing.radius = radius
 		
-		const edge_world = {
-			x: center_world.x + radius_world,
-			y: center_world.y
-		}
-		const edge_hud = camera.toScreen( edge_world )
-		
-		const radius_hud = edge_hud.x - center_hud.x
-		
+		self.focusRing = focusRing
+	}
+	
+	self.deactivateFocusRing = () => {
+		self.focusRing = null
+	}
+	
+	self.update = ( dt ) => {
 		// ...
 	}
 	
-	self.drawOffscreenIndicator = ( direction, color = 'orange', size = '5' ) => {
+	self.draw = ( camera ) => {
+		const ctx = camera.ctx
+		const z = camera.getZoomLevel()
+		const tau = Math.PI * 2
 		
+		const globalAlpha = ctx.globalAlpha
+		ctx.globalAlpha = 0.8
+		
+		if ( self.focusRing ) {
+			const p = self.focusRing.position
+			const r1 = self.focusRing.radius + 16 / z
+			const r2 = r1 + 16 / z
+			
+			ctx.beginPath()
+				ctx.arc( p.x, p.y, r1, 0, tau )
+				ctx.arc( p.x, p.y, r2, 0, tau, true )
+				ctx.fillStyle = 'orange'
+				ctx.fill()
+			
+			ctx.beginPath()
+				for ( let angle = 0; angle < tau; angle += tau / 4 ) {
+					ctx.moveTo( p.x + Math.cos( angle ) * ( r2 + 5/z ), p.y + Math.sin( angle ) * ( r2 + 5/z ) )
+					ctx.lineTo( p.x + Math.cos( angle ) * r2 * 20,  p.y + Math.sin( angle ) * r2 * 20 )
+				}
+				ctx.strokeStyle = 'orange'
+				ctx.lineWidth = 2 / z
+				ctx.stroke()
+		}
+		
+		ctx.globalAlpha = globalAlpha
 	}
 	
 	return self
