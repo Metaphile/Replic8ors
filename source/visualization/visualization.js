@@ -130,7 +130,7 @@ export default function Visualization( world ) {
 			p2.x += ( p1.x - p2.x ) * 11 * dt
 			p2.y += ( p1.y - p2.y ) * 11 * dt
 			
-			hud.focusRing.radius = selection.radius * 1.2
+			hud.focusRing.radius = selection.radius
 		}
 		
 		cameraOp.update( dt )

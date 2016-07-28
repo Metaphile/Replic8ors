@@ -30,8 +30,8 @@ export default function Hud() {
 		
 		if ( self.focusRing ) {
 			const p = self.focusRing.position
-			const r1 = self.focusRing.radius + 16 / z
 			const r2 = r1 + 16 / z
+			const r1 = self.focusRing.radius + 18
 			
 			ctx.beginPath()
 				ctx.arc( p.x, p.y, r1, 0, tau )
