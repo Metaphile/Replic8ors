@@ -2,79 +2,85 @@ import WorldView from './world-view'
 import Camera from '../engine/camera'
 import CameraOperator from './camera-operator'
 import $ from '../../third-party/jquery'
-// import Hud from './hud'
+import Hud from './hud'
 
 export default function Visualization( world ) {
 	const self = {}
 	
-	const $container = $( '<div class="visualization-container"/>' )
-	const worldCanvas = WorldCanvas()
-	const hudCanvas = HudCanvas()
-	$container.append( worldCanvas )
-	$container.append( hudCanvas )
+	// selected replicator or predator
+	let selection
 	
-	$container.on( 'appended', () => $( worldCanvas ).trigger( 'appended' ) )
-	// propagate event downward
-	/* $container.on( 'appended', function () {
-		$container.children().each( function () {
-			// children shouldn't bubble
-			$( this ).trigger( 'appended' )
-		} )
-	} ) */
+	const $container = $( '<div class="visualization-container"/>' )
+	const canvas = WorldCanvas()
+	$container.append( canvas )
+	
+	const hud = Hud()
+	
+	$container.on( 'appended', () => $( canvas ).trigger( 'appended' ) )
 	
 	self.$element = $container
 	
-	const worldCtx = worldCanvas.getContext( '2d' )
-	const worldCamera = Camera( worldCtx )
-	worldCamera.pan( -400, -300 )
-	const hudCtx = hudCanvas.getContext( '2d' )
-	const hudCamera = Camera( hudCtx )
+	const camera = Camera( canvas.getContext( '2d' ) )
+	camera.pan( -400, -300 )
 	
-	const cameraOp = CameraOperator( worldCamera )
+	const cameraOp = CameraOperator( camera )
 	
 	const worldView = WorldView( world )
 	
 	// TODO scrolling quickly flips y-axis??
-	$( worldCanvas ).on( 'mousewheel', function ( event ) {
+	$( canvas ).on( 'mousewheel', function ( event ) {
 		event.preventDefault()
-		// worldCamera.zoom( event.originalEvent.wheelDelta / 2000, worldCamera.toWorld( event.offsetX, event.offsetY ) )
-		cameraOp.smoothZoom( event.originalEvent.wheelDelta / 1600, worldCamera.toWorld( event.offsetX, event.offsetY ) )
+		cameraOp.smoothZoom( event.originalEvent.wheelDelta / 1600, camera.toWorld( event.offsetX, event.offsetY ) )
 	} )
 	
-	$( worldCanvas ).click( ( event ) => {
+	$( canvas ).click( ( event ) => {
 		// if ( cancelClick ) return;
 		
-		const clickPos_world = worldCamera.toWorld( event.offsetX, event.offsetY )
+		const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
 		
-		let target
-		target = worldView.getPredatorAt( clickPos_world )
-		target = target || worldView.getReplicatorAt( clickPos_world )
+		selection = worldView.getPredatorAt( clickPos_world )
+		selection = selection || worldView.getReplicatorAt( clickPos_world )
 		
-		target ? cameraOp.follow( target ) : cameraOp.unfollow()
+		if ( selection ) {
+			if ( !hud.focusRing ) {
+				hud.activateFocusRing( selection.position )
+			}
+			cameraOp.follow( selection )
+		} else {
+			hud.deactivateFocusRing()
+			cameraOp.unfollow()
+		}
 	} )
 	
-	// self.hud = Hud()
-	
 	self.update = function ( dt, dt2 ) {
+		if ( selection ) {
+			// cameraOp.panToward( selection.position, dt )
+			const p1 = selection.position
+			const p2 = hud.focusRing.position
+			p2.x += ( p1.x - p2.x ) * 11 * dt
+			p2.y += ( p1.y - p2.y ) * 11 * dt
+			
+			hud.focusRing.radius = selection.radius * 1.2
+		}
+		
 		cameraOp.update( dt )
 		worldView.update( dt, dt2 )
-		// this.hud.update( dt, t )
+		hud.update( dt )
 	},
 	
 	self.draw = function () {
-		worldCamera.prepareCanvas()
+		camera.prepareCanvas()
 		
-		const detail = worldCamera.getZoomLevel() / 18
-		worldView.draw( worldCamera, worldCamera.toWorld( mousePos_screen ), detail )
-		
-		// this.hud.draw( hudCtx )
+		const detail = camera.getZoomLevel() / 18
+		worldView.draw( camera, camera.toWorld( mousePos_screen ), detail )
+		hud.draw( camera )
 	}
 	
 	// dragging
 	{
 		let isDragging = false, dragLast_screen
 		
-		const $canvas = $( worldCanvas )
+		const $canvas = $( canvas )
 		
 		$canvas.mousedown( event => {
 			isDragging = true
@@ -84,8 +90,8 @@ export default function Visualization( world ) {
 		// TODO minimum delta?
 		$( document ).on( 'mousemove', event => {
 			if ( isDragging ) {
-				const dragLast_world = worldCamera.toWorld( dragLast_screen )
-				const dragNow_world  = worldCamera.toWorld( event.offsetX, event.offsetY )
+				const dragLast_world = camera.toWorld( dragLast_screen )
+				const dragNow_world  = camera.toWorld( event.offsetX, event.offsetY )
 				
 				const dx_world = dragLast_world.x - dragNow_world.x
 				const dy_world = dragLast_world.y - dragNow_world.y
@@ -101,19 +107,19 @@ export default function Visualization( world ) {
 	}
 	
 	// fisheye
-	$( worldCanvas ).on( 'mousemove', event => {
+	$( canvas ).on( 'mousemove', event => {
 		mousePos_screen.x = event.offsetX
 		mousePos_screen.y = event.offsetY
 	} )
 	
-	$( worldCanvas ).on( 'mouseout', () => {
+	$( canvas ).on( 'mouseout', () => {
 		mousePos_screen.x = Infinity
 		mousePos_screen.y = Infinity
 	} )
 	
 	const mousePos_screen = {}
 	
-	$( worldCanvas ).trigger( 'mouseout' )
+	$( canvas ).trigger( 'mouseout' )
 	
 	return self
 }
@@ -136,14 +142,6 @@ function WorldCanvas() {
 		// don't bubble
 		return false
 	} )
-	
-	return $canvas[ 0 ]
-}
-
-function HudCanvas() {
-	const $canvas = $( '<canvas class="hud"/>' )
-	
-	// ...
 	
 	return $canvas[ 0 ]
 }
