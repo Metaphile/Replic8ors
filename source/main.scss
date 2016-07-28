@@ -1,5 +1,9 @@
 @import 'visualization/visualization.scss';
 
+* {
+	box-sizing: border-box;
+}
+
 body {
 	font: 10pt sans-serif;
 	margin: 0;
