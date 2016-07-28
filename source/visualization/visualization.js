@@ -10,6 +10,21 @@ export default function Visualization( world ) {
 	// selected replicator or predator
 	let selection
 	
+	// TODO -> replicator-removed
+	world.on( 'replicator-died', replicator => {
+		if ( selection === replicator ) {
+			selection = null
+			hud.deactivateFocusRing()
+		}
+	} )
+	
+	world.on( 'predator-removed', predator => {
+		if ( selection === predator ) {
+			selection = null
+			hud.deactivateFocusRing()
+		}
+	} )
+	
 	const $container = $( '<div class="visualization-container"/>' )
 	const canvas = WorldCanvas()
 	$container.append( canvas )
