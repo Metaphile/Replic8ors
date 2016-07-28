@@ -3,6 +3,7 @@ import Camera from '../engine/camera'
 import CameraOperator from './camera-operator'
 import $ from '../../third-party/jquery'
 import Hud from './hud'
+import Vector2 from '../engine/vector-2'
 
 export default function Visualization( world ) {
 	const self = {}
@@ -26,29 +27,83 @@ export default function Visualization( world ) {
 	} )
 	
 	const $container = $( '<div class="visualization-container"/>' )
-	const canvas = WorldCanvas()
-	$container.append( canvas )
+	const $canvas = $( WorldCanvas() )
+	$container.append( $canvas )
 	
 	const hud = Hud()
 	
-	$container.on( 'appended', () => $( canvas ).trigger( 'appended' ) )
+	$container.on( 'appended', () => $canvas.trigger( 'appended' ) )
 	
 	self.$element = $container
 	
-	const camera = Camera( canvas.getContext( '2d' ) )
+	const camera = Camera( $canvas[0].getContext( '2d' ) )
 	camera.pan( -400, -300 )
 	
 	const cameraOp = CameraOperator( camera )
 	
 	const worldView = WorldView( world )
 	
+	// dragging
+	{
+		// mousedown followed by mousemove > threshold == drag
+		
+		let isDragging = false
+		let dragLast_screen = null
+		const dragThreshold = 2
+		
+		$canvas.on( 'mousedown', () => {
+			isDragging = false
+			dragLast_screen = { x: event.offsetX, y: event.offsetY }
+		} )
+		
+		$canvas.on( 'mousemove', ( event ) => {
+			if ( dragLast_screen ) {
+				const mousePos_screen = { x: event.offsetX, y: event.offsetY }
+				const distance = Vector2.distance( mousePos_screen, dragLast_screen )
+				
+				if ( distance > dragThreshold ) {
+					isDragging = true
+				}
+			}
+		} )
+		
+		$canvas.on( 'mousemove', ( event ) => {
+			if ( isDragging ) {
+				// important! previous world coords are probably invalid;
+				// always get current coords
+				const dragLast_world = camera.toWorld( dragLast_screen )
+				
+				const dragNow_screen = { x: event.offsetX, y: event.offsetY }
+				const dragNow_world  = camera.toWorld( dragNow_screen )
+				
+				const dragDelta_world = Vector2.subtract( dragLast_world, dragNow_world, {} )
+				
+				cameraOp.smoothPan( dragDelta_world )
+				
+				Vector2.set( dragLast_screen, dragNow_screen )
+			}
+		} )
+		
+		$canvas.on( 'mouseup', () => {
+			dragLast_screen = null
+		} )
+		
+		$canvas.on( 'click', ( event ) => {
+			// cancel click if drag before mouseup
+			if ( isDragging ) {
+				isDragging = false
+				event.stopImmediatePropagation()
+			}
+		} )
+	}
+	
 	// TODO scrolling quickly flips y-axis??
-	$( canvas ).on( 'mousewheel', function ( event ) {
+	$canvas.on( 'mousewheel', function ( event ) {
 		event.preventDefault()
 		cameraOp.smoothZoom( event.originalEvent.wheelDelta / 1600, camera.toWorld( event.offsetX, event.offsetY ) )
 	} )
 	
-	$( canvas ).click( ( event ) => {
+	$canvas.click( ( event ) => {
 		// if ( cancelClick ) return;
 		
 		const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
@@ -91,50 +146,20 @@ export default function Visualization( world ) {
 		hud.draw( camera )
 	}
 	
-	// dragging
-	{
-		let isDragging = false, dragLast_screen
-		
-		const $canvas = $( canvas )
-		
-		$canvas.mousedown( event => {
-			isDragging = true
-			dragLast_screen = { x: event.offsetX, y: event.offsetY }
-		} )
-		
-		// TODO minimum delta?
-		$( document ).on( 'mousemove', event => {
-			if ( isDragging ) {
-				const dragLast_world = camera.toWorld( dragLast_screen )
-				const dragNow_world  = camera.toWorld( event.offsetX, event.offsetY )
-				
-				const dx_world = dragLast_world.x - dragNow_world.x
-				const dy_world = dragLast_world.y - dragNow_world.y
-				
-				cameraOp.smoothPan( dx_world, dy_world )
-				
-				dragLast_screen.x = event.offsetX
-				dragLast_screen.y = event.offsetY
-			}
-		} )
-		
-		$( document ).mouseup( event => { isDragging = false } )
-	}
-	
 	// fisheye
-	$( canvas ).on( 'mousemove', event => {
+	$canvas.on( 'mousemove', event => {
 		mousePos_screen.x = event.offsetX
 		mousePos_screen.y = event.offsetY
 	} )
 	
-	$( canvas ).on( 'mouseout', () => {
+	$canvas.on( 'mouseout', () => {
 		mousePos_screen.x = Infinity
 		mousePos_screen.y = Infinity
 	} )
 	
 	const mousePos_screen = {}
 	
-	$( canvas ).trigger( 'mouseout' )
+	$canvas.trigger( 'mouseout' )
 	
 	return self
 }
