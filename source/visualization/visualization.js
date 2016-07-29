@@ -8,19 +8,8 @@ import Vector2 from '../engine/vector-2'
 export default function Visualization( world ) {
 	const self = {}
 	
-	// selected replicator or predator
-	let selection
-	
-	// TODO -> replicator-removed
-	world.on( 'replicator-died predator-removed', entity => {
-		if ( selection === entity ) {
-			cameraOp.unfollow()
-			hud.unfocus()
-		}
-	} )
-	
 	const $container = $( '<div class="visualization-container"/>' )
-	const $canvas = $( WorldCanvas() )
+	const $canvas = $Canvas()
 	$container.append( $canvas )
 	
 	const hud = Hud()
@@ -36,7 +25,7 @@ export default function Visualization( world ) {
 	
 	const worldView = WorldView( world )
 	
-	// dragging
+	// panning
 	{
 		// mousedown followed by mousemove > threshold == drag
 		
@@ -90,34 +79,49 @@ export default function Visualization( world ) {
 		} )
 	}
 	
+	// zooming
 	// TODO scrolling quickly flips y-axis??
-	$canvas.on( 'mousewheel', function ( event ) {
+	$canvas.on( 'mousewheel', ( event ) => {
 		event.preventDefault()
 		cameraOp.smoothZoom( event.originalEvent.wheelDelta / 1600, camera.toWorld( event.offsetX, event.offsetY ) )
 	} )
 	
-	$canvas.click( ( event ) => {
-		const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
+	// selection
+	{
+		// selected replicator or predator
+		let selection
 		
-		selection = worldView.getPredatorAt( clickPos_world )
-		selection = selection || worldView.getReplicatorAt( clickPos_world )
+		$canvas.on( 'click', ( event ) => {
+			const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
+			
+			selection = worldView.getPredatorAt( clickPos_world )
+			selection = selection || worldView.getReplicatorAt( clickPos_world )
+			
+			if ( selection ) {
+				cameraOp.follow( selection )
+				hud.focusOn( selection )
+			} else {
+				cameraOp.unfollow()
+				hud.unfocus()
+			}
+		} )
 		
-		if ( selection ) {
-			cameraOp.follow( selection )
-			hud.focusOn( selection )
-		} else {
-			cameraOp.unfollow()
-			hud.unfocus()
-		}
-	} )
+		// TODO -> replicator-removed
+		world.on( 'replicator-died predator-removed', entity => {
+			if ( selection === entity ) {
+				cameraOp.unfollow()
+				hud.unfocus()
+			}
+		} )
+	}
 	
-	self.update = function ( dt, dt2 ) {
+	self.update = ( dt, dt2 ) => {
 		cameraOp.update( dt )
 		worldView.update( dt, dt2 )
 		hud.update( dt )
 	},
 	
-	self.draw = function () {
+	self.draw = () => {
 		camera.prepareCanvas()
 		
 		const detail = camera.getZoomLevel() / 18
@@ -126,6 +130,9 @@ export default function Visualization( world ) {
 	}
 	
 	// fisheye
+	
+	const mousePos_screen = { x: Infinity, y: Infinity }
+	
 	$canvas.on( 'mousemove', event => {
 		mousePos_screen.x = event.offsetX
 		mousePos_screen.y = event.offsetY
@@ -136,14 +143,10 @@ export default function Visualization( world ) {
 		mousePos_screen.y = Infinity
 	} )
 	
-	const mousePos_screen = {}
-	
-	$canvas.trigger( 'mouseout' )
-	
 	return self
 }
 
-function WorldCanvas() {
+function $Canvas() {
 	const $canvas = $( '<canvas class="world"/>' )
 	
 	function sizeToParent() {
@@ -162,5 +165,5 @@ function WorldCanvas() {
 		return false
 	} )
 	
-	return $canvas[ 0 ]
+	return $canvas
 }
