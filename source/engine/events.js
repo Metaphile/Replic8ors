@@ -2,9 +2,11 @@ export default function Events( self = {} ) {
 	let subscriptions = {}
 	
 	// TODO multiple events
-	self.on = ( event, callback ) => {
-		if ( !subscriptions[ event ] ) subscriptions[ event ] = []
-		subscriptions[ event ].push( callback )
+	self.on = ( events, callback ) => {
+		for ( let event of events.split( ' ' ) ) {
+			if ( !subscriptions[ event ] ) subscriptions[ event ] = []
+			subscriptions[ event ].push( callback )
+		}
 	}
 	
 	self.off = () => {
