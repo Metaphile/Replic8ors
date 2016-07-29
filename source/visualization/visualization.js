@@ -50,7 +50,7 @@ export default function Visualization( world ) {
 		} )
 		
 		$canvas.on( 'mousemove', ( event ) => {
-			if ( dragLast_screen ) {
+			if ( !isDragging && dragLast_screen ) {
 				const mousePos_screen = { x: event.offsetX, y: event.offsetY }
 				const distance = Vector2.distance( mousePos_screen, dragLast_screen )
 				
