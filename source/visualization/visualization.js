@@ -12,16 +12,9 @@ export default function Visualization( world ) {
 	let selection
 	
 	// TODO -> replicator-removed
-	world.on( 'replicator-died', replicator => {
-		if ( selection === replicator ) {
-			selection = null
-			hud.unfocus()
-		}
-	} )
-	
-	world.on( 'predator-removed', predator => {
-		if ( selection === predator ) {
-			selection = null
+	world.on( 'replicator-died predator-removed', entity => {
+		if ( selection === entity ) {
+			cameraOp.unfollow()
 			hud.unfocus()
 		}
 	} )
