@@ -1,3 +1,77 @@
+const FocusRing = () => {
+	const self = {}
+	
+	self.position = { x: 0, y: 0 }
+	self.radius = 1
+	
+	let apparentRadius = 1
+	let apparentOpacity = 1
+	
+	let angle = 0
+	let bias = 0
+	
+	self.doFocusEffect = ( fromRadius ) => {
+		apparentRadius = fromRadius
+		apparentOpacity = 0
+	}
+	
+	self.moveTo = ( position ) => {
+		Object.assign( self.position, position )
+		angle = 0
+		bias = 0
+	}
+	
+	self.update = ( dt ) => {
+		apparentRadius += ( self.radius - apparentRadius ) * 13 * dt
+		apparentOpacity += ( 1 - apparentOpacity ) * 13 * dt
+		if ( apparentOpacity > 1 ) apparentOpacity = 1
+		
+		angle = ( angle + Math.PI * 1 * dt ) % Math.PI
+		bias = ( 1 + Math.cos( angle ) ) * 0.5
+	}
+	
+	self.draw = ( camera ) => {
+		const ctx = camera.ctx
+		
+		const globalAlpha = ctx.globalAlpha
+		const globalCompositeOperation = ctx.globalCompositeOperation
+		
+		const z = camera.getZoomLevel()
+		const tau = Math.PI * 2
+		
+		ctx.globalAlpha = 0.8 * apparentOpacity
+		// ctx.globalCompositeOperation = 'lighten'
+		
+		const p = self.position
+		const r1 = apparentRadius + 18
+		const r2 = r1 + 18 / z
+		
+		const color = interpolateRgba( [ 255, 128, 0, 1 ], [ 255, 69, 0, 1 ], 1 - bias )
+		
+		ctx.beginPath()
+			ctx.arc( p.x, p.y, r1, 0, tau )
+			ctx.arc( p.x, p.y, r2, 0, tau, true )
+			
+			ctx.fillStyle = color
+			ctx.fill()
+		
+		ctx.beginPath()
+			for ( let angle = 0; angle < tau; angle += tau / 4 ) {
+				ctx.moveTo( p.x + Math.cos( angle ) * ( r2 + 5/z ), p.y + Math.sin( angle ) * ( r2 + 5/z ) )
+				ctx.lineTo( p.x + Math.cos( angle ) * r2 * 20,  p.y + Math.sin( angle ) * r2 * 20 )
+			}
+			
+			ctx.strokeStyle = color
+			ctx.lineWidth = 2 / z
+			ctx.stroke()
+		
+		ctx.globalAlpha = globalAlpha
+		ctx.globalCompositeOperation = globalCompositeOperation
+	}
+	
+	return self
+}
+
 const interpolate = ( startValue, endValue, bias ) => {
 	return startValue + ( endValue - startValue ) * bias
 }
@@ -16,67 +90,39 @@ const interpolateRgba = ( rgba1, rgba2, bias ) => {
 export default function Hud() {
 	const self = {}
 	
-	const focusRing = {}
-	focusRing.position = { x: 0, y: 0 }
-	focusRing.radius = 10
+	let focusTarget
+	let focusRing = FocusRing()
 	
-	self.activateFocusRing = ( position = { x: 0, y: 0 }, radius = 1 ) => {
-		Object.assign( focusRing.position, position )
-		focusRing.radius = radius
+	self.focusOn = ( target ) => {
+		if ( !focusTarget ) {
+			focusRing.moveTo( target.position )
+			focusRing.doFocusEffect( target.radius * 10 )
+		}
 		
-		angle = 0
-		bias = 0
-		
-		self.focusRing = focusRing
+		focusRing.radius = target.radius
+		focusTarget = target
 	}
 	
-	self.deactivateFocusRing = () => {
-		self.focusRing = null
+	self.unfocus = () => {
+		if ( focusTarget ) {
+			// TODO animation
+			focusTarget = null
+		}
 	}
-	
-	let angle = 0
-	let bias = 0
 	
 	self.update = ( dt ) => {
-		angle = ( angle + Math.PI * 1 * dt ) % Math.PI
-		bias = 1 - ( 1 + Math.cos( angle ) ) * 0.5
+		if ( focusTarget ) {
+			const p1 = focusTarget.position
+			const p2 = focusRing.position
+			p2.x += ( p1.x - p2.x ) * 12 * dt
+			p2.y += ( p1.y - p2.y ) * 12 * dt
+		}
+		
+		focusRing.update( dt )
 	}
 	
 	self.draw = ( camera ) => {
-		const ctx = camera.ctx
-		const z = camera.getZoomLevel()
-		const tau = Math.PI * 2
-		
-		const globalAlpha = ctx.globalAlpha
-		ctx.globalAlpha = 0.8
-		const globalCompositeOperation = ctx.globalCompositeOperation
-		ctx.globalCompositeOperation = 'lighten'
-		
-		if ( self.focusRing ) {
-			const p = self.focusRing.position
-			const r1 = self.focusRing.radius + 18
-			const r2 = r1 + 18 / z
-			
-			const color = interpolateRgba( [ 255, 128, 0, 1 ], [ 255, 69, 0, 1 ], bias )
-			
-			ctx.beginPath()
-				ctx.arc( p.x, p.y, r1, 0, tau )
-				ctx.arc( p.x, p.y, r2, 0, tau, true )
-				ctx.fillStyle = color
-				ctx.fill()
-			
-			ctx.beginPath()
-				for ( let angle = 0; angle < tau; angle += tau / 4 ) {
-					ctx.moveTo( p.x + Math.cos( angle ) * ( r2 + 5/z ), p.y + Math.sin( angle ) * ( r2 + 5/z ) )
-					ctx.lineTo( p.x + Math.cos( angle ) * r2 * 20,  p.y + Math.sin( angle ) * r2 * 20 )
-				}
-				ctx.strokeStyle = color
-				ctx.lineWidth = 2 / z
-				ctx.stroke()
-		}
-		
-		ctx.globalAlpha = globalAlpha
-		ctx.globalCompositeOperation = globalCompositeOperation
+		if ( focusTarget ) focusRing.draw( camera )
 	}
 	
 	return self

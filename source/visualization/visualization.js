@@ -15,14 +15,14 @@ export default function Visualization( world ) {
 	world.on( 'replicator-died', replicator => {
 		if ( selection === replicator ) {
 			selection = null
-			hud.deactivateFocusRing()
+			hud.unfocus()
 		}
 	} )
 	
 	world.on( 'predator-removed', predator => {
 		if ( selection === predator ) {
 			selection = null
-			hud.deactivateFocusRing()
+			hud.unfocus()
 		}
 	} )
 	
@@ -69,8 +69,8 @@ export default function Visualization( world ) {
 		
 		$canvas.on( 'mousemove', ( event ) => {
 			if ( isDragging ) {
-				// important! previous world coords are probably invalid;
-				// always get current coords
+				// important! previous world coords are probably wrong now;
+				// always get fresh coords
 				const dragLast_world = camera.toWorld( dragLast_screen )
 				
 				const dragNow_screen = { x: event.offsetX, y: event.offsetY }
@@ -104,35 +104,21 @@ export default function Visualization( world ) {
 	} )
 	
 	$canvas.click( ( event ) => {
-		// if ( cancelClick ) return;
-		
 		const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
 		
 		selection = worldView.getPredatorAt( clickPos_world )
 		selection = selection || worldView.getReplicatorAt( clickPos_world )
 		
 		if ( selection ) {
-			if ( !hud.focusRing ) {
-				hud.activateFocusRing( selection.position )
-			}
 			cameraOp.follow( selection )
+			hud.focusOn( selection )
 		} else {
-			hud.deactivateFocusRing()
 			cameraOp.unfollow()
+			hud.unfocus()
 		}
 	} )
 	
 	self.update = function ( dt, dt2 ) {
-		if ( selection ) {
-			// cameraOp.panToward( selection.position, dt )
-			const p1 = selection.position
-			const p2 = hud.focusRing.position
-			p2.x += ( p1.x - p2.x ) * 11 * dt
-			p2.y += ( p1.y - p2.y ) * 11 * dt
-			
-			hud.focusRing.radius = selection.radius
-		}
-		
 		cameraOp.update( dt )
 		worldView.update( dt, dt2 )
 		hud.update( dt )
