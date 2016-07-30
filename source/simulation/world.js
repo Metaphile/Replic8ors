@@ -62,12 +62,14 @@ World.prototype = {
 	},
 	
 	update: function ( dt, t ) {
+		const { replicators, foods, predators } = this
+		
 		// replicators-replicators
-		for ( let i = 0, n = this.replicators.length; i < n; i++ ) {
-			const replicatorA = this.replicators[ i ]
+		for ( let i = 0, n = replicators.length; i < n; i++ ) {
+			const replicatorA = replicators[ i ]
 			
 			for ( let j = i + 1; j < n; j++ ) {
-				const replicatorB = this.replicators[ j ]
+				const replicatorB = replicators[ j ]
 				
 				replicatorA.collideWith( replicatorB, dt )
 				
@@ -77,22 +79,22 @@ World.prototype = {
 		}
 		
 		// predators-predators
-		for ( let i = 0, n = this.predators.length; i < n; i++ ) {
-			const predatorA = this.predators[ i ]
+		for ( let i = 0, n = predators.length; i < n; i++ ) {
+			const predatorA = predators[ i ]
 			
 			for ( let j = i + 1; j < n; j++ ) {
-				const predatorB = this.predators[ j ]
+				const predatorB = predators[ j ]
 				
 				predatorA.collideWith( predatorB, dt )
 			}
 		}
 		
 		// foods-replicators
-		for ( let foodIndex = 0; foodIndex < this.foods.length; foodIndex++ ) {
-			const food = this.foods[ foodIndex ]
+		for ( let foodIndex = 0; foodIndex < foods.length; foodIndex++ ) {
+			const food = foods[ foodIndex ]
 			const recipients = []
 			
-			for ( let replicator of this.replicators ) {
+			for ( let replicator of replicators ) {
 				const dx = food.position.x - replicator.position.x
 				const dy = food.position.y - replicator.position.y
 				
@@ -119,7 +121,7 @@ World.prototype = {
 				
 				food.chomp()
 				
-				this.foods.splice( foodIndex, 1 )
+				foods.splice( foodIndex, 1 )
 				foodIndex--
 				
 				this.emit( 'food-eaten', food, recipients )
@@ -127,10 +129,10 @@ World.prototype = {
 		}
 		
 		// foods-predators
-		for ( let foodIndex = 0; foodIndex < this.foods.length; foodIndex++ ) {
-			const food = this.foods[ foodIndex ]
+		for ( let foodIndex = 0; foodIndex < foods.length; foodIndex++ ) {
+			const food = foods[ foodIndex ]
 			
-			for ( let predator of this.predators ) {
+			for ( let predator of predators ) {
 				const dx = food.position.x - predator.position.x
 				const dy = food.position.y - predator.position.y
 				
@@ -145,7 +147,7 @@ World.prototype = {
 					// food.spoil()
 					food.spoiled = true
 					
-					this.foods.splice( foodIndex, 1 )
+					foods.splice( foodIndex, 1 )
 					foodIndex--
 					
 					this.emit( 'food-destroyed', food, Vector2.angle( Vector2.subtract( predator.position, food.position, {} ) ) - Math.PI/2 )
@@ -154,10 +156,10 @@ World.prototype = {
 		}
 		
 		// predators-replicators
-		for ( let predator of this.predators ) {
+		for ( let predator of predators ) {
 			let nearestReplicator, shortestDistance = Infinity, shortestOffset
 			
-			for ( let replicator of this.replicators ) {
+			for ( let replicator of replicators ) {
 				const offset = Vector2.subtract( replicator.position, predator.position, {} )
 				
 				const minDistance = Math.pow( predator.radius + replicator.radius, 2 )
@@ -183,15 +185,15 @@ World.prototype = {
 			}
 		}
 		
-		for ( let replicator of this.replicators.slice( 0 ) ) {
+		for ( let replicator of replicators.slice( 0 ) ) {
 			replicator.update( dt, t )
 		}
 		
-		for ( let food of this.foods.slice( 0 ) ) {
+		for ( let food of foods.slice( 0 ) ) {
 			food.update( dt, t )
 		}
 		
-		for ( let predator of this.predators ) {
+		for ( let predator of predators ) {
 			predator.update( dt )
 		}
 	},
