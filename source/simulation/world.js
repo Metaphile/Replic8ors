@@ -10,6 +10,7 @@ export default function World() {
 	self.replicators = []
 	self.foods = []
 	self.predators = []
+	self.springs = []
 	
 	return self
 }
@@ -62,7 +63,7 @@ World.prototype = {
 	},
 	
 	update: function ( dt, t ) {
-		const { replicators, foods, predators } = this
+		const { replicators, foods, predators, springs } = this
 		
 		// replicators-replicators
 		for ( let i = 0, n = replicators.length; i < n; i++ ) {
@@ -182,6 +183,13 @@ World.prototype = {
 			
 			if ( nearestReplicator ) {
 				predator.applyForce( Vector2.setLength( shortestOffset, predator.speed ), dt )
+			}
+		}
+		
+		// springs-physics
+		for ( let spring of springs ) {
+			for ( let physics of [ ...replicators, ...foods, ...predators ] ) {
+				spring.applyForce( physics, dt )
 			}
 		}
 		
