@@ -111,6 +111,24 @@ export default function Visualization( world ) {
 			}
 		} )
 		
+		// TODO smooth transition
+		// TODO move replicator completely into view
+		// TODO zoom more or less according to screen size
+		$canvas.on( 'dblclick', ( event ) => {
+			const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
+			
+			selection = worldView.getPredatorAt( clickPos_world )
+			selection = selection || worldView.getReplicatorAt( clickPos_world )
+			
+			if ( selection ) {
+				cameraOp.smoothZoomTo( 7, clickPos_world )
+				cameraOp.follow( selection )
+				hud.select( selection )
+				
+				event.preventDefault()
+			}
+		} )
+		
 		// TODO -> replicator-removed
 		world.on( 'replicator-died predator-removed', entity => {
 			if ( selection === entity ) {

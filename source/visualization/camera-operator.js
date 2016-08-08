@@ -37,6 +37,10 @@ export default function CameraOperator( camera, canvas ) {
 		Vector2.subtract( offset, Vector2.subtract( oldCenter, newCenter ) )
 	}
 	
+	self.smoothZoomTo = ( zoomLevel, zoomX, zoomY ) => {
+		camera.zoomTo( zoomLevel, zoomX, zoomY )
+	}
+	
 	self.follow = ( target ) => {
 		self.target = target
 		
