@@ -118,9 +118,7 @@ export default function WorldView( world ) {
 		for ( let view of self.foodViews       ) view.update( dt, dt2 )
 	}
 	
-	self.draw = ( camera, mousePos_world, detail ) => {
-		const ctx = camera.ctx
-		
+	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {
 		for ( let view of self.replicatorViews ) {
 			const replicator = view.replicator
 			const offset = Vector2.subtract( mousePos_world, replicator.position, {} )
@@ -136,7 +134,7 @@ export default function WorldView( world ) {
 		for ( let view of self.predatorViews   ) view.draw( ctx )
 		for ( let view of self.foodViews       ) view.draw( ctx )
 		
-		drawForeground( ctx, camera.centerOfView() )
+		drawForeground( ctx, camera.viewCenter( ctx.canvas ) )
 	}
 	
 	const pointInCircle = ( point, center, radius ) => {

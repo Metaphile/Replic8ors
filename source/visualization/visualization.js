@@ -3,27 +3,32 @@ import Camera from '../engine/camera'
 import CameraOperator from './camera-operator'
 import $ from '../../third-party/jquery'
 import Hud from './hud'
+import HudMarker from './hud-marker'
 import Vector2 from '../engine/vector-2'
 
 export default function Visualization( world ) {
 	const self = {}
 	
 	const $container = $( '<div class="visualization-container"/>' )
-	const $canvas = $Canvas()
-	$container.append( $canvas )
 	
-	const hud = Hud()
+	const $canvas = $Canvas()
+	const canvas = $canvas[0]
+	const ctx = canvas.getContext( '2d' )
+	
+	$container.append( $canvas )
 	
 	$container.on( 'appended', () => $canvas.trigger( 'appended' ) )
 	
 	self.$element = $container
 	
-	const camera = Camera( $canvas[0].getContext( '2d' ) )
-	camera.pan( -400, -300 )
+	const camera = Camera()
+	camera.pan( Vector2.invert( camera.viewCenter( canvas ) ) )
 	
-	const cameraOp = CameraOperator( camera )
+	const cameraOp = CameraOperator( camera, canvas )
 	
 	const worldView = WorldView( world )
+	
+	const hud = Hud( camera )
 	
 	// panning
 	{
@@ -99,10 +104,10 @@ export default function Visualization( world ) {
 			
 			if ( selection ) {
 				cameraOp.follow( selection )
-				hud.focusOn( selection )
+				hud.select( selection )
 			} else {
 				cameraOp.unfollow()
-				hud.unfocus()
+				hud.deselect()
 			}
 		} )
 		
@@ -110,9 +115,29 @@ export default function Visualization( world ) {
 		world.on( 'replicator-died predator-removed', entity => {
 			if ( selection === entity ) {
 				cameraOp.unfollow()
-				hud.unfocus()
+				hud.deselect()
 			}
+			
+			hud.untrack( entity )
 		} )
+	}
+	
+	{
+		const trackReplicator = ( replicator ) => {
+			hud.track( replicator, HudMarker( { size: 22 } ) )
+		}
+		
+		for ( let replicator of world.replicators ) trackReplicator( replicator )
+		world.on( 'replicator-added', trackReplicator )
+	}
+	
+	{
+		const trackPredator = ( predator ) => {
+			hud.track( predator, HudMarker( { size: 38 } ) )
+		}
+		
+		for ( let predator of world.predators ) trackPredator( predator )
+		world.on( 'predator-added', trackPredator )
 	}
 	
 	self.update = ( dt, dt2 ) => {
@@ -122,11 +147,14 @@ export default function Visualization( world ) {
 	},
 	
 	self.draw = () => {
-		camera.prepareCanvas()
+		canvas.width = canvas.width
 		
-		const detail = camera.getZoomLevel() / 18
-		worldView.draw( camera, camera.toWorld( mousePos_screen ), detail )
-		hud.draw( camera )
+		camera.applyView( ctx )
+		worldView.draw( ctx, camera, camera.toWorld( mousePos_screen ) )
+		
+		// HUD expects untransformed canvas
+		ctx.setTransform( 1, 0, 0, 1, 0, 0 )
+		hud.draw( ctx )
 	}
 	
 	// fisheye

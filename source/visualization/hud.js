@@ -1,129 +1,114 @@
-const FocusRing = () => {
-	const self = {}
-	
-	self.position = { x: 0, y: 0 }
-	self.radius = 1
-	
-	let apparentRadius = 1
-	let apparentOpacity = 1
-	
-	let angle = 0
-	let bias = 0
-	
-	self.doFocusEffect = ( fromRadius ) => {
-		apparentRadius = fromRadius
-		apparentOpacity = 0
-	}
-	
-	self.moveTo = ( position ) => {
-		Object.assign( self.position, position )
-		angle = 0
-		bias = 0
-	}
-	
-	self.update = ( dt ) => {
-		apparentRadius += ( self.radius - apparentRadius ) * 13 * dt
-		apparentOpacity += ( 1 - apparentOpacity ) * 13 * dt
-		if ( apparentOpacity > 1 ) apparentOpacity = 1
-		
-		angle = ( angle + Math.PI * 1 * dt ) % Math.PI
-		bias = ( 1 + Math.cos( angle ) ) * 0.5
-	}
-	
-	self.draw = ( camera ) => {
-		const ctx = camera.ctx
-		
-		const globalAlpha = ctx.globalAlpha
-		const globalCompositeOperation = ctx.globalCompositeOperation
-		
-		const z = camera.getZoomLevel()
-		const tau = Math.PI * 2
-		
-		ctx.globalAlpha = 0.8 * apparentOpacity
-		// ctx.globalCompositeOperation = 'lighten'
-		
-		const p = self.position
-		const r1 = apparentRadius + 18
-		const r2 = r1 + 18 / z
-		
-		const color = interpolateRgba( [ 255, 128, 0, 1 ], [ 255, 69, 0, 1 ], 1 - bias )
-		
-		ctx.beginPath()
-			ctx.arc( p.x, p.y, r1, 0, tau )
-			ctx.arc( p.x, p.y, r2, 0, tau, true )
-			
-			ctx.fillStyle = color
-			ctx.fill()
-		
-		ctx.beginPath()
-			for ( let angle = 0; angle < tau; angle += tau / 4 ) {
-				ctx.moveTo( p.x + Math.cos( angle ) * ( r2 + 5/z ), p.y + Math.sin( angle ) * ( r2 + 5/z ) )
-				ctx.lineTo( p.x + Math.cos( angle ) * r2 * 20,  p.y + Math.sin( angle ) * r2 * 20 )
-			}
-			
-			ctx.strokeStyle = color
-			ctx.lineWidth = 2 / z
-			ctx.stroke()
-		
-		ctx.globalAlpha = globalAlpha
-		ctx.globalCompositeOperation = globalCompositeOperation
-	}
-	
-	return self
-}
+import FocusRing from './focus-ring'
+import Vector2 from '../engine/vector-2'
 
-const interpolate = ( startValue, endValue, bias ) => {
-	return startValue + ( endValue - startValue ) * bias
-}
-
-const interpolateRgba = ( rgba1, rgba2, bias ) => {
-	const rgba3 = []
-	
-	for ( let i = 0; i < rgba1.length; i++ ) {
-		rgba3[i] = Math.round( interpolate( rgba1[i], rgba2[i], bias ) )
-	}
-	
-	const [ r, g, b, a ] = rgba3
-	return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')'
-}
-
-export default function Hud() {
-	const self = {}
-	
-	let focusTarget
+export default function Hud( camera ) {
+	const trackablesMarkers = []
+	let selected
 	let focusRing = FocusRing()
 	
-	self.focusOn = ( target ) => {
-		if ( !focusTarget ) {
-			focusRing.moveTo( target.position )
-			focusRing.doFocusEffect( target.radius * 10 )
-		}
+	return {
+		track( trackable, marker ) {
+			trackablesMarkers.push( { trackable, marker } )
+		},
 		
-		focusRing.radius = target.radius
-		focusTarget = target
-	}
-	
-	self.unfocus = () => {
-		if ( focusTarget ) {
-			// TODO animation
-			focusTarget = null
-		}
-	}
-	
-	self.update = ( dt ) => {
-		if ( focusTarget ) {
-			const p1 = focusTarget.position
-			const p2 = focusRing.position
-			p2.x += ( p1.x - p2.x ) * 12 * dt
-			p2.y += ( p1.y - p2.y ) * 12 * dt
-		}
+		untrack( trackable ) {
+			const i = trackablesMarkers.findIndex( pair => pair.trackable === trackable )
+			if ( i > -1 ) trackablesMarkers.splice( i, 1 )
+		},
 		
-		focusRing.update( dt )
+		select( trackable ) {
+			if ( !selected ) {
+				focusRing.moveTo( camera.toScreen( trackable.position ) )
+				focusRing.doFocusEffect( trackable.radius * 10 )
+			}
+			
+			focusRing.radius = trackable.radius
+			selected = trackable
+		},
+		
+		deselect() {
+			if ( selected ) {
+				// TODO animation
+				selected = null
+			}
+		},
+		
+		update( dt ) {
+			if ( selected ) {
+				const p1 = camera.toScreen( selected.position )
+				const p2 = focusRing.position
+				
+				p2.x += ( p1.x - p2.x ) * 14 * dt
+				p2.y += ( p1.y - p2.y ) * 14 * dt
+			}
+			
+			focusRing.update( dt )
+		},
+		
+		draw( ctx ) {
+			const viewBounds_world = camera.viewBounds( ctx.canvas )
+			const viewCenter_world = camera.viewCenter( ctx.canvas )
+			
+			const padding = 24
+			const zoom = camera.zoomLevel()
+			
+			for ( let { trackable, marker } of trackablesMarkers ) {
+				const { position, radius } = trackable
+				const trackablePosition_world = position
+				
+				// AABB collision
+				const offscreen =
+					position.x + radius < viewBounds_world.topLeft.x + padding / zoom ||
+					position.y + radius < viewBounds_world.topLeft.y + padding / zoom ||
+					position.x - radius > viewBounds_world.bottomRight.x - padding / zoom ||
+					position.y - radius > viewBounds_world.bottomRight.y - padding / zoom
+				
+				if ( offscreen ) {
+					const viewCenter_screen = camera.toScreen( viewCenter_world )
+					const position_screen = camera.toScreen( position )
+					
+					// from trackable to view center
+					const offset = Vector2.subtract( position_screen, viewCenter_screen, {} )
+					const slope = offset.y / offset.x
+					
+					const markerPosition_screen = Vector2()
+					
+					const rw = ctx.canvas.width / 2 - padding
+					const rh = ctx.canvas.height / 2 - padding
+					
+					// trackable is below
+					if ( offset.y >= 0 ) {
+						markerPosition_screen.y = rh
+						markerPosition_screen.x = rh / slope
+						
+						if ( markerPosition_screen.x > rw ) {
+							markerPosition_screen.x = rw
+							markerPosition_screen.y = slope * rw
+						} else if ( markerPosition_screen.x < -rw ) {
+							markerPosition_screen.x = -rw
+							markerPosition_screen.y = slope * -rw
+						}
+					// trackable is above
+					} else {
+						markerPosition_screen.y = -rh
+						markerPosition_screen.x = -rh / slope
+						
+						if ( markerPosition_screen.x > rw ) {
+							markerPosition_screen.x = rw
+							markerPosition_screen.y = slope * rw
+						} else if ( markerPosition_screen.x < -rw ) {
+							markerPosition_screen.x = -rw
+							markerPosition_screen.y = slope * -rw
+						}
+					}
+					
+					Vector2.add( markerPosition_screen, viewCenter_screen )
+					
+					marker.draw( ctx, markerPosition_screen, Vector2.angle( offset ), trackable === selected )
+				}
+			}
+			
+			if ( selected ) focusRing.draw( ctx, camera )
+		},
 	}
-	
-	self.draw = ( camera ) => {
-		if ( focusTarget ) focusRing.draw( camera )
-	}
-	
-	return self
 }

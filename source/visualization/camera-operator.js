@@ -3,7 +3,7 @@ import Math2 from '../engine/math-2'
 
 const MIN_ZOOM = 0.6, MAX_ZOOM = 18
 
-export default function CameraOperator( camera ) {
+export default function CameraOperator( camera, canvas ) {
 	const self = {}
 	
 	self.camera = camera
@@ -27,20 +27,20 @@ export default function CameraOperator( camera ) {
 	self.smoothZoom = ( zoomDelta, zoomX, zoomY ) => {
 		if ( zoomX instanceof Object ) { zoomY = zoomX.y; zoomX = zoomX.x; }
 		
-		var oldZoom = camera.getZoomLevel()
+		var oldZoom = camera.zoomLevel()
 		// TODO enforce in update()
 		var newZoom = Math2.clamp( oldZoom * ( 1 + zoomDelta ), MIN_ZOOM, MAX_ZOOM )
 		
-		var oldCenter = camera.centerOfView()
+		var oldCenter = camera.viewCenter( canvas )
 		camera.zoomTo( newZoom, zoomX, zoomY )
-		var newCenter = camera.centerOfView()
+		var newCenter = camera.viewCenter( canvas )
 		Vector2.subtract( offset, Vector2.subtract( oldCenter, newCenter ) )
 	}
 	
 	self.follow = ( target ) => {
 		self.target = target
 		
-		const viewCenter = camera.centerOfView()
+		const viewCenter = camera.viewCenter( canvas )
 		offset.x = viewCenter.x - target.position.x
 		offset.y = viewCenter.y - target.position.y
 	}
@@ -48,13 +48,13 @@ export default function CameraOperator( camera ) {
 	self.unfollow = () => {
 		self.target = null
 		
-		const viewCenter = camera.centerOfView()
+		const viewCenter = camera.viewCenter( canvas )
 		offset.x = viewCenter.x
 		offset.y = viewCenter.y
 	}
 	
 	self.update = ( dt ) => {
-		const viewCenter = camera.centerOfView()
+		const viewCenter = camera.viewCenter( canvas)
 		
 		var a = ( bobAngle += 0.21 * dt )
 		var m = 0.06
