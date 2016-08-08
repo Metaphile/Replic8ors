@@ -70,8 +70,9 @@ Object.assign( Vector2, {
 	},
 	
 	angle( v ) {
-		// atan2 returns 0..pi for points above the x-axis; -pi..0 for points below
-		return Math.atan2( v.y, v.x )
+		let a = Math.atan2( v.y, v.x )
+		if ( a < 0 ) a += Math.PI * 2
+		return a
 	},
 	
 	rotate( v, angle, out = v ) {
