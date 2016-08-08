@@ -10,7 +10,7 @@ import Math2 from '../engine/math-2'
 // }
 
 const defaultOpts = {
-	radius: 3.3,
+	radius: 3.4,
 	clinginess: 8,
 }
 
@@ -37,7 +37,7 @@ function drawGauge( ctx, neuron, ppx, ppy, r ) {
 			ctx.arc( ppx, ppy, r1, a2, a3 )
 			ctx.arc( ppx, ppy, r2, a3, a2, true ) // opposite direction
 			
-			ctx.fillStyle = 'rgba( 190,   0,   0, 0.63 )'
+			ctx.fillStyle = 'rgba( 190,   0,   0, 0.666 )'
 			ctx.globalCompositeOperation = 'darken'
 			ctx.fill()
 	}
@@ -81,7 +81,7 @@ NeuronView.prototype = {
 		ctx.beginPath()
 			ctx.arc( this.position.x, this.position.y, this.radius, 0, Math.PI * 2 )
 			ctx.globalCompositeOperation = 'screen'
-			ctx.fillStyle = 'rgba(  90, 195, 255, 0.18 )'
+			ctx.fillStyle = 'rgba(  90, 195, 255, 0.16 )'
 			ctx.fill()
 		
 		// icon

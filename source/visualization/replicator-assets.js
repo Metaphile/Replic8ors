@@ -11,8 +11,8 @@ export const backsideGradient = ( () => {
 	const y = Math.sin( angle ) * offset
 	
 	const gradient = ctx.createRadialGradient( x, y, 0, 0, 0, 1 )
-	gradient.addColorStop( 0.2, 'rgba(  10,  10,  30, 0.3 )' )
-	gradient.addColorStop( 1.0, 'rgba(  10,  10,  30, 0.9 )' )
+	gradient.addColorStop( 0.2, 'rgba(  10,  10,  30, 0.35 )' )
+	gradient.addColorStop( 1.0, 'rgba(  10,  10,  30, 0.90 )' )
 	
 	return gradient
 } )()

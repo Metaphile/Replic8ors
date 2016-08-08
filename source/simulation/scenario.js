@@ -76,7 +76,7 @@ export default function Scenario( world, opts = {} ) {
 		
 		world.predators.slice().forEach( predator => world.removePredator( predator ) )
 		
-		world.springs[0] = Spring( { x: 0, y: 0 }, { radius: 256, flow: 14 } )
+		world.springs[0] = Spring( { x: 0, y: 0 } )
 		
 		timer.cancelAlarms()
 		

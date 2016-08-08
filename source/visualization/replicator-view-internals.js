@@ -47,7 +47,7 @@ export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, p
 	pointA2.x += Math.cos( angleA_B - offsetA ) * radiusA
 	pointA2.y += Math.sin( angleA_B - offsetA ) * radiusA
 	
-	ctx.fillStyle = weight < 0 ? 'rgba( 190,   0,   0, 0.63 )' : 'rgba(  90, 195, 255, 1.0 )'
+	ctx.fillStyle = weight < 0 ? 'rgba( 190,   0,   0, 0.666 )' : 'rgba(  90, 195, 255, 1.0 )'
 	
 	const gco = ctx.globalCompositeOperation
 	if ( weight < 0 ) ctx.globalCompositeOperation = 'darken'

@@ -83,7 +83,7 @@ export default function Visualization( world ) {
 	// TODO scrolling quickly flips y-axis??
 	$canvas.on( 'mousewheel', ( event ) => {
 		event.preventDefault()
-		cameraOp.smoothZoom( event.originalEvent.wheelDelta / 1600, camera.toWorld( event.offsetX, event.offsetY ) )
+		cameraOp.smoothZoom( event.originalEvent.wheelDelta / 1000, camera.toWorld( event.offsetX, event.offsetY ) )
 	} )
 	
 	// selection

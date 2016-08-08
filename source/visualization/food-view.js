@@ -18,7 +18,8 @@ FoodView.prototype = {
 				resolve()
 			}
 			
-			const opts = { count, direction, maxSpeed, onDone }
+			const maxRadius = self.food.radius
+			const opts = { count, direction, maxSpeed, onDone, maxRadius }
 			const effect = assets.CrumbsEffect( this.food.position, opts )
 			self.effects.crumbs = effect
 		} )

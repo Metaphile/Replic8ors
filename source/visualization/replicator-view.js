@@ -225,7 +225,7 @@ ReplicatorView.prototype = {
 		for ( let view of this.neuronViews ) {
 			const offset = Vector2.subtract( mousePos_world, view.position, {} )
 			const distance = Vector2.getLength( offset )
-			const collisionRadius = 16
+			const collisionRadius = 19
 			
 			if ( distance < collisionRadius ) {
 				focusTargets.push( view )

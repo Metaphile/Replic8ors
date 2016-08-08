@@ -42,10 +42,10 @@ CrumbsEffect.prototype = {
 	color: 'white',
 	count: 3,
 	direction: 0,
-	drag: 10,
+	drag: 11,
 	duration: 1,
 	maxRadius: 1.9,
-	maxSpeed: 70,
+	maxSpeed: 80,
 	onDone: null,
 	spread: Math.PI * 2,
 	
