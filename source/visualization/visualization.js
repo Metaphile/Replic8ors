@@ -82,6 +82,11 @@ export default function Visualization( world ) {
 				event.stopImmediatePropagation()
 			}
 		} )
+		
+		$canvas.on( 'mouseout', () => {
+			isDragging = false
+			dragLast_screen = null
+		} )
 	}
 	
 	// zooming
