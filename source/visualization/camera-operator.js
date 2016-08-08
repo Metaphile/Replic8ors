@@ -60,10 +60,11 @@ export default function CameraOperator( camera, canvas ) {
 	self.update = ( dt ) => {
 		const viewCenter = camera.viewCenter( canvas)
 		
-		var a = ( bobAngle += 0.21 * dt )
+		bobAngle = ( bobAngle + 0.21 * dt ) % ( Math.PI * 2 )
+		
 		var m = 0.06
-		offset.x += Math.cos( a *  7 ) * m
-		offset.y += Math.sin( a * 13 ) * m
+		offset.x += Math.cos( bobAngle *  7 ) * m
+		offset.y += Math.sin( bobAngle * 13 ) * m
 		
 		// move camera toward target + offset
 		if ( true ) {
