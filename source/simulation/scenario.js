@@ -88,12 +88,12 @@ export default function Scenario( world, opts = {} ) {
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
 			// for now, bloom at center of spring
-			self.doBloom( { x: 0, y: 0 }, 190, 7 )
+			self.doBloom( { x: 0, y: 0 }, 96, 1 )
 			
-			timer.setAlarm( 25, alwaysBeBlooming )
+			timer.setAlarm( Math.random() * 9, alwaysBeBlooming )
 		}
 		
-		timer.setAlarm( 5, alwaysBeBlooming )
+		timer.setAlarm( 10, alwaysBeBlooming )
 		
 		const addPredator = () => {
 			const predator = Predator()
