@@ -4,6 +4,7 @@
 	width: 100%;
 	height: 100%;
 	
+	// ::before/::after pseudo-elements don't work with "replaced" elements like such as canvas :(
 	.world {
 		background: radial-gradient( circle at 75% -25%,
 			rgb( 245, 245, 245 )  10%, // white
