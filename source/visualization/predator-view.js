@@ -50,6 +50,8 @@ PredatorView.prototype = {
 	},
 	
 	draw( ctx ) {
+		const globalCompositeOperation = ctx.globalCompositeOperation
+		
 		const predator = this.predator
 		const p0 = predator.position
 		const r0 = predator.radius - 17/2
@@ -83,15 +85,15 @@ PredatorView.prototype = {
 				ctx.scale( 1, ds )
 				
 				// blood of enemies
-				const old = ctx.globalCompositeOperation
 				ctx.globalCompositeOperation = 'darken'
 				ctx.fillStyle = assets.bloodGradient
 				ctx.fill()
-				ctx.globalCompositeOperation = old
 				
 				ctx.scale( 1, 1 / ds )
 				ctx.rotate( -slosh )
 				ctx.translate( -dx, -dy )
+			
+			ctx.globalCompositeOperation = globalCompositeOperation
 		}
 		
 		{
@@ -138,5 +140,7 @@ PredatorView.prototype = {
 		}
 		
 		drawShadow( ctx, p0, r0 + Number.MIN_VALUE, Math.PI * 3/4 )
+		
+		ctx.globalCompositeOperation = globalCompositeOperation
 	},
 }
