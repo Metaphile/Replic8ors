@@ -24,7 +24,7 @@ export default {
 		
 		gradient.addColorStop( 0.500, 'rgba( 160,   0,  20, 0.00 )' ) // transparent red
 		gradient.addColorStop( 0.500, 'rgba( 160,   0,  20, 0.60 )' ) // red
-		gradient.addColorStop( 0.504, 'rgba(   0,   0,   0, 0.85 )' ) // black
+		gradient.addColorStop( 0.504, 'rgba(   0,   0,   0, 1.00 )' ) // black
 		gradient.addColorStop( 1.000, 'rgba( 160,   0,  20, 1.00 )' ) // red
 		
 		return gradient

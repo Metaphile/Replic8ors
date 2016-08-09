@@ -69,10 +69,10 @@ PredatorView.prototype = {
 				ctx.scale( 1 / r0, 1 / r0 )
 				ctx.translate( -p0.x, -p0.y )
 				
-				ctx.globalCompositeOperation = 'multiply'
+				ctx.globalCompositeOperation = 'darken'
 				ctx.drawImage( neuronIcons.predator, p0.x - r0/1.6 + r0/16, p0.y - r0/1.6 + r0/16, r0/1.6 * 2, r0/1.6 * 2 )
 				
-				const energy = 0.85
+				const energy = 1.0
 				
 				const dx = p0.x
 				const dy = p0.y + r0 - ( energy * r0 * 2 ) + Math.cos( slosh * 26 ) * 0.1
@@ -85,7 +85,7 @@ PredatorView.prototype = {
 				ctx.scale( 1, ds )
 				
 				// blood of enemies
-				ctx.globalCompositeOperation = 'darken'
+				ctx.globalCompositeOperation = 'hard-light'
 				ctx.fillStyle = assets.bloodGradient
 				ctx.fill()
 				

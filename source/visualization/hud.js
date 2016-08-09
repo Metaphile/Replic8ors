@@ -38,8 +38,8 @@ export default function Hud( camera ) {
 				const p1 = camera.toScreen( selected.position )
 				const p2 = focusRing.position
 				
-				p2.x += ( p1.x - p2.x ) * 14 * dt
-				p2.y += ( p1.y - p2.y ) * 14 * dt
+				p2.x += ( p1.x - p2.x ) * 17 * dt
+				p2.y += ( p1.y - p2.y ) * 17 * dt
 			}
 			
 			focusRing.update( dt )

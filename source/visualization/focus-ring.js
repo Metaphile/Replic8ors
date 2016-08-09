@@ -21,8 +21,8 @@ export default function FocusRing() {
 		},
 		
 		update( dt ) {
-			apparentRadius += ( this.radius - apparentRadius ) * 13 * dt
-			apparentOpacity += ( 1 - apparentOpacity ) * 13 * dt
+			apparentRadius += ( this.radius - apparentRadius ) * 17 * dt
+			apparentOpacity += ( 1 - apparentOpacity ) * 17 * dt
 			if ( apparentOpacity > 1 ) apparentOpacity = 1
 			
 			angle = ( angle + Math.PI * 0.6 * dt ) % Math.PI
@@ -43,7 +43,7 @@ export default function FocusRing() {
 			const r1 = ( apparentRadius + 18 ) * camera.zoomLevel()
 			const r2 = r1 + 22
 			
-			const color = interpolateRgba( [ 255, 160, 0, 0.85 ], [ 255, 127, 0, 0.85 ], 1 - bias )
+			const color = interpolateRgba( [ 255, 127, 0, 0.85 ], [ 255, 69, 0, 0.85 ], 1 - bias )
 			
 			ctx.beginPath()
 				ctx.arc( p.x, p.y, r1, 0, tau )
