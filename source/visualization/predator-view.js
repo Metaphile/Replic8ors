@@ -70,7 +70,7 @@ PredatorView.prototype = {
 				ctx.translate( -p0.x, -p0.y )
 				
 				ctx.globalCompositeOperation = 'multiply'
-				ctx.drawImage( neuronIcons.predator, p0.x - r0/1.5, p0.y - r0/1.5, r0/1.5 * 2, r0/1.5 * 2 )
+				ctx.drawImage( neuronIcons.predator, p0.x - r0/1.6 + r0/16, p0.y - r0/1.6 + r0/16, r0/1.6 * 2, r0/1.6 * 2 )
 				
 				const energy = 0.85
 				
