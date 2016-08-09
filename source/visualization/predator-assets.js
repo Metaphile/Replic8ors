@@ -39,4 +39,13 @@ export default {
 		
 		return image
 	} )(),
+	
+	shadowGradient: ( () => {
+		const gradient = ctx.createRadialGradient( 0, 0, 0, 0, 0, 1 )
+		
+		gradient.addColorStop( 0.0, 'rgba( 14,  14,  61, 0.15 )' )
+		gradient.addColorStop( 1.0, 'rgba( 14,  14,  61, 0.0 )' )
+		
+		return gradient
+	} )(),
 }
