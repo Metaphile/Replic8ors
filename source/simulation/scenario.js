@@ -90,7 +90,7 @@ export default function Scenario( world, opts = {} ) {
 			// for now, bloom at center of spring
 			self.doBloom( { x: 0, y: 0 }, 96, 1 )
 			
-			timer.setAlarm( Math.random() * 9, alwaysBeBlooming )
+			timer.setAlarm( Math.random() * 8, alwaysBeBlooming )
 		}
 		
 		timer.setAlarm( 10, alwaysBeBlooming )

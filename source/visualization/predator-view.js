@@ -45,7 +45,7 @@ export default function PredatorView( predator ) {
 
 PredatorView.prototype = {
 	update( dt, dt2 ) {
-		this.angle = ( this.angle + ( 4 * dt2 ) ) % ( Math.PI * 2 )
+		this.angle = ( this.angle + ( 6.1 * dt2 ) ) % ( Math.PI * 2 )
 		this.slosh = ( this.slosh + ( 0.51 * dt2 ) ) % ( Math.PI * 2 )
 	},
 	

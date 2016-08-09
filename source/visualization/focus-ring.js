@@ -43,7 +43,7 @@ export default function FocusRing() {
 			const r1 = ( apparentRadius + 18 ) * camera.zoomLevel()
 			const r2 = r1 + 22
 			
-			const color = interpolateRgba( [ 255, 0, 0, 0.85 ], [ 255, 127, 0, 0.85 ], 1 - bias )
+			const color = interpolateRgba( [ 255, 160, 0, 0.85 ], [ 255, 127, 0, 0.85 ], 1 - bias )
 			
 			ctx.beginPath()
 				ctx.arc( p.x, p.y, r1, 0, tau )
