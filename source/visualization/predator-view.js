@@ -1,4 +1,5 @@
 import assets from './predator-assets'
+import { icons as neuronIcons } from './neuron-assets'
 
 function drawShadow( ctx, p0, r0, angle = Math.PI * 3/4 ) {
 	const start = angle - Math.PI/2
@@ -65,6 +66,9 @@ PredatorView.prototype = {
 				ctx.fill()
 				ctx.scale( 1 / r0, 1 / r0 )
 				ctx.translate( -p0.x, -p0.y )
+				
+				ctx.globalCompositeOperation = 'multiply'
+				ctx.drawImage( neuronIcons.predator, p0.x - r0/1.5, p0.y - r0/1.5, r0/1.5 * 2, r0/1.5 * 2 )
 				
 				const energy = 0.85
 				
