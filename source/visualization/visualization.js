@@ -165,7 +165,7 @@ export default function Visualization( world ) {
 	
 	self.update = ( dt, dt2 ) => {
 		cameraOp.update( dt )
-		worldView.update( dt, dt2 )
+		worldView.update( dt, dt2, mousePos_world )
 		hud.update( dt )
 	},
 	
@@ -173,7 +173,7 @@ export default function Visualization( world ) {
 		canvas.width = canvas.width
 		
 		camera.applyView( ctx )
-		worldView.draw( ctx, camera, camera.toWorld( mousePos_screen ) )
+		worldView.draw( ctx, camera, mousePos_world )
 		
 		// HUD expects untransformed canvas
 		ctx.setTransform( 1, 0, 0, 1, 0, 0 )
@@ -182,16 +182,21 @@ export default function Visualization( world ) {
 	
 	// fisheye
 	
-	const mousePos_screen = { x: Infinity, y: Infinity }
+	const mousePos_screen = { x: 999999, y: 999999 }
+	let mousePos_world = camera.toWorld( mousePos_screen )
 	
 	$canvas.on( 'mousemove', event => {
 		mousePos_screen.x = event.offsetX
 		mousePos_screen.y = event.offsetY
+		
+		mousePos_world = camera.toWorld( mousePos_screen )
 	} )
 	
 	$canvas.on( 'mouseout', () => {
-		mousePos_screen.x = Infinity
-		mousePos_screen.y = Infinity
+		mousePos_screen.x = 999999
+		mousePos_screen.y = 999999
+		
+		mousePos_world = camera.toWorld( mousePos_screen )
 	} )
 	
 	return self
