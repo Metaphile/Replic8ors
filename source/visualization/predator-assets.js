@@ -48,4 +48,13 @@ export default {
 		
 		return gradient
 	} )(),
+	
+	lightGradient: ( () => {
+		const gradient = ctx.createRadialGradient( 0, 0, 0, 0, 0, 1 )
+		
+		gradient.addColorStop( 0.0, 'rgba( 255, 255, 255, 0.15 )' )
+		gradient.addColorStop( 1.0, 'rgba( 255, 255, 255, 0.0 )' )
+		
+		return gradient
+	} )(),
 }

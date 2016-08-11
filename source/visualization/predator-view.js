@@ -1,3 +1,4 @@
+// import Vector2 from '../engine/vector-2'
 import assets from './predator-assets'
 import { icons as neuronIcons } from './neuron-assets'
 
@@ -31,6 +32,42 @@ function drawShadow( ctx, p0, r0, angle = Math.PI * 3/4 ) {
 		
 		ctx.scale( 1 / r0, 1 / r0 )
 		ctx.translate( -p0.x, -p0.y )
+}
+
+function drawLight( ctx, p0, r0, angle = Math.PI * 3/4 ) {
+	const globalCompositeOperation = ctx.globalCompositeOperation
+	const start = angle - Math.PI/2
+	const end = start + Math.PI
+	
+	const length = 7
+	
+	const tip1 = { x: 0, y: 0 }
+	tip1.x = Math.cos( start + Math.PI/2 + 0.23 ) * length
+	tip1.y = Math.sin( start + Math.PI/2 + 0.23 ) * length
+	
+	const tip2 = { x: 0, y: 0 }
+	tip2.x = Math.cos( start + Math.PI/2 - 0.23 ) * length
+	tip2.y = Math.sin( start + Math.PI/2 - 0.23 ) * length
+	
+	ctx.beginPath()
+		ctx.translate( p0.x, p0.y )
+		ctx.scale( r0, r0 )
+		
+		ctx.arc( 0, 0, 1, start, end )
+		ctx.lineTo( tip1.x, tip1.y )
+		ctx.lineTo( tip2.x, tip2.y )
+		ctx.closePath()
+		
+		ctx.scale( length, length )
+		ctx.fillStyle = assets.lightGradient
+		ctx.globalCompositeOperation = 'screen'
+		ctx.fill()
+		ctx.scale( 1/length, 1/length )
+		
+		ctx.scale( 1 / r0, 1 / r0 )
+		ctx.translate( -p0.x, -p0.y )
+	
+	ctx.globalCompositeOperation = globalCompositeOperation
 }
 
 export default function PredatorView( predator ) {
@@ -140,6 +177,8 @@ PredatorView.prototype = {
 		}
 		
 		drawShadow( ctx, p0, r0 + Number.MIN_VALUE, Math.PI * 3/4 )
+		// not in love with this...
+		// drawLight( ctx, p0, r0 + Number.MIN_VALUE, Vector2.angle( this.predator.velocity ) )
 		
 		ctx.globalCompositeOperation = globalCompositeOperation
 	},
