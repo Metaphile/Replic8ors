@@ -219,7 +219,7 @@ ReplicatorView.prototype = {
 	},
 	
 	drawWithFisheye: function ( ctx, mousePos_world, detail ) {
-		const focusTargets = []
+		const hoverTargets = []
 		
 		for ( let view of this.neuronViews ) {
 			const offset = Vector2.subtract( mousePos_world, view.position, {} )
@@ -227,7 +227,7 @@ ReplicatorView.prototype = {
 			const collisionRadius = 19
 			
 			if ( distance < collisionRadius ) {
-				focusTargets.push( view )
+				hoverTargets.push( view )
 				
 				view.originalPosition = Vector2.clone( view.position )
 				Vector2.subtract( view.position, Vector2.scale( offset, distort( 1 - distance / collisionRadius ), {} ) )
@@ -239,9 +239,9 @@ ReplicatorView.prototype = {
 		
 		this.draw( ctx, detail )
 		
-		for ( let focusTarget of focusTargets ) {
-			Vector2.set( focusTarget.position, focusTarget.originalPosition )
-			focusTarget.radius = focusTarget.originalRadius
+		for ( let hoverTarget of hoverTargets ) {
+			Vector2.set( hoverTarget.position, hoverTarget.originalPosition )
+			hoverTarget.radius = hoverTarget.originalRadius
 		}
 	},
 	
