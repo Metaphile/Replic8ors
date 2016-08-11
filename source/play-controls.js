@@ -13,21 +13,18 @@ export default function PlayControls( gameLoop ) {
 	const $playPause =
 		$( '<button name="play-pause">Play / Pause</button>' )
 	
-	const $step =
-		$( '<button name="step">Step</button>' )
-	
 	// TODO fast-forward
 	
 	const $sloMo =
-		$( '<button name="slo-mo">0.25x</button>' )
+		$( '<button name="slo-mo">Slow</button>' )
 	
 	$sloMo.click( () => {
-		gameLoop.timescale = 0.25
+		gameLoop.timescale = 0.2
 		gameLoop.paused = false
 	} )
 	
 	const $normalSpeed =
-		$( '<button name="normal-speed">1×</button>' )
+		$( '<button name="normal-speed">Real time</button>' )
 	
 	$normalSpeed.click( () => {
 		gameLoop.timescale = 1
@@ -35,7 +32,7 @@ export default function PlayControls( gameLoop ) {
 	} )
 	
 	const $highSpeed =
-		$( '<button name="high-speed">10×</button>' )
+		$( '<button name="high-speed">Fast</button>' )
 	
 	$highSpeed.click( () => {
 		gameLoop.timescale = 10
@@ -45,6 +42,9 @@ export default function PlayControls( gameLoop ) {
 	$playPause.click( () => {
 		gameLoop.paused = !gameLoop.paused
 	} )
+	
+	const $step =
+		$( '<button name="step">Step</button>' )
 	
 	$step.click( () => {
 		gameLoop.paused = true
@@ -67,10 +67,10 @@ export default function PlayControls( gameLoop ) {
 	} )
 	
 	$form.append( $playPause )
-	$form.append( $step )
 	$form.append( $sloMo )
 	$form.append( $normalSpeed )
 	$form.append( $highSpeed )
+	$form.append( $step )
 	
 	return $form[ 0 ]
 }
