@@ -15,6 +15,8 @@ export default function WorldView( world ) {
 	self.predatorViews = []
 	self.foodViews = []
 	
+	const foreground = assets.Foreground()
+	
 	// replicators
 	
 	world.on( 'replicator-replicated', ( parent, child ) => {
@@ -134,7 +136,7 @@ export default function WorldView( world ) {
 		for ( let view of self.predatorViews   ) view.draw( ctx )
 		for ( let view of self.foodViews       ) view.draw( ctx )
 		
-		drawForeground( ctx, camera.viewCenter( ctx.canvas ) )
+		foreground.draw( ctx, camera.viewCenter( ctx.canvas ) )
 	}
 	
 	const pointInCircle = ( point, center, radius ) => {
@@ -153,10 +155,6 @@ export default function WorldView( world ) {
 		return world.predators.slice().reverse().find( predator => {
 			return pointInCircle( point_world, predator.position, predator.radius )
 		} )
-	}
-	
-	const drawForeground = ( ctx, cameraOffset ) => {
-		// ...
 	}
 	
 	return self
