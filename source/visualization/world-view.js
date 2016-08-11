@@ -17,9 +17,6 @@ export default function WorldView( world ) {
 	
 	const foreground = assets.Foreground()
 	
-	// topmost replicator view under pointer
-	let hoverTarget = null
-	
 	// replicators
 	
 	world.on( 'replicator-replicated', ( parent, child ) => {
@@ -117,33 +114,19 @@ export default function WorldView( world ) {
 		} )
 	} )
 	
-	self.update = ( dt, dt2, mousePos_world ) => {
-		hoverTarget = null
-		
-		// test for hover targets from top to bottom; topmost target gets precedence
-		for ( let i = self.replicatorViews.length - 1; i >= 0; i-- ) {
-			const view = self.replicatorViews[i]
-			
-			if ( !hoverTarget ) {
-				const replicator = view.replicator
-				const offset = Vector2.subtract( mousePos_world, replicator.position, {} )
-				const distance = Vector2.getLength( offset )
-				
-				if ( distance < replicator.radius ) {
-					hoverTarget = view
-				}
-			}
-			
-			view.update( dt, dt2 )
-		}
-		
+	self.update = ( dt, dt2 ) => {
+		for ( let view of self.replicatorViews ) view.update( dt, dt2 )
 		for ( let view of self.predatorViews   ) view.update( dt, dt2 )
 		for ( let view of self.foodViews       ) view.update( dt, dt2 )
 	}
 	
 	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {
 		for ( let view of self.replicatorViews ) {
-			if ( view === hoverTarget ) {
+			const replicator = view.replicator
+			const offset = Vector2.subtract( mousePos_world, replicator.position, {} )
+			const distance = Vector2.getLength( offset )
+			
+			if ( distance < replicator.radius ) {
 				view.drawWithFisheye( ctx, mousePos_world, detail )
 			} else {
 				view.draw( ctx, detail )
