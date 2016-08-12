@@ -237,6 +237,8 @@ ReplicatorView.prototype = {
 	},
 	
 	drawWithFisheye: function ( ctx, mousePos_world, detail ) {
+		// TODO fade life juice?
+		
 		const hoverTargets = []
 		
 		for ( let view of this.neuronViews ) {
@@ -358,6 +360,7 @@ ReplicatorView.prototype = {
 				const neuron = receptor.neurons.food
 				const neuronView = this.neuronViews[ neuron.index ]
 				const weight = neuron.weights[ neuron.index ]
+				// TODO this is very misleading
 				const progress = neuron.sensoryPotential / weight % 1
 				
 				drawConnection( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )

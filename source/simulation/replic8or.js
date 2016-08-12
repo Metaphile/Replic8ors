@@ -201,6 +201,7 @@ Replic8or.prototype = {
 			child.brain.neurons[ neuronIndex ].potentialDecayRate = parentNeuron.potentialDecayRate + ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -1.0, 1.0 ), 3 ) : 0 )
 		} )
 		
+		// TODO u wot m8?
 		const neuronsPerSegment = 4
 		Replic8or.syncSymmetricWeights( child.brain.neurons, parent.numBodySegments, neuronsPerSegment )
 		

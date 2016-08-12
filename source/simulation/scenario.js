@@ -117,8 +117,7 @@ export default function Scenario( world, opts = {} ) {
 		if ( world.replicators.length === 0 ) self.reset()
 	} )
 	
-	// TODO predators...
-	
+	// TODO will we be needing t for anything?
 	self.update = function ( dt, t ) {
 		timer.update( dt )
 		world.update( dt, t )

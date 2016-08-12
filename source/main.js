@@ -17,8 +17,9 @@ import Visualization from './visualization/visualization'
 import GameLoop from './engine/game-loop'
 import PlayControls from './play-controls'
 
-// TODO precision -> epsilon?
 // TODO assign defaultOpts to prototypes
+
+// TODO dt, dt2 -> dt_real, dt_sim
 
 // TODO visualization depends on world, scenario
 // subscribes to scenario "fail" event
