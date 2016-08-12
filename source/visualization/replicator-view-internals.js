@@ -2,10 +2,10 @@ import Vector2 from '../engine/vector-2'
 
 export function drawConnections( ctx, neuronViews, detail = 1 ) {
 	for ( let i = 0, n = neuronViews.length; i < n; i++ ) {
-		const neuronViewA = neuronViews[i]
+		const neuronViewI = neuronViews[i]
 		
 		for ( let j = i + 1; j < n; j++ ) {
-			drawConnectionPair( ctx, neuronViewA, neuronViews[j], detail )
+			drawConnectionPair( ctx, neuronViewI, neuronViews[j], detail )
 		}
 	}
 	
