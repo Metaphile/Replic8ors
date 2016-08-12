@@ -234,6 +234,10 @@ ReplicatorView.prototype = {
 				
 				view.originalRadius = view.radius
 				view.radius += view.radius * distort( 1 - distance / collisionRadius )
+				
+				view.connectionOpacity = 0.07 + ( 1 - 0.07 ) * distort( 1 - distance / collisionRadius )
+			} else {
+				view.connectionOpacity = 0.07
 			}
 		}
 		
@@ -242,6 +246,10 @@ ReplicatorView.prototype = {
 		for ( let hoverTarget of hoverTargets ) {
 			Vector2.set( hoverTarget.position, hoverTarget.originalPosition )
 			hoverTarget.radius = hoverTarget.originalRadius
+		}
+		
+		for ( let view of this.neuronViews ) {
+			view.connectionOpacity = 0.07
 		}
 	},
 	
@@ -317,7 +325,7 @@ ReplicatorView.prototype = {
 					y: p0.y + Math.sin( a1 ) * r1,
 				}
 				
-				drawConnection( ctx, neuronView.position, neuronView.radius, flipperPosition, 3, 1, 1 - flipper.neuron.potential )
+				drawConnection( ctx, neuronView.position, neuronView.radius, flipperPosition, 3, 1, 1 - flipper.neuron.potential, neuronView.connectionOpacity )
 			}
 		}
 		
@@ -334,7 +342,7 @@ ReplicatorView.prototype = {
 				const weight = neuron.weights[ neuron.index ]
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				drawConnection( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress )
+				drawConnection( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
 			}
 			
 			// other replicators
@@ -344,7 +352,7 @@ ReplicatorView.prototype = {
 				const weight = neuron.weights[ neuron.index ]
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				drawConnection( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress )
+				drawConnection( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
 			}
 			
 			// predators
@@ -354,7 +362,7 @@ ReplicatorView.prototype = {
 				const weight = neuron.weights[ neuron.index ]
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				drawConnection( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress )
+				drawConnection( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
 			}
 		}
 		
@@ -365,7 +373,7 @@ ReplicatorView.prototype = {
 			const weight = neuron.weights[ neuron.index ]
 			const progress = neuron.sensoryPotential / weight % 1
 			
-			drawConnection( ctx, p0, 0, neuronView.position, neuronView.radius, weight, progress )
+			drawConnection( ctx, p0, 0, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
 		}
 		
 		// neurons

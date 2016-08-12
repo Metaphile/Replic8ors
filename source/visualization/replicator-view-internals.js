@@ -12,8 +12,20 @@ export function drawConnections( ctx, neuronViews, detail = 1 ) {
 	ctx.globalAlpha = 1
 }
 
+function drawConnectionPair( ctx, neuronViewA, neuronViewB, detail = 1 ) {
+	if ( neuronViewA.neuron.firing ) {
+		const weight = neuronViewB.neuron.weights[ neuronViewA.neuron.index ]
+		drawConnection( ctx, neuronViewA.position, neuronViewA.radius, neuronViewB.position, neuronViewB.radius, weight, 1 - neuronViewA.neuron.potential, Math.max( neuronViewA.connectionOpacity, neuronViewB.connectionOpacity ) )
+	}
+	
+	if ( neuronViewB.neuron.firing ) {
+		const weight = neuronViewA.neuron.weights[ neuronViewB.neuron.index ]
+		drawConnection( ctx, neuronViewB.position, neuronViewB.radius, neuronViewA.position, neuronViewA.radius, weight, 1 - neuronViewB.neuron.potential, Math.max( neuronViewA.connectionOpacity, neuronViewB.connectionOpacity ) )
+	}
+}
+
 // TODO when detail is low, don't use alpha
-export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, progress ) {
+export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, progress, baseOpacity ) {
 	if ( Math.abs( weight ) < 0.001 ) return
 	
 	const vectorA_B = Vector2.subtract( pointB, pointA, {} )
@@ -60,21 +72,9 @@ export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, p
 		ctx.lineTo( pointA2.x, pointA2.y )
 		
 		const ga = ctx.globalAlpha
-		ctx.globalAlpha = Math.pow( 1 - progress, 3 )
+		ctx.globalAlpha = baseOpacity * Math.pow( 1 - progress, 1 )
 		ctx.fill()
 		ctx.globalAlpha = ga
 	
 	ctx.globalCompositeOperation = gco
-}
-
-function drawConnectionPair( ctx, neuronViewA, neuronViewB, detail = 1 ) {
-	if ( neuronViewA.neuron.firing ) {
-		const weight = neuronViewB.neuron.weights[ neuronViewA.neuron.index ]
-		drawConnection( ctx, neuronViewA.position, neuronViewA.radius, neuronViewB.position, neuronViewB.radius, weight, 1 - neuronViewA.neuron.potential )
-	}
-	
-	if ( neuronViewB.neuron.firing ) {
-		const weight = neuronViewA.neuron.weights[ neuronViewB.neuron.index ]
-		drawConnection( ctx, neuronViewB.position, neuronViewB.radius, neuronViewA.position, neuronViewA.radius, weight, 1 - neuronViewB.neuron.potential )
-	}
 }

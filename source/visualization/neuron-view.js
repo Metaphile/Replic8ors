@@ -59,6 +59,11 @@ export default function NeuronView( neuron, role = 'think', opts = {} ) {
 	self.position = { x: 0, y: 0 }
 	// TODO relative
 	self.anchor   = { x: 0, y: 0 }
+	
+	self.originalPosition = { x: 0, y: 0 }
+	self.originalRadius = self.radius
+	self.connectionOpacity = 0.07
+	
 	return self
 }
 

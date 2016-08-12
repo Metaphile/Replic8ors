@@ -24,7 +24,7 @@ export function Foreground( opts = {} ) {
 		particle.x = Math.cos( angle ) * weight * opts.radius
 		particle.y = Math.sin( angle ) * weight * opts.radius
 		
-		particle.opacity = Math.random() * ( 1 - weight ) * 0.2
+		particle.opacity = Math.random() * ( 1 - weight ) * 0.07
 		
 		particles.push( particle )
 	}
