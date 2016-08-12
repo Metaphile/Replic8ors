@@ -47,6 +47,8 @@ export default function WorldView( world ) {
 	world.replicators.forEach( addReplicatorView )
 	world.on( 'replicator-added', addReplicatorView )
 	
+	// TODO doEnergyDownEffect()
+	
 	// predators
 	
 	const addPredatorView = predator => {

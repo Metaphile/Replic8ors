@@ -31,6 +31,7 @@ const drawEnergyLevel = ( ctx, ppx, ppy, r, energy, slosh, effects ) => {
 		ctx.fillStyle = assets.energyGradient
 		ctx.fill()
 		
+		for ( let effect of effects.energyDowns ) effect.draw( ctx, energy )
 		for ( let effect of effects.energyUps ) effect.draw( ctx, energy )
 		
 		ctx.scale( 1, 1 / ds )
@@ -155,8 +156,9 @@ export default function ReplicatorView( replicator ) {
 	
 	// active effects
 	self.effects = {}
-	// energy up effect is stackable
+	// energy up/down effects are stackable
 	self.effects.energyUps = []
+	self.effects.energyDowns = []
 	
 	/* replicator.on( 'replicated', () => {
 		// energy up effect is distracting during replication
@@ -181,6 +183,19 @@ ReplicatorView.prototype = {
 			}
 			
 			this.effects.energyUps.push( assets.EnergyUpEffect( 0.4, onDone ) )
+		} )
+	},
+	
+	doEnergyDownEffect() {
+		return new Promise( resolve => {
+			const onDone = ( which ) => {
+				const i = this.effects.energyDowns.indexOf( which )
+				this.effects.energyDowns.splice( i, 1 )
+				
+				resolve()
+			}
+			
+			this.effects.energyDowns.push( assets.EnergyDownEffect( 0.4, onDone ) )
 		} )
 	},
 	
@@ -209,11 +224,14 @@ ReplicatorView.prototype = {
 		this._apparentEnergy += ( this.replicator.energy - this._apparentEnergy ) * 9 * dt2
 		this._slosh = ( this._slosh + ( 0.51 * dt2 ) ) % Math2.TAU
 		
+		// TODO polyfill Object.values()
 		for ( let key of Object.keys( this.effects ) ) {
-			if ( key === 'energyUps' ) {
-				for ( let effect of this.effects[ key ] ) effect.update( dt, dt2 )
+			const effect = this.effects[ key ]
+			
+			if ( Array.isArray( effect ) ) {
+				for ( let stackable of effect ) stackable.update( dt, dt2 )
 			} else {
-				this.effects[ key ].update( dt, dt2 )
+				effect.update( dt, dt2 )
 			}
 		}
 	},
