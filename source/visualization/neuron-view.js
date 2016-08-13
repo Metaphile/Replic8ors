@@ -63,7 +63,7 @@ export default function NeuronView( neuron, role = 'think', opts = {} ) {
 	
 	self.originalPosition = { x: 0, y: 0 }
 	self.originalRadius = self.radius
-	self.connectionOpacity = 0.07
+	self.connectionOpacity = 1
 	
 	return self
 }

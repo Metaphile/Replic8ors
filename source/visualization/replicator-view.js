@@ -253,11 +253,11 @@ ReplicatorView.prototype = {
 				Vector2.subtract( view.position, Vector2.scale( offset, distort( 1 - distance / collisionRadius ), {} ) )
 				
 				view.originalRadius = view.radius
-				view.radius += view.radius * distort( 1 - distance / collisionRadius )
+				view.radius += view.radius * distort( 1 - distance / collisionRadius ) * 0.5
 				
-				view.connectionOpacity = 0.07 + ( 1 - 0.07 ) * distort( 1 - distance / collisionRadius )
+				view.connectionOpacity = ( 1 - 0.07 ) * distort( 1 - distance / collisionRadius )
 			} else {
-				view.connectionOpacity = 0.07
+				view.connectionOpacity = 0
 			}
 		}
 		
@@ -269,7 +269,7 @@ ReplicatorView.prototype = {
 		}
 		
 		for ( let view of this.neuronViews ) {
-			view.connectionOpacity = 0.07
+			view.connectionOpacity = 1
 		}
 	},
 	
