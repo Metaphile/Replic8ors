@@ -170,7 +170,7 @@ export default function ReplicatorView( replicator ) {
 	return self
 }
 
-const distort = x => 0.5 * Math.cos( ( x - 1 ) * Math.PI ) + 0.5
+const distort = x => Math.cos( ( x - 1 ) * Math.PI )
 
 ReplicatorView.prototype = {
 	doEnergyUpEffect() {
@@ -244,18 +244,20 @@ ReplicatorView.prototype = {
 		for ( let view of this.neuronViews ) {
 			const offset = Vector2.subtract( mousePos_world, view.position, {} )
 			const distance = Vector2.getLength( offset )
-			const collisionRadius = 19
+			const collisionRadius = 14
 			
 			if ( distance < collisionRadius ) {
 				hoverTargets.push( view )
 				
+				const distortion = 0.5 * ( 1 + distort( 1 - distance / collisionRadius ) ) // 0..1
+				
 				view.originalPosition = Vector2.clone( view.position )
-				Vector2.subtract( view.position, Vector2.scale( offset, distort( 1 - distance / collisionRadius ), {} ) )
+				Vector2.subtract( view.position, Vector2.scale( offset, 1.2 * distortion, {} ) )
 				
 				view.originalRadius = view.radius
-				view.radius += view.radius * distort( 1 - distance / collisionRadius ) * 0.5
+				view.radius += view.radius * 0.6 * distortion
 				
-				view.connectionOpacity = ( 1 - 0.07 ) * distort( 1 - distance / collisionRadius )
+				view.connectionOpacity = distortion
 			} else {
 				view.connectionOpacity = 0
 			}
