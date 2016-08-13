@@ -28,7 +28,8 @@ function drawGauge( ctx, neuron, ppx, ppy, r ) {
 	var r1 = r * 0.5, r2 = r * 1.0;
 	var a1 = GAUGE_START - offset, a2 = a1 + (potential * Math2.TAU);
 	
-	var a3 = a2 + (neuron.inhibitedPotential * Math2.TAU);
+	// Math.min() because sometimes a3 > GAUGE_END -- not sure why!
+	var a3 = Math.min(a2 + (neuron.inhibitedPotential * Math2.TAU), GAUGE_START + Math2.TAU);
 	// var a0 = a1 - ( neuron.inhibitedPotential * Math.PI * 2 )
 	
 	// indicate negated potential
