@@ -102,6 +102,15 @@ function programBasicInstincts( replicator ) {
 	}
 }
 
+function programNonsense( replicator ) {
+	for ( let neuron of replicator.brain.neurons ) {
+		neuron.weights = neuron.weights.map( weight => Math.pow( Math2.randRange( -1, 1 ), 3 ) )
+	}
+	
+	const neuronsPerSegment = 4
+	Replic8or.syncSymmetricWeights( replicator.brain.neurons, replicator.numBodySegments, neuronsPerSegment )
+}
+
 export default function Replic8or( opts = {} ) {
 	const self = Object.create( Replic8or.prototype )
 	Events( self )
@@ -112,6 +121,7 @@ export default function Replic8or( opts = {} ) {
 	createSymmetricSegments.call( self )
 	
 	// programBasicInstincts( self )
+	programNonsense( self )
 	
 	return self
 }
