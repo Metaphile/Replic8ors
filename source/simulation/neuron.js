@@ -59,12 +59,6 @@ Neuron.prototype = {
 		if ( this.potential >= 1 ) this.fire( t )
 		
 		if ( !this.firing ) {
-			// actual + inhibited potential shouldn't exceed capacity
-			// truncate inhibited if needed
-			if ( this.potential + this.inhibitedPotential > 1 ) {
-				this.inhibitedPotential = 1 - this.potential
-			}
-			
 			// decay
 			const decayedPotential = this.potentialDecayRate * dt
 			this.potential -= decayedPotential
@@ -85,7 +79,14 @@ Neuron.prototype = {
 			}
 		}
 		
-		if ( this.potential < 0 ) this.potential = 0
-		if ( this.inhibitedPotential < 0 ) this.inhibitedPotential = 0
+		this.potential = Math2.clamp( this.potential, 0, 1 )
+		
+		// actual + inhibited potential shouldn't exceed 1
+		// truncate inhibited if needed
+		if ( this.potential + this.inhibitedPotential > 1 ) {
+			this.inhibitedPotential = 1 - this.potential
+		} else if ( this.inhibitedPotential < 0 ) {
+			this.inhibitedPotential = 0
+		}
 	},
 }
