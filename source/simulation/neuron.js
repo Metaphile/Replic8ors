@@ -41,6 +41,9 @@ Neuron.prototype = {
 		}
 		
 		if ( sourceIndex === this.index ) this.sensoryPotential += input
+		
+		// call to update() ensures neuron is in good state
+		this.update( 0 )
 	},
 	
 	fire: function () {
