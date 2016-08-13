@@ -32,7 +32,7 @@ export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, p
 	const angleA_B = Vector2.angle( vectorA_B )
 	const angleB_A = angleA_B + Math.PI
 	
-	const minConnWidth = Math.PI * 0.01
+	const minConnWidth = 0
 	const maxConnWidth = Math.PI * 0.09
 	
 	let offsetB = minConnWidth

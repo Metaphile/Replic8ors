@@ -33,7 +33,7 @@ function drawGauge( ctx, neuron, ppx, ppy, r ) {
 	// var a0 = a1 - ( neuron.inhibitedPotential * Math.PI * 2 )
 	
 	// indicate negated potential
-	if ( !neuron.firing && neuron.inhibitedPotential > 0.01 ) {
+	if ( !neuron.firing ) {
 		ctx.beginPath()
 			ctx.arc( ppx, ppy, r1, a2, a3 )
 			ctx.arc( ppx, ppy, r2, a3, a2, true ) // opposite direction
