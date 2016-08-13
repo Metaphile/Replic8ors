@@ -67,7 +67,8 @@ describe( 'neural network', () => {
 		network.addNeuron( neuronB )
 		
 		neuronA.potential = 1
-		network.update( 0.25 )
+		network.update( 0 ) // A begins firing
+		network.update( 0.25 ) // A fires for 1/4 seconds
 		
 		expect( neuronA.potential ).toBeCloseTo( 1 - 0.25, precision )
 		expect( neuronB.potential ).toBeCloseTo( 0 + 0.25, precision )

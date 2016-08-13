@@ -27,10 +27,6 @@ NeuralNetwork.prototype = {
 	},
 	
 	update: function ( dt ) {
-		for ( let neuron of this.neurons ) {
-			neuron.update( dt )
-		}
-		
 		// propagate signals
 		for ( let source of this.neurons ) {
 			if ( source.firing ) {
@@ -40,6 +36,10 @@ NeuralNetwork.prototype = {
 					target.stimulate( 1 / source.refractoryPeriod * dt, source.index )
 				}
 			}
+		}
+		
+		for ( let neuron of this.neurons ) {
+			neuron.update( dt )
 		}
 	},
 }

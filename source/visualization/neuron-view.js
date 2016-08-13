@@ -22,7 +22,7 @@ function jiggle( x ) {
 
 // TODO don't draw gauge if potential is very tiny
 function drawGauge( ctx, neuron, ppx, ppy, r ) {
-	var potential = Math.max(0, neuron.potential);
+	var potential = neuron.potential;
 	var offset = neuron.firing ? Math.PI * potential : 0;
 	
 	var r1 = r * 0.5, r2 = r * 1.0;
