@@ -21,7 +21,6 @@ export default function Neuron( opts = {} ) {
 	self.inhibitedPotential = 0
 	
 	self.firing = false
-	self.lastFired = 0
 	self.index = -1
 	
 	Object.assign( self, defaultOpts, opts )
@@ -44,10 +43,9 @@ Neuron.prototype = {
 		if ( sourceIndex === this.index ) this.sensoryPotential += input
 	},
 	
-	fire: function ( t ) {
+	fire: function () {
 		if ( !this.firing ) {
 			this.potential = 1
-			this.lastFired = t
 			this.inhibitedPotential = 0
 			this.firing = true
 			this.emit( 'fire' )

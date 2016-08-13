@@ -73,14 +73,6 @@ describe( 'neuron', () => {
 		expect( neuron.potential < 0.9 - error ).toBe( true )
 	} )
 	
-	it( 'neuron tracks when it last fired', () => {
-		const neuron = Neuron()
-		neuron.potential = 1.0
-		
-		neuron.update( 1/60, 42 )
-		expect( neuron.lastFired ).toBeCloseTo( 42, precision )
-	} )
-	
 	it( 'neuron tracks inhibited potential', () => {
 		const neuron = Neuron()
 		const inhibitoryIndex = 0
