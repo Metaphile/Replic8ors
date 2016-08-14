@@ -127,4 +127,26 @@ describe( 'neuron', () => {
 		
 		expect( neuron.potential >= 0 ).toBe( true )
 	} )
+	
+	it( 'can fire even while receiving inhibitory stimulus', () => {
+		const neuron = Neuron()
+		
+		// direct stimulation is inhibitory
+		neuron.index = 0
+		neuron.weights[ neuron.index ] = -1
+		
+		// neuron gains potential with each tick
+		neuron.potentialDecayRate = -1
+		
+		// neuron is primed to fire
+		neuron.potential = 1
+		
+		// inhibit slightly
+		neuron.stimulate( 1/60, neuron.index )
+		
+		// excite more
+		neuron.update( 2/60 )
+		
+		expect( neuron.firing ).toBe( true )
+	} )
 } )

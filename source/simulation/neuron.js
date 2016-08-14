@@ -56,8 +56,6 @@ Neuron.prototype = {
 	},
 	
 	update: function ( dt ) {
-		if ( this.potential >= 1 ) this.fire()
-		
 		if ( !this.firing ) {
 			// decay
 			const decayedPotential = this.potentialDecayRate * dt
@@ -69,6 +67,8 @@ Neuron.prototype = {
 			// but it works either way)
 			if ( this.potential <= 0 && decayedPotential > 0 ) this.inhibitedPotential -= decayedPotential
 		}
+		
+		if ( this.potential >= 1 ) this.fire()
 		
 		if ( this.firing ) {
 			// drain potential over refractory period
