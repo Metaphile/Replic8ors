@@ -170,14 +170,14 @@ World.prototype = {
 				
 				if ( distance < minDistance ) {
 					replicator.energy -= dt * 0.3
-				} else {
-					replicator.sensePredator( predator, dt )
-					
-					if ( distance < shortestDistance ) {
-						nearestReplicator = replicator
-						shortestDistance = distance
-						shortestOffset = Vector2.clone( offset )
-					}
+				}
+				
+				replicator.sensePredator( predator, dt )
+				
+				if ( distance < shortestDistance ) {
+					nearestReplicator = replicator
+					shortestDistance = distance
+					shortestOffset = Vector2.clone( offset )
 				}
 			}
 			
