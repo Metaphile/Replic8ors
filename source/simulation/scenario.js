@@ -37,8 +37,9 @@ export default function Scenario( world, opts = {} ) {
 	
 	// archive
 	const cryo = RingBuffer( self.numReplicators )
-	const seed = Replic8or()
-	for ( let n = self.numReplicators; n > 0; n-- ) cryo.push( seed.replicate() )
+	// const seed = Replic8or()
+	// for ( let n = self.numReplicators; n > 0; n-- ) cryo.push( seed.replicate() )
+	for ( let n = self.numReplicators; n > 0; n-- ) cryo.push( Replic8or() )
 	
 	const timer = Timer()
 	
