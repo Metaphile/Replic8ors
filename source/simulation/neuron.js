@@ -55,8 +55,8 @@ Neuron.prototype = {
 		}
 	},
 	
-	update: function ( dt, t = dt ) {
-		if ( this.potential >= 1 ) this.fire( t )
+	update: function ( dt ) {
+		if ( this.potential >= 1 ) this.fire()
 		
 		if ( !this.firing ) {
 			// decay

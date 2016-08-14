@@ -62,7 +62,7 @@ World.prototype = {
 		this.emit( 'predator-removed', predator )
 	},
 	
-	update: function ( dt, t ) {
+	update: function ( dt ) {
 		const { replicators, foods, predators, springs } = this
 		
 		// replicators-replicators
@@ -194,11 +194,11 @@ World.prototype = {
 		}
 		
 		for ( let replicator of replicators.slice( 0 ) ) {
-			replicator.update( dt, t )
+			replicator.update( dt )
 		}
 		
 		for ( let food of foods.slice( 0 ) ) {
-			food.update( dt, t )
+			food.update( dt )
 		}
 		
 		for ( let predator of predators ) {

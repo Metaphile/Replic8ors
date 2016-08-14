@@ -127,8 +127,8 @@ export default function Replic8or( opts = {} ) {
 }
 
 Replic8or.prototype = {
-	update: function ( dt, t ) {
-		this.brain.update( dt, t )
+	update: function ( dt ) {
+		this.brain.update( dt )
 		
 		for ( let flipper of this.flippers ) flipper.update( dt )
 		

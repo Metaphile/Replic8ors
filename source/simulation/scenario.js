@@ -120,7 +120,7 @@ export default function Scenario( world, opts = {} ) {
 	// TODO will we be needing t for anything?
 	self.update = function ( dt, t ) {
 		timer.update( dt )
-		world.update( dt, t )
+		world.update( dt )
 	}
 	
 	self.reset()
