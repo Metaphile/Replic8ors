@@ -1,3 +1,13 @@
+// TODO degenerate neuron for sensory input
+
+// TODO track sensory input per simulation tick
+//
+// if input is less than weight * refractory period (input is weak),
+// fire at constant rate based on refractory period, reduce connection width
+//
+// if input is greater than weight * refractory period (input is strong),
+// cap connection width at weight, fire faster than refractory period would allow
+
 import Events from '../engine/events'
 import Math2 from '../engine/math-2'
 
@@ -13,7 +23,7 @@ export default function Neuron( opts = {} ) {
 	self.weights = []
 	
 	// in a biological neuron, potential typically varies from -70mV (resting) to -55mV (threshold)
-	// for convenience we normalize the resting and threshold potentials to 0 and 1 respectively
+	// ours is normalized to 0..1
 	self.potential = 0
 	self.sensoryPotential = 0
 	
