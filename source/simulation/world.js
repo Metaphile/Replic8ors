@@ -187,6 +187,7 @@ World.prototype = {
 		}
 		
 		// springs-physics
+		// TODO invert loops
 		for ( let spring of springs ) {
 			for ( let physics of [ ...replicators, ...foods, ...predators ] ) {
 				spring.applyForce( physics, dt )
