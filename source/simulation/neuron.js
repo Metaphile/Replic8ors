@@ -27,8 +27,6 @@ export default function Neuron( opts = {} ) {
 	self.potential = 0
 	self.sensoryPotential = 0
 	
-	// for reference, we keep track of potential lost due to inhibitory input
-	self.inhibitedPotential = 0
 	// total inhibitory input since neuron last fired
 	self.inhibitoryInput = 0
 	
@@ -45,10 +43,6 @@ Neuron.prototype = {
 		const input = this.weights[ sourceIndex ] * dt
 		
 		if ( !this.firing ) {
-			if ( input < 0 && this.potential > 0 ) {
-				this.inhibitedPotential += Math.min( this.potential, -input )
-			}
-			
 			if ( input < 0 ) {
 				this.inhibitoryInput -= input
 			}
@@ -65,7 +59,6 @@ Neuron.prototype = {
 	fire: function () {
 		if ( !this.firing ) {
 			this.potential = 1
-			this.inhibitedPotential = 0
 			this.inhibitoryInput = 0
 			this.firing = true
 			this.emit( 'fire' )
@@ -77,12 +70,6 @@ Neuron.prototype = {
 			// decay
 			const decayedPotential = this.potentialDecayRate * dt
 			this.potential -= decayedPotential
-			// if potential is zero and decay rate is positive,
-			// subtract from ihnibited potential to show
-			// what potential _would_ have been pre-inhibition
-			// (maybe we should also check if inhibited potential is > 0,
-			// but it works either way)
-			if ( this.potential <= 0 && decayedPotential > 0 ) this.inhibitedPotential -= decayedPotential
 			if ( decayedPotential > 0 ) this.inhibitoryInput += decayedPotential
 		}
 		
@@ -98,13 +85,5 @@ Neuron.prototype = {
 		}
 		
 		this.potential = Math2.clamp( this.potential, 0, 1 )
-		
-		// actual + inhibited potential shouldn't exceed 1
-		// truncate inhibited if needed
-		if ( this.potential + this.inhibitedPotential > 1 ) {
-			this.inhibitedPotential = 1 - this.potential
-		} else if ( this.inhibitedPotential < 0 ) {
-			this.inhibitedPotential = 0
-		}
 	},
 }

@@ -33,17 +33,6 @@ function drawGauge( ctx, neuron, ppx, ppy, r ) {
 	// var a3 = Math.min(a2 + (neuron.inhibitedPotential * Math2.TAU), GAUGE_START + Math2.TAU);
 	var a0 = Math.max( a1 - ( neuron.inhibitoryInput * tau ), -( tau - a2 ) )
 	
-	// indicate negated potential
-	if ( !neuron.firing ) {
-		ctx.beginPath()
-			ctx.arc( ppx, ppy, r1, a0, a1 )
-			ctx.arc( ppx, ppy, r2, a1, a0, true ) // opposite direction
-			
-			ctx.fillStyle = 'rgba( 190,   0,   0, 0.666 )'
-			ctx.globalCompositeOperation = 'darken'
-			ctx.fill()
-	}
-	
 	ctx.beginPath()
 		ctx.arc( ppx, ppy, r1, a1, a2 )
 		ctx.arc( ppx, ppy, r2, a2, a1, true )

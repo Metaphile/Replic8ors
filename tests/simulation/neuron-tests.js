@@ -73,37 +73,6 @@ describe( 'neuron', () => {
 		expect( neuron.potential < 0.9 - error ).toBe( true )
 	} )
 	
-	it( 'neuron tracks inhibited potential', () => {
-		const neuron = Neuron()
-		const inhibitoryIndex = 0
-		neuron.weights[ inhibitoryIndex ] = -1.0
-		neuron.potential = 0.5
-		
-		neuron.stimulate( 0.1, inhibitoryIndex )
-		expect( neuron.inhibitedPotential ).toBeCloseTo( 0.1, precision )
-	} )
-	
-	it( 'potential inhibition requires potential', () => {
-		const neuron = Neuron( { potentialDecayRate: 0 } )
-		
-		const inhibitoryIndex = 0
-		neuron.weights[ inhibitoryIndex ] = -1.0
-		
-		neuron.potential = 0.1
-		
-		neuron.stimulate( 0.2, inhibitoryIndex )
-		expect( neuron.inhibitedPotential ).toBeCloseTo( 0.1, precision )
-	} )
-	
-	it( 'neuron activation resets inhibited potential', () => {
-		const neuron = Neuron()
-		neuron.potential = 1.0
-		neuron.inhibitedPotential = 0.5
-		
-		neuron.update( 1/60 )
-		expect( neuron.inhibitedPotential ).toBeCloseTo( 0, precision )
-	} )
-	
 	it( 'neuron tracks inhibitory input', () => {
 		const neuron = Neuron()
 		const inhibitoryIndex = 0
