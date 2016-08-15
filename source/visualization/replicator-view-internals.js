@@ -33,7 +33,7 @@ export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, p
 	const angleB_A = angleA_B + Math.PI
 	
 	const minConnWidth = 0
-	const maxConnWidth = Math.PI * 0.09
+	const maxConnWidth = Math.PI * 0.08
 	
 	let offsetB = minConnWidth
 	offsetB += Math.abs( weight ) * ( maxConnWidth - minConnWidth )

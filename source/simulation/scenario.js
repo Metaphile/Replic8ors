@@ -89,9 +89,9 @@ export default function Scenario( world, opts = {} ) {
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
 			// for now, bloom at center of spring
-			self.doBloom( { x: 0, y: 0 }, 96, 5 )
+			self.doBloom( { x: 0, y: 0 }, 96, 3 )
 			
-			timer.setAlarm( 24, alwaysBeBlooming )
+			timer.setAlarm( 16, alwaysBeBlooming )
 		}
 		
 		timer.setAlarm( 10, alwaysBeBlooming )

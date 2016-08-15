@@ -62,7 +62,7 @@ export default function CameraOperator( camera, canvas ) {
 		
 		bobAngle = ( bobAngle + 0.21 * dt ) % ( Math.PI * 2 )
 		
-		var m = 0.06
+		var m = 0.03
 		offset.x += Math.cos( bobAngle *  7 ) * m
 		offset.y += Math.sin( bobAngle * 13 ) * m
 		
@@ -80,7 +80,7 @@ export default function CameraOperator( camera, canvas ) {
 			
 			// adjust position more aggressively while zooming
 			// var speed = 5.1 * ( 1 + Math.abs( this._zoomBuffer * 1.1 ) );
-			var speed = 5.1
+			var speed = 5.6
 			
 			camera.pan(
 				( px - viewCenter.x ) * speed * dt,
