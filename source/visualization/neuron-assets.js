@@ -18,7 +18,7 @@ export const icons = {
 	} )(),
 	
 	replicator: ( () => {
-		const imageData = fs.readFileSync( __dirname + '/icons/reproduce.png', 'base64' )
+		const imageData = fs.readFileSync( __dirname + '/icons/replicator.png', 'base64' )
 		const image = document.createElement( 'img' )
 		image.src = 'data:image/png;base64,' + imageData
 		
