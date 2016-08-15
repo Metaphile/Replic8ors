@@ -158,31 +158,28 @@ World.prototype = {
 		
 		// predators-replicators
 		for ( let predator of predators ) {
-			let nearestReplicator, shortestDistance = Infinity, shortestOffset
+			let juiciestReplicator, minDistance = Infinity
+			const projectedPredatorPosition = Vector2.add( predator.position, predator.velocity, {} )
 			
 			for ( let replicator of replicators ) {
-				const offset = Vector2.subtract( replicator.position, predator.position, {} )
+				const projectedReplicatorPosition = Vector2.add( replicator.position, replicator.velocity, {} )
+				const distance = Vector2.distance( projectedPredatorPosition, projectedReplicatorPosition )
 				
-				const minDistance = Math.pow( predator.radius + replicator.radius, 2 )
-				const distance = Vector2.lengthSquared( offset )
-				
-				predator.collideWith( replicator, dt )
-				
-				if ( distance < minDistance ) {
+				if ( distance < predator.radius + replicator.radius ) {
 					replicator.energy -= dt * 0.3
 				}
 				
-				replicator.sensePredator( predator, dt )
-				
-				if ( distance < shortestDistance ) {
-					nearestReplicator = replicator
-					shortestDistance = distance
-					shortestOffset = Vector2.clone( offset )
+				if ( distance < minDistance ) {
+					minDistance = distance
+					juiciestReplicator = replicator
 				}
+				
+				// while we're here...
+				replicator.sensePredator( predator, dt )
 			}
 			
-			if ( nearestReplicator ) {
-				predator.applyForce( Vector2.setLength( shortestOffset, predator.speed ), dt )
+			if ( juiciestReplicator ) {
+				predator.applyForce( Vector2.setLength( Vector2.subtract( juiciestReplicator.position, predator.position, {} ), predator.speed ), dt )
 			}
 		}
 		
