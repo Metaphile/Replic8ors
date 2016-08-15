@@ -104,6 +104,24 @@ describe( 'neuron', () => {
 		expect( neuron.inhibitedPotential ).toBeCloseTo( 0, precision )
 	} )
 	
+	it( 'neuron tracks inhibitory input', () => {
+		const neuron = Neuron()
+		const inhibitoryIndex = 0
+		neuron.weights[ inhibitoryIndex ] = -1.0
+		
+		neuron.stimulate( 0.1, inhibitoryIndex )
+		expect( neuron.inhibitoryInput ).toBeCloseTo( 0.1, precision )
+	} )
+	
+	it( 'neuron activation resets inhibitory input', () => {
+		const neuron = Neuron()
+		
+		neuron.inhibitoryInput = 0.5
+		neuron.fire()
+		
+		expect( neuron.inhibitoryInput ).toBeCloseTo( 0, precision )
+	} )
+	
 	it( 'emits fire event', () => {
 		const neuron = Neuron()
 		
