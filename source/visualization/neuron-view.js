@@ -22,6 +22,7 @@ function jiggle( x ) {
 
 // TODO don't draw gauge if potential is very tiny
 function drawGauge( ctx, neuron, ppx, ppy, r ) {
+	const tau = Math.PI * 2
 	var potential = neuron.potential;
 	var offset = neuron.firing ? Math.PI * potential : 0;
 	
@@ -29,14 +30,14 @@ function drawGauge( ctx, neuron, ppx, ppy, r ) {
 	var a1 = GAUGE_START - offset, a2 = a1 + (potential * Math2.TAU);
 	
 	// Math.min() because sometimes a3 > GAUGE_END -- not sure why!
-	var a3 = Math.min(a2 + (neuron.inhibitedPotential * Math2.TAU), GAUGE_START + Math2.TAU);
-	// var a0 = a1 - ( neuron.inhibitedPotential * Math.PI * 2 )
+	// var a3 = Math.min(a2 + (neuron.inhibitedPotential * Math2.TAU), GAUGE_START + Math2.TAU);
+	var a0 = Math.max( a1 - ( neuron.inhibitoryInput * tau ), -( tau - a2 ) )
 	
 	// indicate negated potential
 	if ( !neuron.firing ) {
 		ctx.beginPath()
-			ctx.arc( ppx, ppy, r1, a2, a3 )
-			ctx.arc( ppx, ppy, r2, a3, a2, true ) // opposite direction
+			ctx.arc( ppx, ppy, r1, a0, a1 )
+			ctx.arc( ppx, ppy, r2, a1, a0, true ) // opposite direction
 			
 			ctx.fillStyle = 'rgba( 190,   0,   0, 0.666 )'
 			ctx.globalCompositeOperation = 'darken'
@@ -94,7 +95,7 @@ NeuronView.prototype = {
 		if ( detail > 0.1 ) {
 			ctx.translate( this.position.x, this.position.y )
 			
-			const rotation = ( ( this.neuron.potential - this.neuron.inhibitoryInput ) * Math.PI * 2 ) % ( Math.PI * 2 )
+			const rotation = ( -this.neuron.inhibitoryInput * Math.PI * 2 ) % ( Math.PI * 2 )
 			if ( !this.neuron.firing ) {
 				ctx.rotate( rotation )
 			}
