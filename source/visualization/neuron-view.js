@@ -1,45 +1,50 @@
 import * as assets from './neuron-assets'
 import Math2 from '../engine/math-2'
 
-// gauge.clear()
-// gauge.addSection( percent, color )
-// gauge.draw( ctx, x, y, outerRadius, innerRadius )
-//
-// function addGaugeSegment( amount, color ) {
-//
-// }
-
 const defaultOpts = {
 	radius: 3.4,
 	clinginess: 8,
 }
 
-const GAUGE_START = Math.PI / 2 // down
-
 function jiggle( x ) {
 	return Math.sin( 5 * x * Math.PI ) / ( 0.7 * x ) * 0.06
 }
 
-// TODO don't draw gauge if potential is very tiny
-function drawGauge( ctx, neuron, ppx, ppy, r ) {
+function drawGauge( ctx, neuron ) {
 	const tau = Math.PI * 2
-	var potential = neuron.potential;
-	var offset = neuron.firing ? Math.PI * potential : 0;
+	const gaugeStart = tau / 4 // down
+	const innerRadius = 0.5
+	const outerRadius = 1.0
 	
-	var r1 = r * 0.5, r2 = r * 1.0;
-	var a1 = GAUGE_START - offset, a2 = a1 + (potential * Math2.TAU);
+	// while firing, do Pacman death animation
+	// rotate potential bar counter-clockwise so gap is top center
+	const firingOffset = neuron.firing ? neuron.potential * -Math.PI : 0
 	
-	// Math.min() because sometimes a3 > GAUGE_END -- not sure why!
-	// var a3 = Math.min(a2 + (neuron.inhibitedPotential * Math2.TAU), GAUGE_START + Math2.TAU);
-	var a0 = Math.max( a1 - ( neuron.inhibitoryInput * tau ), -( tau - a2 ) )
-	
+	// indicate potential
 	ctx.beginPath()
-		ctx.arc( ppx, ppy, r1, a1, a2 )
-		ctx.arc( ppx, ppy, r2, a2, a1, true )
+		const potentialStart = gaugeStart + firingOffset
+		const potentialStop = potentialStart + neuron.potential * tau
 		
-		ctx.fillStyle = 'rgba(  90, 195, 255, 1.0 )'
+		ctx.arc( 0, 0, innerRadius, potentialStart, potentialStop ) // cw
+		ctx.arc( 0, 0, outerRadius, potentialStop, potentialStart, true ) // ccw
+		
+		ctx.fillStyle = 'rgba( 90, 195, 255, 1.0 )'
 		ctx.globalCompositeOperation = 'screen'
 		ctx.fill()
+	
+	if ( !neuron.firing ) {
+		// indicate inhibitory input
+		
+		const inhibitoryStop = Math.max( gaugeStart - ( neuron.inhibitoryInput * tau ), -( tau - potentialStop ) )
+		
+		ctx.beginPath()
+			ctx.arc( 0, 0, innerRadius, gaugeStart, inhibitoryStop, true ) // ccw
+			ctx.arc( 0, 0, outerRadius, inhibitoryStop, gaugeStart ) // cw
+			
+			ctx.fillStyle = 'rgba( 190, 0, 0, 0.666 )'
+			ctx.globalCompositeOperation = 'darken'
+			ctx.fill()
+	}
 }
 
 export default function NeuronView( neuron, role = 'think', opts = {} ) {
@@ -102,7 +107,11 @@ NeuronView.prototype = {
 			ctx.translate( -this.position.x, -this.position.y )
 		}
 		
+		ctx.translate( this.position.x, this.position.y )
+		ctx.scale( this.radius, this.radius )
 		drawGauge( ctx, this.neuron, this.position.x, this.position.y, this.radius )
+		ctx.scale( 1 / this.radius, 1 / this.radius )
+		ctx.translate( -this.position.x, -this.position.y )
 		
 		ctx.globalCompositeOperation = globalCompositeOperation
 	},
