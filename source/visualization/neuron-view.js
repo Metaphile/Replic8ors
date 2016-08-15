@@ -92,11 +92,24 @@ NeuronView.prototype = {
 		
 		// icon
 		if ( detail > 0.1 ) {
+			ctx.translate( this.position.x, this.position.y )
+			
+			const rotation = ( ( this.neuron.potential - this.neuron.inhibitoryInput ) * Math.PI * 2 ) % ( Math.PI * 2 )
+			if ( !this.neuron.firing ) {
+				ctx.rotate( rotation )
+			}
+			
 			const r = this.radius * 0.3
 			ctx.globalCompositeOperation = 'screen'
 			ctx.globalAlpha = 1 - ( 1 - detail ) / 0.9
-			ctx.drawImage( this.icon, this.position.x - r + r/16, this.position.y - r + r/16, r * 2, r * 2 )
+			ctx.drawImage( this.icon, -r + r/16, -r + r/16, r * 2, r * 2 )
 			ctx.globalAlpha = 1
+			
+			if ( !this.neuron.firing ) {
+				ctx.rotate( -rotation )
+			}
+			
+			ctx.translate( -this.position.x, -this.position.y )
 		}
 		
 		drawGauge( ctx, this.neuron, this.position.x, this.position.y, this.radius )
