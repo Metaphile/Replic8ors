@@ -208,7 +208,8 @@ Replic8or.prototype = {
 				child.brain.neurons[ neuronIndex ].weights[ weightIndex ] = parentWeight
 			} )
 			
-			child.brain.neurons[ neuronIndex ].potentialDecayRate = parentNeuron.potentialDecayRate + ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -1.0, 1.0 ), 3 ) : 0 )
+			// child.brain.neurons[ neuronIndex ].potentialDecayRate = parentNeuron.potentialDecayRate + ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -1.0, 1.0 ), 3 ) : 0 )
+			child.brain.neurons[ neuronIndex ].potentialDecayRate = parentNeuron.potentialDecayRate
 		} )
 		
 		// TODO u wot m8?
