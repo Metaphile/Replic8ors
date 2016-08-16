@@ -244,7 +244,7 @@ ReplicatorView.prototype = {
 		for ( let view of this.neuronViews ) {
 			const offset = Vector2.subtract( mousePos_world, view.position, {} )
 			const distance = Vector2.getLength( offset )
-			const collisionRadius = 14
+			const collisionRadius = 13
 			
 			if ( distance < collisionRadius ) {
 				hoverTargets.push( view )
