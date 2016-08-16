@@ -5,92 +5,106 @@ export function drawConnections( ctx, neuronViews, detail = 1 ) {
 		const neuronViewI = neuronViews[i]
 		
 		for ( let j = i + 1; j < n; j++ ) {
-			drawConnectionPair( ctx, neuronViewI, neuronViews[j], detail )
+			const neuronViewJ = neuronViews[j]
+			
+			if ( neuronViewI.neuron.firing ) {
+				drawConnection(
+					ctx,
+					neuronViewI.position,
+					neuronViewI.radius,
+					neuronViewJ.position,
+					neuronViewJ.radius,
+					neuronViewJ.neuron.weights[ neuronViewI.neuron.index ],
+					1 - neuronViewI.neuron.potential,
+					Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ) )
+			}
+			
+			if ( neuronViewJ.neuron.firing ) {
+				drawConnection(
+					ctx,
+					neuronViewJ.position,
+					neuronViewJ.radius,
+					neuronViewI.position,
+					neuronViewI.radius,
+					neuronViewI.neuron.weights[ neuronViewJ.neuron.index ],
+					1 - neuronViewJ.neuron.potential,
+					Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ) )
+			}
 		}
 	}
 	
 	ctx.globalAlpha = 1
 }
 
-function drawConnectionPair( ctx, neuronViewA, neuronViewB, detail = 1 ) {
-	if ( neuronViewA.neuron.firing ) {
-		const weight = neuronViewB.neuron.weights[ neuronViewA.neuron.index ]
-		drawConnection( ctx, neuronViewA.position, neuronViewA.radius, neuronViewB.position, neuronViewB.radius, weight, 1 - neuronViewA.neuron.potential, Math.max( neuronViewA.connectionOpacity, neuronViewB.connectionOpacity ) )
-	}
-	
-	if ( neuronViewB.neuron.firing ) {
-		const weight = neuronViewA.neuron.weights[ neuronViewB.neuron.index ]
-		drawConnection( ctx, neuronViewB.position, neuronViewB.radius, neuronViewA.position, neuronViewA.radius, weight, 1 - neuronViewB.neuron.potential, Math.max( neuronViewA.connectionOpacity, neuronViewB.connectionOpacity ) )
-	}
-}
-
 // TODO when detail is low, don't use alpha
-export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, progress, baseOpacity ) {
-	if ( Math.abs( weight ) < 0.001 ) return
-	
-	const vectorA_B = Vector2.subtract( pointB, pointA, {} )
-	const distanceA_B = Vector2.distance( pointA, pointB )
-	
-	const angleA_B = Vector2.angle( vectorA_B )
-	const angleB_A = angleA_B + Math.PI
-	
+export function drawConnection( ctx, a_center, a_radius, b_center, b_radius, weight, progress, baseOpacity ) {
+	const excitatoryStyle = 'rgba( 90, 195, 255, 1.0 )'
+	const inhibitoryStyle = 'rgba( 190, 0, 0, 0.666 )'
 	const minConnWidth = 0
-	const maxConnWidth = Math.PI * 0.08
+	const maxConnWidth = 0.23
 	
-	let offsetB = minConnWidth
-	offsetB += Math.abs( weight ) * ( maxConnWidth - minConnWidth )
+	// vector from a center to b center
+	const ab_displacement = Vector2.subtract( b_center, a_center, {} )
+	const ab_distance = Vector2.distance( a_center, b_center )
 	
-	const pointB1 = Vector2.clone( pointB )
-	pointB1.x += Math.cos( angleB_A + offsetB ) * radiusB
-	pointB1.y += Math.sin( angleB_A + offsetB ) * radiusB
-	
-	const pointB2 = Vector2.clone( pointB )
-	pointB2.x += Math.cos( angleB_A - offsetB ) * radiusB
-	pointB2.y += Math.sin( angleB_A - offsetB ) * radiusB
+	// angle from a center to b center
+	const ab_angle = Vector2.angle( ab_displacement )
+	// flip 180 degrees
+	const ba_angle = ab_angle + Math.PI
 	
 	
-	const vectorA_B1 = Vector2.subtract( pointB1, pointA, {} )
-	const angleA_B1 = Vector2.angle( vectorA_B1 )
-	const offsetA = angleA_B1 - angleA_B
+	const b_edgeOffset = minConnWidth + Math.abs( weight ) * ( maxConnWidth - minConnWidth )
 	
-	const pointA1 = Vector2.clone( pointA )
-	pointA1.x += Math.cos( angleA_B + offsetA ) * radiusA
-	pointA1.y += Math.sin( angleA_B + offsetA ) * radiusA
+	const b_edge1 = Vector2.clone( b_center )
+	b_edge1.x += Math.cos( ba_angle + b_edgeOffset ) * b_radius
+	b_edge1.y += Math.sin( ba_angle + b_edgeOffset ) * b_radius
 	
-	const pointA2 = Vector2.clone( pointA )
-	pointA2.x += Math.cos( angleA_B - offsetA ) * radiusA
-	pointA2.y += Math.sin( angleA_B - offsetA ) * radiusA
+	const b_edge2 = Vector2.clone( b_center )
+	b_edge2.x += Math.cos( ba_angle - b_edgeOffset ) * b_radius
+	b_edge2.y += Math.sin( ba_angle - b_edgeOffset ) * b_radius
 	
 	
-	const radiusC = radiusA + Math.pow( progress, 1/3 ) * ( distanceA_B - radiusA - radiusB )
+	const a_edgeOffset = Vector2.angle( Vector2.subtract( b_edge1, a_center, {} ) ) - ab_angle
 	
-	const pointC = Vector2.clone( pointA )
-	pointC.x += Math.cos( angleA_B ) * radiusC
-	pointC.y += Math.sin( angleA_B ) * radiusC
+	const a_edge1 = Vector2.clone( a_center )
+	a_edge1.x += Math.cos( ab_angle + a_edgeOffset ) * a_radius
+	a_edge1.y += Math.sin( ab_angle + a_edgeOffset ) * a_radius
+	
+	const a_edge2 = Vector2.clone( a_center )
+	a_edge2.x += Math.cos( ab_angle - a_edgeOffset ) * a_radius
+	a_edge2.y += Math.sin( ab_angle - a_edgeOffset ) * a_radius
 	
 	
-	ctx.fillStyle = weight < 0 ? 'rgba( 190,   0,   0, 0.666 )' : 'rgba(  90, 195, 255, 1.0 )'
+	const midpoint_distance = a_radius + ( ab_distance - a_radius - b_radius ) * Math.pow( progress, 1/3 )
 	
-	const gco = ctx.globalCompositeOperation
-	if ( weight < 0 ) ctx.globalCompositeOperation = 'darken'
-	else ctx.globalCompositeOperation = 'lighten'
+	const midpoint = Vector2.clone( a_center )
+	midpoint.x += Math.cos( ab_angle ) * midpoint_distance
+	midpoint.y += Math.sin( ab_angle ) * midpoint_distance
 	
-	const ga = ctx.globalAlpha
+	
+	const ctx_globalAlpha = ctx.globalAlpha
+	const ctx_globalCompositeOperation = ctx.globalCompositeOperation
+	
 	ctx.globalAlpha = baseOpacity * Math.pow( 1 - progress, 1 )
+	ctx.globalCompositeOperation = weight < 0 ? 'darken' : 'lighten'
+	
+	ctx.fillStyle = weight < 0 ? inhibitoryStyle : excitatoryStyle
 	
 	ctx.beginPath()
-		ctx.moveTo( pointA1.x, pointA1.y )
-		ctx.lineTo( pointC.x, pointC.y )
-		ctx.lineTo( pointA2.x, pointA2.y )
+		// draw triangle with base at neuron A edge, tip at midpoint
+		ctx.moveTo( a_edge1.x, a_edge1.y )
+		ctx.lineTo( a_edge2.x, a_edge2.y )
+		ctx.lineTo( midpoint.x, midpoint.y )
 		ctx.closePath()
 		
-		ctx.moveTo( pointB1.x, pointB1.y )
-		ctx.lineTo( pointC.x, pointC.y )
-		ctx.lineTo( pointB2.x, pointB2.y )
+		// draw triangle from neuron B edge to midpoint
+		ctx.moveTo( b_edge1.x, b_edge1.y )
+		ctx.lineTo( b_edge2.x, b_edge2.y )
+		ctx.lineTo( midpoint.x, midpoint.y )
 		ctx.closePath()
 		
 		ctx.fill()
 	
-	ctx.globalAlpha = ga
-	ctx.globalCompositeOperation = gco
+	ctx.globalAlpha = ctx_globalAlpha
+	ctx.globalCompositeOperation = ctx_globalCompositeOperation
 }
