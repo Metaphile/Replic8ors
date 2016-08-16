@@ -29,6 +29,8 @@ export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, p
 	if ( Math.abs( weight ) < 0.001 ) return
 	
 	const vectorA_B = Vector2.subtract( pointB, pointA, {} )
+	const distanceA_B = Vector2.distance( pointA, pointB )
+	
 	const angleA_B = Vector2.angle( vectorA_B )
 	const angleB_A = angleA_B + Math.PI
 	
@@ -59,22 +61,36 @@ export function drawConnection( ctx, pointA, radiusA, pointB, radiusB, weight, p
 	pointA2.x += Math.cos( angleA_B - offsetA ) * radiusA
 	pointA2.y += Math.sin( angleA_B - offsetA ) * radiusA
 	
+	
+	const radiusC = radiusA + Math.pow( progress, 1/3 ) * ( distanceA_B - radiusA - radiusB )
+	
+	const pointC = Vector2.clone( pointA )
+	pointC.x += Math.cos( angleA_B ) * radiusC
+	pointC.y += Math.sin( angleA_B ) * radiusC
+	
+	
 	ctx.fillStyle = weight < 0 ? 'rgba( 190,   0,   0, 0.666 )' : 'rgba(  90, 195, 255, 1.0 )'
 	
 	const gco = ctx.globalCompositeOperation
 	if ( weight < 0 ) ctx.globalCompositeOperation = 'darken'
 	else ctx.globalCompositeOperation = 'lighten'
 	
+	const ga = ctx.globalAlpha
+	ctx.globalAlpha = baseOpacity * Math.pow( 1 - progress, 1 )
+	
 	ctx.beginPath()
 		ctx.moveTo( pointA1.x, pointA1.y )
-		ctx.lineTo( pointB1.x, pointB1.y )
-		ctx.lineTo( pointB2.x, pointB2.y )
+		ctx.lineTo( pointC.x, pointC.y )
 		ctx.lineTo( pointA2.x, pointA2.y )
+		ctx.closePath()
 		
-		const ga = ctx.globalAlpha
-		ctx.globalAlpha = baseOpacity * Math.pow( 1 - progress, 1 )
+		ctx.moveTo( pointB1.x, pointB1.y )
+		ctx.lineTo( pointC.x, pointC.y )
+		ctx.lineTo( pointB2.x, pointB2.y )
+		ctx.closePath()
+		
 		ctx.fill()
-		ctx.globalAlpha = ga
 	
+	ctx.globalAlpha = ga
 	ctx.globalCompositeOperation = gco
 }
