@@ -211,6 +211,17 @@ ReplicatorView.prototype = {
 		} )
 	},
 	
+	doDamageEffect() {
+		return new Promise( resolve => {
+			const onDone = () => {
+				this.effects.damage = null
+				resolve()
+			}
+			
+			this.effects.damage = assets.DamageEffect( onDone )
+		} )
+	},
+	
 	showDeath() {
 		return new Promise()
 	},
@@ -238,8 +249,21 @@ ReplicatorView.prototype = {
 		
 		for ( let effect of this.effects.energyDowns ) effect.update( dt, dt2 )
 		for ( let effect of this.effects.energyUps ) effect.update( dt, dt2 )
+		if ( this.effects.damage ) this.effects.damage.update( dt, dt2 )
 		
 		this.timer.update( dt2 )
+		
+		if ( this.replicator.takingDamage && !this.effects.damage ) {
+			this.doDamageEffect().then(
+				() => this.maybeContinueDamageEffect() )
+		}
+	},
+	
+	maybeContinueDamageEffect() {
+		if ( this.replicator.takingDamage ) {
+			this.doDamageEffect().then(
+				() => this.maybeContinueDamageEffect() )
+		}
 	},
 	
 	drawWithFisheye: function ( ctx, mousePos_world, detail ) {
@@ -299,6 +323,10 @@ ReplicatorView.prototype = {
 			
 			ctx.scale( 1 / r0, 1 / r0 )
 			ctx.translate( -p0.x, -p0.y )
+		
+		if ( this.effects.damage ) {
+			this.effects.damage.draw( ctx, this.replicator.position, this.replicator.radius )
+		}
 		
 		// indicate symmetric/free sections
 		ctx.lineWidth = 0.27

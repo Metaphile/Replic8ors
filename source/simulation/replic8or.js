@@ -21,6 +21,8 @@ const defaultOpts = new function () {
 	this.numBodySegments = 5
 	this.receptorOffset = -Math.PI / 2, // up
 	this.flipperOffset = this.receptorOffset + ( Math.PI / this.numBodySegments )
+	
+	this.takingDamage = false
 }
 
 function createSymmetricSegments() {

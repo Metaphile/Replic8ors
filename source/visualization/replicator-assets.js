@@ -142,3 +142,47 @@ EnergyDownEffect.prototype = {
 		ctx.globalCompositeOperation = globalCompositeOperation
 	},
 }
+
+export function DamageEffect( onDone ) {
+	const self = Object.create( DamageEffect.prototype )
+	self.onDone = onDone
+	return self
+}
+
+DamageEffect.prototype = {
+	duration: 0.5,
+	progress: 0,
+	
+	update( dt_real, dt_sim ) {
+		if ( this.progress < 1 ) {
+			this.progress += 1 / this.duration * dt_sim
+		}
+		
+		if ( this.progress >= 1 && this.onDone ) {
+			this.onDone( this )
+			this.onDone = null
+		}
+	},
+	
+	draw( ctx, position, radius ) {
+		const ctx_globalCompositeOperation = ctx.globalCompositeOperation
+		const ctx_globalAlpha = ctx.globalAlpha
+		
+		ctx.beginPath()
+			ctx.translate( position.x, position.y )
+			ctx.scale( radius, radius )
+			
+			ctx.arc( 0, 0, 1, 0, Math.PI * 2 )
+			
+			ctx.globalCompositeOperation = 'overlay'
+			ctx.globalAlpha = 0.4 + ( 0.7 - 0.4 ) * ( 1 + Math.cos( this.progress * Math.PI ) ) / 2
+			ctx.fillStyle = 'rgba( 159, 0, 0, 1.0 )'
+			ctx.fill()
+			
+			ctx.scale( 1 / radius, 1 / radius )
+			ctx.translate( -position.x, -position.y )
+		
+		ctx.globalAlpha = ctx_globalAlpha
+		ctx.globalCompositeOperation = ctx_globalCompositeOperation
+	},
+}
