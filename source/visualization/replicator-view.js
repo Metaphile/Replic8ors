@@ -236,16 +236,8 @@ ReplicatorView.prototype = {
 		this._apparentEnergy += ( this.replicator.energy - this._apparentEnergy ) * 9 * dt2
 		this._slosh = ( this._slosh + ( 0.51 * dt2 ) ) % Math2.TAU
 		
-		// TODO polyfill Object.values()
-		for ( let key of Object.keys( this.effects ) ) {
-			const effect = this.effects[ key ]
-			
-			if ( Array.isArray( effect ) ) {
-				for ( let stackable of effect ) stackable.update( dt, dt2 )
-			} else {
-				effect.update( dt, dt2 )
-			}
-		}
+		for ( let effect of this.effects.energyDowns ) effect.update( dt, dt2 )
+		for ( let effect of this.effects.energyUps ) effect.update( dt, dt2 )
 		
 		this.timer.update( dt2 )
 	},
