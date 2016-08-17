@@ -159,11 +159,9 @@ World.prototype = {
 		// predators-replicators
 		for ( let predator of predators ) {
 			let juiciestReplicator, minDistance = Infinity
-			const projectedPredatorPosition = Vector2.add( predator.position, predator.velocity, {} )
 			
 			for ( let replicator of replicators ) {
-				const projectedReplicatorPosition = Vector2.add( replicator.position, replicator.velocity, {} )
-				const distance = Vector2.distance( projectedPredatorPosition, projectedReplicatorPosition )
+				const distance = Vector2.distance( predator.position, replicator.position )
 				
 				if ( distance < predator.radius + replicator.radius ) {
 					replicator.energy -= dt * 0.3
