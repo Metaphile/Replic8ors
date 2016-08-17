@@ -6,6 +6,7 @@ import { drawConnections, drawConnection } from './replicator-view-internals'
 import NeuronView from './neuron-view'
 import Math2 from '../engine/math-2'
 import Vector2 from '../engine/vector-2'
+import Timer from '../engine/timer'
 
 const drawEnergyLevel = ( ctx, ppx, ppy, r, energy, slosh, effects ) => {
 	// skin
@@ -28,10 +29,12 @@ const drawEnergyLevel = ( ctx, ppx, ppy, r, energy, slosh, effects ) => {
 		ctx.scale( 1, ds )
 		
 		ctx.globalCompositeOperation = 'darken'
+		
+		for ( let effect of effects.energyDowns ) effect.draw( ctx, energy )
+		
 		ctx.fillStyle = assets.energyGradient
 		ctx.fill()
 		
-		for ( let effect of effects.energyDowns ) effect.draw( ctx, energy )
 		for ( let effect of effects.energyUps ) effect.draw( ctx, energy )
 		
 		ctx.scale( 1, 1 / ds )
@@ -167,6 +170,9 @@ export default function ReplicatorView( replicator ) {
 		self.effects.energyUps = []
 	} ) */
 	
+	self.timer = Timer()
+	self.timer.setAlarm( Math.random() * 1, () => self.doEnergyDownEffect() )
+	
 	return self
 }
 
@@ -182,6 +188,7 @@ ReplicatorView.prototype = {
 				resolve()
 			}
 			
+			// TODO check for energy downs?
 			this.effects.energyUps.push( assets.EnergyUpEffect( 0.4, onDone ) )
 		} )
 	},
@@ -192,10 +199,15 @@ ReplicatorView.prototype = {
 				const i = this.effects.energyDowns.indexOf( which )
 				this.effects.energyDowns.splice( i, 1 )
 				
+				this.timer.setAlarm( 2, () => {
+					this.effects.energyDowns.push( assets.EnergyDownEffect( 1, onDone ) )
+				} )
+				
 				resolve()
 			}
 			
-			this.effects.energyDowns.push( assets.EnergyDownEffect( 0.4, onDone ) )
+			// TODO check for energy ups?
+			this.effects.energyDowns.push( assets.EnergyDownEffect( 1, onDone ) )
 		} )
 	},
 	
@@ -234,6 +246,8 @@ ReplicatorView.prototype = {
 				effect.update( dt, dt2 )
 			}
 		}
+		
+		this.timer.update( dt2 )
 	},
 	
 	drawWithFisheye: function ( ctx, mousePos_world, detail ) {
