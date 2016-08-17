@@ -101,14 +101,13 @@ export default function Scenario( world, opts = {} ) {
 			
 			// random point past edge of world
 			const angle = Math.random() * Math.PI * 2
-			predator.position.x = Math.cos( angle ) * self.designatedWidth * 2
-			predator.position.y = Math.sin( angle ) * self.designatedWidth * 2
+			predator.position.x = Math.cos( angle ) * self.designatedWidth
+			predator.position.y = Math.sin( angle ) * self.designatedWidth
 			
 			world.addPredator( predator )
 		}
 		
-		timer.setAlarm( 2, addPredator )
-		// timer.setAlarm( 2, addPredator )
+		addPredator()
 		
 		console.log( 'Reset @', new Date() )
 	}
