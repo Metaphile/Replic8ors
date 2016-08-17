@@ -179,7 +179,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
 			
 			const distance = Vector2.distanceSquared( predator.position, receptorPosition )
-			const strength = 1 / distance * 50000 * 10
+			const strength = 1 / distance * 5000
 			
 			receptor.neurons.predator.stimulate( strength * dt )
 		}
