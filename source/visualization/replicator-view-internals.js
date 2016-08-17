@@ -41,7 +41,7 @@ export function drawConnection( ctx, a_center, a_radius, b_center, b_radius, wei
 	const excitatoryStyle = 'rgba( 90, 195, 255, 1.0 )'
 	const inhibitoryStyle = 'rgba( 190, 0, 0, 0.666 )'
 	const minConnWidth = 0
-	const maxConnWidth = 0.23
+	const maxConnWidth = 0.25
 	
 	// vector from a center to b center
 	const ab_displacement = Vector2.subtract( b_center, a_center, {} )
@@ -75,7 +75,7 @@ export function drawConnection( ctx, a_center, a_radius, b_center, b_radius, wei
 	a_edge2.y += Math.sin( ab_angle - a_edgeOffset ) * a_radius
 	
 	
-	const midpoint_distance = a_radius + ( ab_distance - a_radius - b_radius ) * Math.pow( progress, 1/3 )
+	const midpoint_distance = a_radius + ( ab_distance - a_radius - b_radius ) * Math.pow( progress, 1/4 )
 	
 	const midpoint = Vector2.clone( a_center )
 	midpoint.x += Math.cos( ab_angle ) * midpoint_distance
