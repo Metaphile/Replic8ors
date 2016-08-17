@@ -57,9 +57,10 @@ const energyUpGradient = ( () => {
 const energyDownGradient = ( () => {
 	const gradient = ctx.createLinearGradient( 0, -1, 0, 1 )
 	
-	gradient.addColorStop( 0.5, 'rgba( 160,   0,   0, 0.08 )' )
-	gradient.addColorStop( 0.5, 'rgba( 160,   0,   0, 1.0 )' )
-	gradient.addColorStop( 0.6, 'rgba( 160,   0,   0, 0.6 )' )
+	gradient.addColorStop( 0.5, 'rgba( 159,   0,   0, 0.0 )' )
+	gradient.addColorStop( 0.5, 'rgba( 159,   0,   0, 1.0 )' )
+	gradient.addColorStop( 0.504, 'rgba( 159,   0,   0, 0.7 )' )
+	gradient.addColorStop( 0.7, 'rgba( 159,   0,   0, 0.0 )' )
 	
 	return gradient
 } )()
@@ -128,11 +129,11 @@ EnergyDownEffect.prototype = {
 	draw( ctx, energy ) {
 		const globalCompositeOperation = ctx.globalCompositeOperation
 		const globalAlpha = ctx.globalAlpha
-		const gradientOffset = energy * Math.pow( this.progress, 2 )
+		const gradientOffset = energy * Math.pow( this.progress, 3 )
 		ctx.translate( 0, gradientOffset )
 		
 		ctx.globalCompositeOperation = 'screen'
-		ctx.globalAlpha = Math.pow( 1 - this.progress, 2 )
+		ctx.globalAlpha = Math.pow( 1 - this.progress, 1 )
 		ctx.fillStyle = energyDownGradient
 		ctx.fill()
 		

@@ -200,14 +200,14 @@ ReplicatorView.prototype = {
 				this.effects.energyDowns.splice( i, 1 )
 				
 				this.timer.setAlarm( 2, () => {
-					this.effects.energyDowns.push( assets.EnergyDownEffect( 1, onDone ) )
+					this.effects.energyDowns.push( assets.EnergyDownEffect( 0.6, onDone ) )
 				} )
 				
 				resolve()
 			}
 			
 			// TODO check for energy ups?
-			this.effects.energyDowns.push( assets.EnergyDownEffect( 1, onDone ) )
+			this.effects.energyDowns.push( assets.EnergyDownEffect( 0.6, onDone ) )
 		} )
 	},
 	
