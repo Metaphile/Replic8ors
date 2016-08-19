@@ -171,7 +171,7 @@ export default function ReplicatorView( replicator ) {
 	} ) */
 	
 	self.timer = Timer()
-	self.timer.setAlarm( Math.random() * 1, () => self.doEnergyDownEffect() )
+	// self.timer.setAlarm( Math.random() * 1, () => self.doEnergyDownEffect() )
 	
 	return self
 }
