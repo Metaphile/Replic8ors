@@ -41,7 +41,7 @@ export function drawConnection( ctx, a_center, a_radius, b_center, b_radius, wei
 	const excitatoryStyle = 'rgba( 90, 195, 255, 1.0 )'
 	const inhibitoryStyle = 'rgba( 190, 0, 0, 0.666 )'
 	const minConnWidth = 0
-	const maxConnWidth = 0.24
+	const maxConnWidth = 0.22
 	
 	// vector from a center to b center
 	const ab_displacement = Vector2.subtract( b_center, a_center, {} )

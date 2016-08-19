@@ -82,7 +82,7 @@ function programBasicInstincts( replicator ) {
 	// make all sensory input excitatory
 	for ( let neuron of replicator.brain.neurons ) {
 		neuron.weights = neuron.weights.map( ( weight, weightIndex ) => {
-			return weightIndex === neuron.index ? 0.1 : weight
+			return weightIndex === neuron.index ? 0.3 : weight
 		} )
 	}
 	
@@ -106,7 +106,7 @@ function programBasicInstincts( replicator ) {
 
 function programNonsense( replicator ) {
 	for ( let neuron of replicator.brain.neurons ) {
-		neuron.weights = neuron.weights.map( weight => Math.pow( Math2.randRange( -1, 1 ), 3 ) )
+		neuron.weights = neuron.weights.map( weight => Math.pow( Math2.randRange( -0.1, 0.1 ), 3 ) )
 	}
 	
 	const neuronsPerSegment = 4
