@@ -140,6 +140,8 @@ PredatorView.prototype = {
 			// ctx.globalAlpha = ga
 		}
 		
+		drawShadow( ctx, p0, r0 - Number.MIN_VALUE, Math.PI * 3/4 )
+		
 		// membrane
 		{
 			const tau = Math.PI * 2
@@ -176,7 +178,6 @@ PredatorView.prototype = {
 				ctx.stroke()
 		}
 		
-		drawShadow( ctx, p0, r0 + Number.MIN_VALUE, Math.PI * 3/4 )
 		// not in love with this...
 		// drawLight( ctx, p0, r0 + Number.MIN_VALUE, Vector2.angle( this.predator.velocity ) )
 		
