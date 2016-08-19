@@ -154,8 +154,8 @@ Replic8or.prototype = {
 			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
 			
-			const distance = Vector2.distanceSquared( food.position, receptorPosition )
-			const strength = 1 / distance * 5000
+			const distance = Vector2.distance( food.position, receptorPosition ) - food.radius
+			const strength = 1 / ( distance * distance ) * 5000
 			
 			receptor.neurons.food.stimulate( strength * dt )
 		}
@@ -167,8 +167,8 @@ Replic8or.prototype = {
 			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
 			
-			const distance = Vector2.distanceSquared( replicator.position, receptorPosition )
-			const strength = 1 / distance * 5000
+			const distance = Vector2.distance( replicator.position, receptorPosition ) - replicator.radius
+			const strength = 1 / ( distance * distance ) * 5000
 			
 			receptor.neurons.replicator.stimulate( strength * dt )
 		}
@@ -180,8 +180,8 @@ Replic8or.prototype = {
 			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
 			
-			const distance = Vector2.distanceSquared( predator.position, receptorPosition )
-			const strength = 1 / distance * 5000
+			const distance = Vector2.distance( predator.position, receptorPosition ) - predator.radius
+			const strength = 1 / ( distance * distance ) * 5000
 			
 			receptor.neurons.predator.stimulate( strength * dt )
 		}
