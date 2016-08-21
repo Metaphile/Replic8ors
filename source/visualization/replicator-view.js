@@ -108,7 +108,7 @@ function anchorNeuronViews() {
 			const neuron = receptor.neurons[ i ]
 			const neuronView = this.neuronViews[ neuron.index ]
 			
-			let angle = receptor.angle
+			let angle = receptor.angle + Math.PI
 			angle += ( Math.PI * 2 ) * ( i / n )
 			
 			neuronView.anchor.x = midpoint.x + Math.cos( angle ) * r0 * 0.14
