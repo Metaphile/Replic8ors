@@ -1,25 +1,15 @@
-## Build System
+# Replic8ors
 
-- Use `npm` scripts ([article](http://gon.to/2015/02/26/gulp-is-awesome-but-do-we-really-need-it/))
+Replic8ors is a behavioral evolution simulator that runs in your browser.
 
-- [`browserify`](http://browserify.org/#install) to bundle modules
+![Replic8ors screenshot](/screenshot.png?raw=true)
 
-- `package.json` scripts check `./node_modules/.bin` first, so no need to prefix local packages with `$(npm bin)`
+## Features
 
-- http://stackoverflow.com/a/32929589/40356
+- **Fully visualized artificial neural networks.** Watch neurons integrating input, firing, transmitting signals of varying strength and polarity.
 
+- **Speed up or slow down time; step through individual simulation ticks.**
 
-## Unit Testing
+- **Evolution from scratch.** First-generation replicators have completely unconnected brains. Useful connections are found through trial and error.
 
-- Consider using [`tape`](https://github.com/substack/tape) for unit testing ([`faucet`](https://github.com/substack/faucet) for formatting output)
-
-
-## Notes
-
-
-- Predators should gradually drain energy instead of insta-killing
-
-	- But then replicators would need a clear, direct signal that they're taking damage
-
-
-- Why do we need custom replicators? The symmetric copy function only requires a network. We can use standard replicators for testing simulation scenarios. We can override properties as needed.
+- **No explicit fitness function.** Reproductive success is its own reward.
