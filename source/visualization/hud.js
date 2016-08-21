@@ -57,6 +57,8 @@ export default function Hud( camera ) {
 				const trackablePosition_world = position
 				
 				// AABB collision
+				// TODO http://stackoverflow.com/a/402010/40356
+				// or maybe http://stackoverflow.com/a/1879223/40356
 				const offscreen =
 					position.x + radius < viewBounds_world.topLeft.x + padding / zoom ||
 					position.y + radius < viewBounds_world.topLeft.y + padding / zoom ||

@@ -1,3 +1,5 @@
+// TODO -> reticle
+
 export default function FocusRing() {
 	let apparentRadius = 1
 	let apparentOpacity = 1

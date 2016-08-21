@@ -1,3 +1,5 @@
+// TODO connection -> signal
+
 import Vector2 from '../engine/vector-2'
 
 export function drawConnections( ctx, neuronViews, detail = 1 ) {
