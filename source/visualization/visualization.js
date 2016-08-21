@@ -156,7 +156,7 @@ export default function Visualization( world ) {
 	
 	{
 		const trackPredator = ( predator ) => {
-			hud.track( predator, HudMarker( { size: 38 } ) )
+			hud.track( predator, HudMarker( { size: 44 } ) )
 		}
 		
 		for ( let predator of world.predators ) trackPredator( predator )

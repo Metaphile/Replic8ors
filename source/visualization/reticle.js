@@ -70,10 +70,10 @@ export default function Reticle() {
 					ctx.arc( 0, 0, innerRadius, Math.PI + gap, Math.PI * 2 - gap )
 					ctx.arc( 0, 0, outerRadius, Math.PI * 2 - gap, Math.PI + gap, true )
 					
-					ctx.globalAlpha *= 0.4
+					ctx.globalAlpha *= 0.3
 					ctx.fillStyle = color
 					ctx.fill()
-					ctx.globalAlpha /= 0.4
+					ctx.globalAlpha /= 0.3
 				
 				ctx.beginPath()
 					ctx.moveTo( Math.cos( 0 + gap ) * outerRadius, Math.sin( 0 + gap ) * outerRadius )
