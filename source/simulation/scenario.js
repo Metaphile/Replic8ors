@@ -77,9 +77,12 @@ export default function Scenario( world, opts = {} ) {
 		
 		world.predators.slice().forEach( predator => world.removePredator( predator ) )
 		
-		world.springs[0] = Spring( { x: 0, y: 0 } )
+		world.springs[0] = Spring( { x: -256, y: 0 } )
+		world.springs[1] = Spring( { x:  256, y: 0 } )
 		
 		timer.cancelAlarms()
+		
+		let bloomIndex = 0
 		
 		const alwaysBeBlooming = () => {
 			// random point along edge of world
@@ -88,8 +91,9 @@ export default function Scenario( world, opts = {} ) {
 			position.x = Math.cos( angle ) * ( self.designatedWidth / 2 )
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
-			// for now, bloom at center of spring
-			self.doBloom( { x: 0, y: 0 }, 96, 3 )
+			// bloom at each spring in turn
+			self.doBloom( world.springs[ bloomIndex ].position, world.springs[ bloomIndex ].radius * 0.2, 3 )
+			bloomIndex = ( bloomIndex + 1 ) % world.springs.length
 			
 			timer.setAlarm( 16, alwaysBeBlooming )
 		}
