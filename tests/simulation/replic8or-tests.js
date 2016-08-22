@@ -52,6 +52,28 @@ describe( 'replicator', () => {
 			// expect( neurons[3].weights ).toEqual( weights_s1n3 )
 		} )
 		
+		it( 'syncs free neuron weights differentlyf', () => {
+			const numSegments = 3
+			const neuronsPerSegment = 1
+			const numNeurons = numSegments * neuronsPerSegment
+			
+			const network = Network()
+			
+			for ( let n = numNeurons; n > 0; n-- ) {
+				network.addNeuron( Neuron() )
+			}
+			
+			const freeNeuron = Neuron()
+			network.addNeuron( freeNeuron )
+			
+			freeNeuron.weights[ 0 ] = 0.1
+			freeNeuron.weights[ freeNeuron.index ] = 0.2
+			
+			Replic8or.syncSymmetricWeights( network.neurons, numSegments, neuronsPerSegment )
+			
+			expect( freeNeuron.weights ).toEqual( [ 0.1, 0.1, 0.1, 0.2 ] )
+		} )
+		
 		it( 'maintains symmetric neuron decay rates', () => {
 			const numSegments = 3
 			const neuronsPerSegment = 2

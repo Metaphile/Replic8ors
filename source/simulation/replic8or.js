@@ -74,6 +74,13 @@ function createSymmetricSegments() {
 	
 	this.hungerNeuron = Neuron()
 	this.brain.addNeuron( this.hungerNeuron )
+	
+	this.thinkNeurons = []
+	/* for ( let n = 2; n > 0; n-- ) {
+		const thinkNeuron = Neuron()
+		this.brain.addNeuron( thinkNeuron )
+		this.thinkNeurons.push( thinkNeuron )
+	} */
 }
 
 function programBasicInstincts( replicator ) {

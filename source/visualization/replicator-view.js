@@ -125,6 +125,18 @@ function anchorNeuronViews() {
 		hungerView.anchor.x = p0.x + Math.cos( Math.PI / 2 ) * r1
 		hungerView.anchor.y = p0.y + Math.sin( Math.PI / 2 ) * r1
 	}
+	
+	// think neurons
+	{
+		const r1 = r0 * 0.19
+		let angle = Math.PI / 2 + Math.PI / 1.5
+		for ( let thinkNeuron of this.replicator.thinkNeurons ) {
+			const thinkView = this.neuronViews[ thinkNeuron.index ]
+			thinkView.anchor.x = p0.x + Math.cos( angle ) * r1
+			thinkView.anchor.y = p0.y + Math.sin( angle ) * r1
+			angle += Math.PI / 1.5
+		}
+	}
 }
 
 export default function ReplicatorView( replicator ) {
@@ -152,6 +164,9 @@ export default function ReplicatorView( replicator ) {
 	}
 	
 	self.neuronViews[ replicator.hungerNeuron.index ] = NeuronView( replicator.hungerNeuron, 'empty' )
+	for ( let thinkNeuron of replicator.thinkNeurons ) {
+		self.neuronViews[ thinkNeuron.index ] = NeuronView( thinkNeuron, 'think' )
+	}
 	
 	// for drawing energy level
 	self._apparentEnergy = replicator.energy
