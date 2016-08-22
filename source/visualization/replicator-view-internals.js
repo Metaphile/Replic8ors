@@ -40,6 +40,8 @@ export function drawConnections( ctx, neuronViews, detail = 1 ) {
 
 // TODO when detail is low, don't use alpha
 export function drawConnection( ctx, a_center, a_radius, b_center, b_radius, weight, progress, baseOpacity ) {
+	if ( weight === 0 ) return
+	
 	const excitatoryStyle = 'rgba( 90, 195, 255, 1.0 )'
 	const inhibitoryStyle = 'rgba( 190, 0, 0, 0.666 )'
 	const maxConnWidth = 0.22
