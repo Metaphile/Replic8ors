@@ -17,6 +17,8 @@ import Visualization from './visualization/visualization'
 import GameLoop from './engine/game-loop'
 import PlayControls from './play-controls'
 
+// TODO Save Genome button adds history item and updates URL without page load
+
 // TODO assign defaultOpts to prototypes
 
 // TODO dt, dt2 -> dt_real, dt_sim
