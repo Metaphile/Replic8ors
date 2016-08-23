@@ -64,12 +64,12 @@ export function drawConnection( ctx, a_center, a_radius, b_center, b_radius, wei
 	b_edge1.y += Math.sin( ba_angle + b_edgeOffset ) * b_radius
 	
 	const b_edge2 = Vector2.clone( b_center )
-	b_edge2.x += Math.cos( ba_angle + b_edgeOffset/3 ) * b_radius
-	b_edge2.y += Math.sin( ba_angle + b_edgeOffset/3 ) * b_radius
+	b_edge2.x += Math.cos( ba_angle + b_edgeOffset/4 ) * b_radius
+	b_edge2.y += Math.sin( ba_angle + b_edgeOffset/4 ) * b_radius
 	
 	const b_edge3 = Vector2.clone( b_center )
-	b_edge3.x += Math.cos( ba_angle - b_edgeOffset/3 ) * b_radius
-	b_edge3.y += Math.sin( ba_angle - b_edgeOffset/3 ) * b_radius
+	b_edge3.x += Math.cos( ba_angle - b_edgeOffset/4 ) * b_radius
+	b_edge3.y += Math.sin( ba_angle - b_edgeOffset/4 ) * b_radius
 	
 	const b_edge4 = Vector2.clone( b_center )
 	b_edge4.x += Math.cos( ba_angle - b_edgeOffset ) * b_radius
