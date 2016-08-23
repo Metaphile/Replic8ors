@@ -92,7 +92,7 @@ function anchorNeuronViews() {
 	// anchor flipper neurons
 	for ( let flipper of this.replicator.flippers ) {
 		const neuronView = this.neuronViews[ flipper.neuron.index ]
-		const r1 = r0 * 0.755
+		const r1 = r0 * 0.655
 		const a1 = flipper.angle
 		neuronView.anchor.x = p0.x + Math.cos( a1 ) * r1
 		neuronView.anchor.y = p0.y + Math.sin( a1 ) * r1
@@ -101,14 +101,14 @@ function anchorNeuronViews() {
 	// anchor receptor neurons
 	for ( let receptor of this.replicator.receptors ) {
 		const midpoint = Vector2.clone( p0 )
-		midpoint.x += Math.cos( receptor.angle ) * r0 * 0.615
-		midpoint.y += Math.sin( receptor.angle ) * r0 * 0.615
+		midpoint.x += Math.cos( receptor.angle ) * r0 * 0.525
+		midpoint.y += Math.sin( receptor.angle ) * r0 * 0.525
 		
 		for ( let i = 0, n = receptor.neurons.length; i < n; i++ ) {
 			const neuron = receptor.neurons[ i ]
 			const neuronView = this.neuronViews[ neuron.index ]
 			
-			let angle = receptor.angle + Math.PI
+			let angle = receptor.angle
 			angle += ( Math.PI * 2 ) * ( i / n )
 			
 			neuronView.anchor.x = midpoint.x + Math.cos( angle ) * r0 * 0.14
@@ -354,8 +354,8 @@ ReplicatorView.prototype = {
 				angle += i / replicator.numBodySegments * Math.PI * 2
 				
 				const p1 = {}
-				p1.x = p0.x + Math.cos( angle ) * replicator.radius * 0.455
-				p1.y = p0.y + Math.sin( angle ) * replicator.radius * 0.455
+				p1.x = p0.x + Math.cos( angle ) * replicator.radius * 0.365
+				p1.y = p0.y + Math.sin( angle ) * replicator.radius * 0.365
 				
 				const p2 = {}
 				p2.x = p1.x + Math.cos( angle ) * replicator.radius * 0.1
