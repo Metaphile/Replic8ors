@@ -11,8 +11,8 @@ export const backsideGradient = ( () => {
 	const y = Math.sin( angle ) * offset
 	
 	const gradient = ctx.createRadialGradient( x, y, 0, 0, 0, 1 )
-	gradient.addColorStop( 0.2, 'rgba(  10,  10,  30, 0.35 )' )
-	gradient.addColorStop( 1.0, 'rgba(  10,  10,  30, 0.90 )' )
+	gradient.addColorStop( 0.2, 'rgba(  10,  10,  30, 0.25 )' )
+	gradient.addColorStop( 1.0, 'rgba(  10,  10,  30, 0.80 )' )
 	
 	return gradient
 } )()
@@ -28,7 +28,7 @@ export const energyGradient = ( () => {
 	gradient.addColorStop( 0.500, 'rgba(  13, 255, 106, 0.00 )' ) // transparent green
 	gradient.addColorStop( 0.500, 'rgba(  13, 255, 106, 0.50 )' ) // green
 	gradient.addColorStop( 0.504, 'rgba(   1,  26,  11, 0.85 )' ) // dark green
-	gradient.addColorStop( 1.000, 'rgba(  13, 255, 106, 1.00 )' ) // green
+	gradient.addColorStop( 1.000, 'rgba(  13, 255, 106, 0.90 )' ) // green
 	
 	return gradient
 } )()
@@ -150,7 +150,7 @@ export function DamageEffect( onDone ) {
 }
 
 DamageEffect.prototype = {
-	duration: 0.5,
+	duration: 1/3,
 	progress: 0,
 	
 	update( dt_real, dt_sim ) {
@@ -175,7 +175,7 @@ DamageEffect.prototype = {
 			ctx.arc( 0, 0, 1, 0, Math.PI * 2 )
 			
 			ctx.globalCompositeOperation = 'overlay'
-			ctx.globalAlpha = 0.4 + ( 0.7 - 0.4 ) * ( 1 + Math.cos( this.progress * Math.PI ) ) / 2
+			ctx.globalAlpha = 0.0 + ( 0.6 - 0.0 ) * ( 1 + Math.cos( this.progress * Math.PI ) ) / 2
 			ctx.fillStyle = 'rgba( 159, 0, 0, 1.0 )'
 			ctx.fill()
 			

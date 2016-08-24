@@ -101,8 +101,8 @@ function anchorNeuronViews() {
 	// anchor receptor neurons
 	for ( let receptor of this.replicator.receptors ) {
 		const midpoint = Vector2.clone( p0 )
-		midpoint.x += Math.cos( receptor.angle ) * r0 * 0.525
-		midpoint.y += Math.sin( receptor.angle ) * r0 * 0.525
+		midpoint.x += Math.cos( receptor.angle ) * r0 * 0.545
+		midpoint.y += Math.sin( receptor.angle ) * r0 * 0.545
 		
 		for ( let i = 0, n = receptor.neurons.length; i < n; i++ ) {
 			const neuron = receptor.neurons[ i ]
@@ -120,7 +120,7 @@ function anchorNeuronViews() {
 	{
 		const hungerView = this.neuronViews[ this.replicator.hungerNeuron.index ]
 		
-		const r1 = r0 * 0.19
+		const r1 = r0 * 0.17
 		
 		hungerView.anchor.x = p0.x + Math.cos( Math.PI / 2 ) * r1
 		hungerView.anchor.y = p0.y + Math.sin( Math.PI / 2 ) * r1

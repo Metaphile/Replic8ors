@@ -4,8 +4,8 @@ export default function Spring( position, opts = {} ) {
 	const self = {}
 	
 	self.position = position
-	self.flow = 48
-	self.radius = 96
+	self.flow = 24
+	self.radius = 192
 	Object.assign( self, opts )
 	
 	self.applyForce = ( physics, dt ) => {

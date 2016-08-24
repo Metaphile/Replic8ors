@@ -32,11 +32,11 @@ export default function Reticle() {
 			const p1 = this.position
 			const p2 = interimPosition
 			
-			p2.x += ( p1.x - p2.x ) * 17 * dt
-			p2.y += ( p1.y - p2.y ) * 17 * dt
+			p2.x += ( p1.x - p2.x ) * 19 * dt
+			p2.y += ( p1.y - p2.y ) * 19 * dt
 			
-			interimRadius += ( this.radius - interimRadius ) * 17 * dt
-			interimOpacity += ( 1 - interimOpacity ) * 17 * dt
+			interimRadius += ( this.radius - interimRadius ) * 19 * dt
+			interimOpacity += ( 1 - interimOpacity ) * 19 * dt
 			if ( interimOpacity > 1 ) interimOpacity = 1
 			
 			angle = ( angle + Math.PI * 0.6 * dt ) % Math.PI

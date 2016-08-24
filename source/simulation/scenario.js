@@ -6,9 +6,9 @@ import Spring from './spring'
 import RingBuffer from '../engine/ring-buffer'
 
 const defaultOpts = {
-	designatedWidth:  550,
+	designatedWidth:  580,
 	designatedHeight: 480,
-	numReplicators: 7,
+	numReplicators: 5,
 	// numPredators: 2,
 }
 
@@ -92,13 +92,13 @@ export default function Scenario( world, opts = {} ) {
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
 			// bloom at each spring in turn
-			self.doBloom( world.springs[ bloomIndex ].position, world.springs[ bloomIndex ].radius * 0.2, 3 )
+			self.doBloom( world.springs[ bloomIndex ].position, world.springs[ bloomIndex ].radius * 0.1, 5 )
 			bloomIndex = ( bloomIndex + 1 ) % world.springs.length
 			
-			timer.setAlarm( 16, alwaysBeBlooming )
+			timer.setAlarm( 30, alwaysBeBlooming )
 		}
 		
-		timer.setAlarm( 10, alwaysBeBlooming )
+		timer.setAlarm( 0, alwaysBeBlooming )
 		
 		const addPredator = () => {
 			const predator = Predator()

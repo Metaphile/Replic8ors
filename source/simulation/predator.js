@@ -2,10 +2,10 @@ import Physics from '../engine/physics'
 
 const defaultOpts = {
 	radius:  106,
-	mass:    100,
+	mass:    90,
 	drag:    10,
 	elasticity: 7,
-	speed:  250,
+	speed:  270,
 }
 
 export default function Predator( opts = {} ) {

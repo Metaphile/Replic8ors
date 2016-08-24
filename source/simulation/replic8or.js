@@ -11,7 +11,7 @@ import Vector2 from '../engine/vector-2'
 // can't refer to other members with object literal syntax
 const defaultOpts = new function () {
 	this.radius = 32
-	this.mass = 23
+	this.mass = 26
 	this.drag = 55
 	this.elasticity = 1
 	
@@ -89,7 +89,7 @@ function programBasicInstincts( replicator ) {
 	// make all sensory input excitatory
 	for ( let neuron of replicator.brain.neurons ) {
 		neuron.weights = neuron.weights.map( ( weight, weightIndex ) => {
-			return weightIndex === neuron.index ? 0.3 : weight
+			return weightIndex === neuron.index ? 0.1 : weight
 		} )
 	}
 	
