@@ -2,7 +2,7 @@ import Scenario from '../../source/simulation/scenario'
 import World from '../../source/simulation/world'
 import Food from '../../source/simulation/food'
 
-describe( 'scenario', () => {
+xdescribe( 'scenario', () => {
 	it( 'adds replicators to the world', () => {
 		const world = World()
 		const scenario = Scenario( world, { numReplicators: 3 } )

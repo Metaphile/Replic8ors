@@ -45,7 +45,8 @@ export default function Scenario( world, opts = {} ) {
 	
 	self.doBloom = function ( position, radius, density ) {
 		for ( ; density > 0; density-- ) {
-			timer.setAlarm( 1 / density, () => {
+			// spawn foods one after another
+			timer.setAlarm( density * 0.3, () => {
 				const food = Food()
 				
 				const angle = Math.random() * Math.PI * 2
@@ -59,16 +60,25 @@ export default function Scenario( world, opts = {} ) {
 	}
 	
 	self.reset = function ( hard ) {
+		timer.cancelAlarms()
+		
 		// remove any existing replicators
 		// TODO better way of removing replicators than killing them?
 		world.replicators.slice().forEach( replicator => replicator.die() )
 		
 		// repopulate world from frozen specimens
-		cryo.forEach( specimen => {
-			const child = specimen.replicate( true )
-			child.position.x = 0
-			child.position.y = 0
-			world.addReplicator( child )
+		// shortly after first bloom
+		cryo.forEach( ( specimen, specimenIndex ) => {
+			timer.setAlarm( 5 + specimenIndex * 0.3, () => {
+				const child = specimen.replicate( true )
+				
+				const angle = Math.random() * Math.PI * 2
+				const radius2 = Math.random() * 3
+				child.position.x = Math.cos( angle ) * radius2
+				child.position.y = Math.sin( angle ) * radius2
+				
+				world.addReplicator( child )
+			} )
 		} )
 		
 		// remove any existing foods
@@ -77,10 +87,9 @@ export default function Scenario( world, opts = {} ) {
 		
 		world.predators.slice().forEach( predator => world.removePredator( predator ) )
 		
-		world.springs[0] = Spring( { x: -256, y: 0 } )
-		world.springs[1] = Spring( { x:  256, y: 0 } )
-		
-		timer.cancelAlarms()
+		// world.springs[0] = Spring( { x: -256, y: 0 } )
+		// world.springs[1] = Spring( { x:  256, y: 0 } )
+		world.springs[0] = Spring( { x: 0, y: 0 } )
 		
 		let bloomIndex = 0
 		
