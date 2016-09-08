@@ -268,16 +268,17 @@ ReplicatorView.prototype = {
 		
 		this.timer.update( dt2 )
 		
-		if ( this.replicator.takingDamage && !this.effects.damage ) {
-			this.doDamageEffect().then(
-				() => this.maybeContinueDamageEffect() )
-		}
-	},
-	
-	maybeContinueDamageEffect() {
 		if ( this.replicator.takingDamage ) {
-			this.doDamageEffect().then(
-				() => this.maybeContinueDamageEffect() )
+			// TODO this only works accidentally
+			// the effect is added once and never removed
+			// need new strategy (active flag?) for effects?
+			if ( !this.effects.damage ) {
+				this.doDamageEffect()
+			}
+			
+			// while replicator is actively taking damage, keep damage animation on first frame
+			// when damage stops, allow damage animation to play out (fade out)
+			this.effects.damage.progress = 0
 		}
 	},
 	
