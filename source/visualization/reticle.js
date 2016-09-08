@@ -58,10 +58,10 @@ export default function Reticle() {
 			
 			// middle ring
 			{
-				const innerRadius = interimRadius - 3 * zoom
-				const outerRadius = interimRadius + 22 * zoom
+				const innerRadius = interimRadius +  4 * zoom
+				const outerRadius = interimRadius + 23 * zoom
 				
-				const gap = Math.PI / 24
+				const gap = Math.PI / 23
 				
 				ctx.beginPath()
 					ctx.arc( 0, 0, innerRadius, 0 + gap, Math.PI - gap )
@@ -70,10 +70,28 @@ export default function Reticle() {
 					ctx.arc( 0, 0, innerRadius, Math.PI + gap, Math.PI * 2 - gap )
 					ctx.arc( 0, 0, outerRadius, Math.PI * 2 - gap, Math.PI + gap, true )
 					
-					ctx.globalAlpha *= 0.3
+					ctx.globalAlpha *= 0.4
 					ctx.fillStyle = color
 					ctx.fill()
-					ctx.globalAlpha /= 0.3
+					ctx.globalAlpha /= 0.4
+				
+				ctx.beginPath()
+					ctx.arc( 0, 0, innerRadius, 0 + gap, Math.PI - gap )
+					
+					ctx.strokeStyle = color
+					ctx.lineWidth = 1.5
+					ctx.globalAlpha *= 0.6
+					ctx.stroke()
+					ctx.globalAlpha /= 0.6
+				
+				ctx.beginPath()
+					ctx.arc( 0, 0, innerRadius, Math.PI + gap, Math.PI * 2 - gap )
+					
+					ctx.strokeStyle = color
+					ctx.lineWidth = 1.5
+					ctx.globalAlpha *= 0.6
+					ctx.stroke()
+					ctx.globalAlpha /= 0.6
 				
 				ctx.beginPath()
 					ctx.moveTo( Math.cos( 0 + gap ) * outerRadius, Math.sin( 0 + gap ) * outerRadius )
@@ -89,10 +107,11 @@ export default function Reticle() {
 					ctx.moveTo( Math.cos( Math.PI + gap ) * innerRadius, Math.sin( Math.PI + gap ) * innerRadius )
 					ctx.lineTo( Math.cos( Math.PI + gap ) * outerRadius, Math.sin( Math.PI + gap ) * outerRadius )
 					
-					
 					ctx.strokeStyle = color
 					ctx.lineWidth = 1.5
+					ctx.globalAlpha *= 0.6
 					ctx.stroke()
+					ctx.globalAlpha /= 0.6
 			}
 			
 			ctx.rotate( -angle2 )
