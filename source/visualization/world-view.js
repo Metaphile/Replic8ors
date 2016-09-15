@@ -124,11 +124,9 @@ export default function WorldView( world ) {
 	
 	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {
 		for ( let view of self.replicatorViews ) {
-			const replicator = view.replicator
-			const offset = Vector2.subtract( mousePos_world, replicator.position, {} )
-			const distance = Vector2.getLength( offset )
 			
-			if ( distance < replicator.radius ) {
+			const mouseDistance = Vector2.distance( mousePos_world, view.replicator.position )
+			if ( mouseDistance < view.replicator.radius ) {
 				view.drawWithFisheye( ctx, mousePos_world, detail )
 			} else {
 				view.draw( ctx, detail )
