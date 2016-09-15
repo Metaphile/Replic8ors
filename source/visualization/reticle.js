@@ -1,4 +1,5 @@
 // TODO refactor
+// TODO inner ring
 
 import Math2 from '../engine/math-2'
 

@@ -124,6 +124,7 @@ export default function WorldView( world ) {
 	
 	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {
 		for ( let view of self.replicatorViews ) {
+			// TODO check if visible
 			
 			const mouseDistance = Vector2.distance( mousePos_world, view.replicator.position )
 			if ( mouseDistance < view.replicator.radius ) {
