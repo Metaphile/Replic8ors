@@ -1,6 +1,3 @@
-// for the most part, coordinate args should be in worldspace
-// toWorld() takes screenspace coordinates, obvs
-
 // you can have multiple cameras per canvas
 //
 // worldCamera.applyView( ctx1 )
@@ -10,6 +7,7 @@
 // draw HUD...
 
 // for working with SVG matrices and points
+// I've never quite understood why the element needs to be namespaced
 const svg = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' )
 
 export default function Camera() {
@@ -31,8 +29,8 @@ export default function Camera() {
 		panTo( x, y ) {
 			if ( x instanceof Object ) ( { x, y } = x )
 			
-			screenMatrix.e = -x * screenMatrix.a // a == x scale
-			screenMatrix.f = -y * screenMatrix.d // d == y scale
+			screenMatrix.e = -x * screenMatrix.a // x scale
+			screenMatrix.f = -y * screenMatrix.d // y scale
 			
 			worldMatrix = screenMatrix.inverse()
 		},
@@ -46,8 +44,7 @@ export default function Camera() {
 				.translate( x, y )
 				// to increase zoom by e.g. 10%, scale by 1 + 0.1
 				.scale( 1 + dz, 1 + dz )
-				// put origin back
-				// if dz != 0, origin will be closer or farther away
+				// translate origin so that zoom center is unmoved
 				.translate( -x, -y )
 			
 			worldMatrix = screenMatrix.inverse()
@@ -65,8 +62,7 @@ export default function Camera() {
 			worldMatrix = screenMatrix.inverse()
 		},
 		
-		// when you need to know how far left/right/up/down the camera can see on a given canvas
-		// a.k.a. view frustum
+		// view frustum is assumed to be axis-aligned
 		viewBounds( canvas ) {
 			const topLeft = this.toWorld( 0, 0 )
 			const bottomRight = this.toWorld( canvas.width, canvas.height )
@@ -86,7 +82,8 @@ export default function Camera() {
 		// TODO method to retrieve pan offset?
 		
 		zoomLevel() {
-			// x scale (x/y scale should be the same)
+			// x scale
+			// (x and y scale are assumed be the same)
 			return screenMatrix.a
 		},
 		
@@ -109,8 +106,8 @@ export default function Camera() {
 		},
 		
 		applyView( ctx ) {
-			const { a, b, c, d, e, f } = screenMatrix
-			ctx.setTransform( a, b, c, d, e, f )
+			const m = screenMatrix
+			ctx.setTransform( m.a, m.b, m.c, m.d, m.e, m.f )
 		},
 	}
 }
