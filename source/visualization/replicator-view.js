@@ -8,6 +8,8 @@ import Math2 from '../engine/math-2'
 import Vector2 from '../engine/vector-2'
 import Timer from '../engine/timer'
 
+const ourCtx = document.createElement( 'canvas' ).getContext( '2d' )
+
 const drawEnergyLevel = ( ctx, ppx, ppy, r, energy, slosh, effects ) => {
 	// skin
 	// r -= 3.4 / 2
@@ -282,7 +284,7 @@ ReplicatorView.prototype = {
 		}
 	},
 	
-	drawWithFisheye: function ( ctx, mousePos_world, detail ) {
+	drawWithFisheye: function ( theirCtx, camera, mousePos_world, detail ) {
 		// TODO fade life juice?
 		
 		const hoverTargets = []
@@ -309,7 +311,7 @@ ReplicatorView.prototype = {
 			}
 		}
 		
-		this.draw( ctx, detail )
+		this.draw( theirCtx, camera, detail )
 		
 		for ( let hoverTarget of hoverTargets ) {
 			Vector2.set( hoverTarget.position, hoverTarget.originalPosition )
@@ -323,33 +325,39 @@ ReplicatorView.prototype = {
 	
 	// TODO add level-of-detail parameter to (some) draw methods
 	// here, maybe don't draw connections when detail < 1.0
-	draw: function ( ctx, detail ) {
+	draw: function ( theirCtx, camera, detail ) {
 		const replicator = this.replicator
 		const p0 = replicator.position
 		const r0 = replicator.radius
 		
+		const zoomLevel = camera.zoomLevel()
+		ourCtx.canvas.width = ourCtx.canvas.height = ( this.replicator.radius + 16 ) * 2 * zoomLevel
+		ourCtx.translate( ourCtx.canvas.width / 2, ourCtx.canvas.width / 2 )
+		ourCtx.scale( zoomLevel, zoomLevel )
+		ourCtx.translate( -p0.x, -p0.y )
+		
 		// backside
-		ctx.beginPath()
-			ctx.translate( p0.x, p0.y )
-			ctx.scale( r0, r0 )
+		ourCtx.beginPath()
+			ourCtx.translate( p0.x, p0.y )
+			ourCtx.scale( r0, r0 )
 			
-			ctx.arc( 0, 0, 1, 0, Math2.TAU )
-			ctx.fillStyle = assets.backsideGradient
-			ctx.fill()
+			ourCtx.arc( 0, 0, 1, 0, Math2.TAU )
+			ourCtx.fillStyle = assets.backsideGradient
+			ourCtx.fill()
 			
-			ctx.scale( 1 / r0, 1 / r0 )
-			ctx.translate( -p0.x, -p0.y )
+			ourCtx.scale( 1 / r0, 1 / r0 )
+			ourCtx.translate( -p0.x, -p0.y )
 		
 		if ( this.effects.damage ) {
-			this.effects.damage.draw( ctx, this.replicator.position, this.replicator.radius )
+			this.effects.damage.draw( ourCtx, this.replicator.position, this.replicator.radius )
 		}
 		
 		// indicate symmetric/free sections
-		ctx.lineWidth = 0.27
-		ctx.strokeStyle = 'rgba(  90, 195, 255, 0.18 )'
+		ourCtx.lineWidth = 0.27
+		ourCtx.strokeStyle = 'rgba(  90, 195, 255, 0.18 )'
 		// ctx.globalCompositeOperation = 'screen'
 		for ( let i = 0; i < replicator.numBodySegments; i++ ) {
-			ctx.beginPath()
+			ourCtx.beginPath()
 				let angle = 0
 				angle += replicator.flipperOffset
 				angle += i / replicator.numBodySegments * Math.PI * 2
@@ -372,19 +380,19 @@ ReplicatorView.prototype = {
 				p4.x = p1.x + Math.cos( angle ) * replicator.radius * 0.1
 				p4.y = p1.y + Math.sin( angle ) * replicator.radius * 0.1
 				
-				ctx.moveTo( p1.x, p1.y )
-				ctx.lineTo( p2.x, p2.y )
+				ourCtx.moveTo( p1.x, p1.y )
+				ourCtx.lineTo( p2.x, p2.y )
 				
-				ctx.moveTo( p1.x, p1.y )
-				ctx.lineTo( p3.x, p3.y )
+				ourCtx.moveTo( p1.x, p1.y )
+				ourCtx.lineTo( p3.x, p3.y )
 				
-				ctx.moveTo( p1.x, p1.y )
-				ctx.lineTo( p4.x, p4.y )
+				ourCtx.moveTo( p1.x, p1.y )
+				ourCtx.lineTo( p4.x, p4.y )
 				
-				ctx.stroke()
+				ourCtx.stroke()
 		}
 		
-		drawConnections( ctx, this.neuronViews, detail )
+		drawConnections( ourCtx, this.neuronViews, detail )
 		
 		// flipper connections
 		for ( let flipper of this.replicator.flippers ) {
@@ -397,7 +405,7 @@ ReplicatorView.prototype = {
 					y: p0.y + Math.sin( a1 ) * r1,
 				}
 				
-				drawConnection( ctx, neuronView.position, neuronView.radius, flipperPosition, 3, 1, 1 - flipper.neuron.potential, neuronView.connectionOpacity )
+				drawConnection( ourCtx, neuronView.position, neuronView.radius, flipperPosition, 3, 1, 1 - flipper.neuron.potential, neuronView.connectionOpacity )
 			}
 		}
 		
@@ -415,7 +423,7 @@ ReplicatorView.prototype = {
 				// TODO this is very misleading
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				drawConnection( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+				drawConnection( ourCtx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
 			}
 			
 			// other replicators
@@ -425,7 +433,7 @@ ReplicatorView.prototype = {
 				const weight = neuron.weights[ neuron.index ]
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				drawConnection( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+				drawConnection( ourCtx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
 			}
 			
 			// predators
@@ -435,7 +443,7 @@ ReplicatorView.prototype = {
 				const weight = neuron.weights[ neuron.index ]
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				drawConnection( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+				drawConnection( ourCtx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
 			}
 		}
 		
@@ -446,23 +454,23 @@ ReplicatorView.prototype = {
 			const weight = neuron.weights[ neuron.index ]
 			const progress = neuron.sensoryPotential / weight % 1
 			
-			drawConnection( ctx, p0, 0, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+			drawConnection( ourCtx, p0, 0, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
 		}
 		
 		// neurons
 		for ( let neuronView of this.neuronViews ) {
-			neuronView.draw( ctx, detail )
+			neuronView.draw( ourCtx, detail )
 		}
 		
-		drawFlippers( ctx, replicator )
+		drawFlippers( ourCtx, replicator )
 		
 		// TODO clean up parameters
-		drawEnergyLevel( ctx, p0.x, p0.y, r0 - 2.8/2, this._apparentEnergy, this._slosh, this.effects )
+		drawEnergyLevel( ourCtx, p0.x, p0.y, r0 - 2.8/2, this._apparentEnergy, this._slosh, this.effects )
 		
 		{
 			// const ga = ctx.globalAlpha
 			// ctx.globalAlpha = 0.666
-			ctx.drawImage( assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
+			ourCtx.drawImage( assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
 			// ctx.globalAlpha = ga
 		}
 		
@@ -478,27 +486,32 @@ ReplicatorView.prototype = {
 			const cx = this.replicator.position.x
 			const cy = this.replicator.position.y
 			
-			ctx.strokeStyle = assets.skinColor
+			ourCtx.strokeStyle = assets.skinColor
 			// ctx.strokeStyle = 'rgba( 255, 255, 255, 0.5 )'
-			ctx.lineWidth = 2.9
-			ctx.lineCap = 'butt'
+			ourCtx.lineWidth = 2.9
+			ourCtx.lineCap = 'butt'
 			
 			// TODO possible to do with one stroke?
 			for ( var i = 0; i < n; i++ ) {
-				ctx.beginPath()
+				ourCtx.beginPath()
 					// define arc between adjacent receptors, allowing for transmembrane channels
 					const startAngle = offset + (   i       / n * Math2.TAU ) + ( gap / 2 )
 					const endAngle   = offset + ( ( i + 1 ) / n * Math2.TAU ) - ( gap / 2 )
 					
-					ctx.arc( cx, cy, this.replicator.radius, startAngle, endAngle )
-					ctx.stroke()
+					ourCtx.arc( cx, cy, this.replicator.radius, startAngle, endAngle )
+					ourCtx.stroke()
 			}
 			
 			// TODO shallower notches
-			ctx.beginPath()
-				ctx.arc( cx, cy, this.replicator.radius - ctx.lineWidth/4, 0, Math.PI * 2 )
-				ctx.lineWidth /= 2
-				ctx.stroke()
+			ourCtx.beginPath()
+				ourCtx.arc( cx, cy, this.replicator.radius - ourCtx.lineWidth/4, 0, Math.PI * 2 )
+				ourCtx.lineWidth /= 2
+				ourCtx.stroke()
 		}
+		
+		const halfWidth = ourCtx.canvas.width / zoomLevel / 2
+		theirCtx.drawImage( ourCtx.canvas, p0.x - halfWidth, p0.y - halfWidth, halfWidth * 2, halfWidth * 2 )
+		
+		return
 	},
 }

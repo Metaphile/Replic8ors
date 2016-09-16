@@ -128,9 +128,9 @@ export default function WorldView( world ) {
 			
 			const mouseDistance = Vector2.distance( mousePos_world, view.replicator.position )
 			if ( mouseDistance < view.replicator.radius ) {
-				view.drawWithFisheye( ctx, mousePos_world, detail )
+				view.drawWithFisheye( ctx, camera, mousePos_world, detail )
 			} else {
-				view.draw( ctx, detail )
+				view.draw( ctx, camera, detail )
 			}
 		}
 		
