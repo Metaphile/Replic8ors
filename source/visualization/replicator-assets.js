@@ -175,7 +175,7 @@ DamageEffect.prototype = {
 			ctx.arc( 0, 0, 1, 0, Math.PI * 2 )
 			
 			ctx.globalCompositeOperation = 'overlay'
-			ctx.globalAlpha = 0.0 + ( 0.6 - 0.0 ) * ( 1 + Math.cos( this.progress * Math.PI ) ) / 2
+			ctx.globalAlpha = 0.0 + ( 0.5 - 0.0 ) * ( 1 + Math.cos( this.progress * Math.PI ) ) / 2
 			ctx.fillStyle = 'rgba( 159, 0, 0, 1.0 )'
 			ctx.fill()
 			
