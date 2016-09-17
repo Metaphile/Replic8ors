@@ -330,7 +330,7 @@ ReplicatorView.prototype = {
 		const p0 = replicator.position
 		const r0 = replicator.radius
 		
-		const zoomLevel = camera.zoomLevel()
+		const zoomLevel = camera.zoomLevel() * 1.1
 		ourCtx.canvas.width = ourCtx.canvas.height = ( this.replicator.radius + 16 ) * 2 * zoomLevel
 		ourCtx.translate( ourCtx.canvas.width / 2, ourCtx.canvas.width / 2 )
 		ourCtx.scale( zoomLevel, zoomLevel )
