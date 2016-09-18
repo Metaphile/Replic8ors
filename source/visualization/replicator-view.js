@@ -244,7 +244,17 @@ ReplicatorView.prototype = {
 	},
 	
 	doDeathEffect() {
-		return new Promise( resolve => resolve() )
+		// TODO cancel other/conflicting effects
+		// check replicator.dead before applying effects
+		
+		return new Promise( resolve => {
+			const onDone = () => {
+				this.effects.death = null
+				resolve()
+			}
+			
+			this.effects.death = assets.DeathEffect( onDone )
+		} )
 	},
 	
 	update: function ( dt, dt2 ) {
@@ -267,6 +277,7 @@ ReplicatorView.prototype = {
 		for ( let effect of this.effects.energyDowns ) effect.update( dt, dt2 )
 		for ( let effect of this.effects.energyUps ) effect.update( dt, dt2 )
 		if ( this.effects.damage ) this.effects.damage.update( dt, dt2 )
+		if ( this.effects.death ) this.effects.death.update( dt, dt2 )
 		
 		this.timer.update( dt2 )
 		
@@ -509,9 +520,14 @@ ReplicatorView.prototype = {
 				ourCtx.stroke()
 		}
 		
+		const theirCtx_globalAlpha = theirCtx.globalAlpha
+		if ( this.effects.death ) {
+			theirCtx.globalAlpha = 1 - this.effects.death.progress
+		}
+		
 		const halfWidth = ourCtx.canvas.width / zoomLevel / 2
 		theirCtx.drawImage( ourCtx.canvas, p0.x - halfWidth, p0.y - halfWidth, halfWidth * 2, halfWidth * 2 )
 		
-		return
+		theirCtx.globalAlpha = theirCtx_globalAlpha
 	},
 }

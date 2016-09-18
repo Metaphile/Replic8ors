@@ -186,3 +186,25 @@ DamageEffect.prototype = {
 		ctx.globalCompositeOperation = ctx_globalCompositeOperation
 	},
 }
+
+export function DeathEffect( onDone ) {
+	const self = Object.create( DeathEffect.prototype )
+	self.onDone = onDone
+	return self
+}
+
+DeathEffect.prototype = {
+	duration: 1,
+	progress: 0,
+	
+	update( dt_real, dt_sim ) {
+		if ( this.progress < 1 ) {
+			this.progress += 1 / this.duration * dt_sim
+		}
+		
+		if ( this.progress >= 1 && this.onDone ) {
+			this.onDone( this )
+			this.onDone = null
+		}
+	},
+}
