@@ -2,79 +2,10 @@
 // apply constant repulsive force; let springiness and collisions do their thing
 
 import * as assets from './replicator-assets'
-import { drawConnections, drawConnection } from './replicator-view-internals'
 import NeuronView from './neuron-view'
-import Math2 from '../engine/math-2'
 import Vector2 from '../engine/vector-2'
-import Timer from '../engine/timer'
 
 const ourCtx = document.createElement( 'canvas' ).getContext( '2d' )
-
-const drawEnergyLevel = ( ctx, ppx, ppy, r, energy, slosh, effects ) => {
-	// skin
-	// r -= 3.4 / 2
-	
-	const globalCompositeOperation = ctx.globalCompositeOperation
-	
-	ctx.beginPath()
-		ctx.arc( ppx, ppy, r, 0, Math2.TAU )
-		
-		const dx = ppx
-		const dy = ppy + r - ( energy * r * 2 ) + Math.cos( slosh * 26 ) * 0.1
-		const ds = r * 2
-		
-		slosh = ( Math.cos( slosh * 7 ) * Math.sin( slosh * 13 ) ) * 0.006
-		
-		ctx.translate( dx, dy )
-		// TODO separate rotation parameter
-		ctx.rotate( slosh )
-		ctx.scale( 1, ds )
-		
-		ctx.globalCompositeOperation = 'darken'
-		
-		for ( let effect of effects.energyDowns ) effect.draw( ctx, energy )
-		
-		ctx.fillStyle = assets.energyGradient
-		ctx.fill()
-		
-		for ( let effect of effects.energyUps ) effect.draw( ctx, energy )
-		
-		ctx.scale( 1, 1 / ds )
-		ctx.rotate( -slosh )
-		ctx.translate( -dx, -dy )
-	
-	ctx.globalCompositeOperation = globalCompositeOperation
-}
-
-function drawFlippers( ctx, replicator ) {
-	var p0 = replicator.position
-	var r0 = replicator.radius + 0.7
-	var flippers = replicator.flippers
-	
-	var LENGTH    = 0.4
-	var WIDTH     = 0.34
-	var SPEED     = 3.2
-	var AMPLITUDE = 0.7
-	
-	ctx.beginPath()
-		for ( var i = 0, n = flippers.length; i < n; i++ ) {
-			var a = flippers[i].angle
-			var e = 1 - flippers[i].flipProgress
-			
-			var base0 = Vector2( p0.x + ( Math.cos( a ) * r0 ), p0.y + ( Math.sin( a ) * r0 ) )
-			var base1 = Vector2( p0.x + ( Math.cos( a - WIDTH ) * r0 ), p0.y + ( Math.sin( a - WIDTH ) * r0 ) )
-			var a2 = a + Math.sin( e*e*e * Math2.TAU * SPEED ) * AMPLITUDE * e
-			var tip   = Vector2( base0.x + ( Math.cos( a2 ) * ( r0 * LENGTH ) ), base0.y + ( Math.sin( a2 ) * ( r0 * LENGTH ) ) )
-			var base2 = Vector2( p0.x + ( Math.cos( a + WIDTH ) * r0 ), p0.y + ( Math.sin( a + WIDTH ) * r0 ) )
-			
-			ctx.moveTo( base1.x, base1.y )
-			ctx.lineTo( tip.x,  tip.y  )
-			ctx.lineTo( base2.x, base2.y )
-		}
-		
-		ctx.fillStyle = assets.skinColor
-		ctx.fill()
-}
 
 function confineNeuronView( neuronView, replicatorPosition, adjustedConfinementRadius ) {
 	const deltaP = Vector2.subtract( neuronView.position, replicatorPosition, {} )
@@ -172,23 +103,12 @@ export default function ReplicatorView( replicator ) {
 	
 	// for drawing energy level
 	self._apparentEnergy = replicator.energy
-	self._slosh = Math.random() * Math2.TAU
+	self._slosh = Math.random() * Math.PI * 2
 	
 	// active effects
 	self.effects = {}
-	// energy up/down effects are stackable
+	// energy up effect is stackable
 	self.effects.energyUps = []
-	self.effects.energyDowns = []
-	
-	/* replicator.on( 'replicated', () => {
-		// energy up effect is distracting during replication
-		// maybe other effects too?
-		self.effects = {}
-		self.effects.energyUps = []
-	} ) */
-	
-	self.timer = Timer()
-	// self.timer.setAlarm( Math.random() * 1, () => self.doEnergyDownEffect() )
 	
 	return self
 }
@@ -210,24 +130,6 @@ ReplicatorView.prototype = {
 		} )
 	},
 	
-	doEnergyDownEffect() {
-		return new Promise( resolve => {
-			const onDone = ( which ) => {
-				const i = this.effects.energyDowns.indexOf( which )
-				this.effects.energyDowns.splice( i, 1 )
-				
-				this.timer.setAlarm( 2, () => {
-					this.effects.energyDowns.push( assets.EnergyDownEffect( 0.6, onDone ) )
-				} )
-				
-				resolve()
-			}
-			
-			// TODO check for energy ups?
-			this.effects.energyDowns.push( assets.EnergyDownEffect( 0.6, onDone ) )
-		} )
-	},
-	
 	doDamageEffect() {
 		return new Promise( resolve => {
 			const onDone = () => {
@@ -237,10 +139,6 @@ ReplicatorView.prototype = {
 			
 			this.effects.damage = assets.DamageEffect( onDone )
 		} )
-	},
-	
-	showDeath() {
-		return new Promise()
 	},
 	
 	doDeathEffect() {
@@ -257,7 +155,7 @@ ReplicatorView.prototype = {
 		} )
 	},
 	
-	update: function ( dt, dt2 ) {
+	update( dt_real, dt_sim ) {
 		const p0 = this.replicator.position
 		const r0 = this.replicator.radius
 		
@@ -267,19 +165,16 @@ ReplicatorView.prototype = {
 		const confinementRadius = r0 * 0.9
 		
 		for ( let neuronView of this.neuronViews ) {
-			neuronView.update( dt, dt2 )
+			neuronView.update( dt_real, dt_sim )
 			confineNeuronView( neuronView, p0, confinementRadius - neuronView.radius )
 		}
 		
-		this._apparentEnergy += ( this.replicator.energy - this._apparentEnergy ) * 9 * dt2
-		this._slosh = ( this._slosh + ( 0.51 * dt2 ) ) % Math2.TAU
+		this._apparentEnergy += ( this.replicator.energy - this._apparentEnergy ) * 9 * dt_sim
+		this._slosh = ( this._slosh + ( 0.51 * dt_sim ) ) % ( Math.PI * 2 )
 		
-		for ( let effect of this.effects.energyDowns ) effect.update( dt, dt2 )
-		for ( let effect of this.effects.energyUps ) effect.update( dt, dt2 )
-		if ( this.effects.damage ) this.effects.damage.update( dt, dt2 )
-		if ( this.effects.death ) this.effects.death.update( dt, dt2 )
-		
-		this.timer.update( dt2 )
+		for ( let effect of this.effects.energyUps ) effect.update( dt_real, dt_sim )
+		if ( this.effects.damage ) this.effects.damage.update( dt_real, dt_sim )
+		if ( this.effects.death ) this.effects.death.update( dt_real, dt_sim )
 		
 		if ( this.replicator.takingDamage ) {
 			// TODO this only works accidentally
@@ -295,7 +190,7 @@ ReplicatorView.prototype = {
 		}
 	},
 	
-	drawWithFisheye: function ( theirCtx, camera, mousePos_world, detail ) {
+	drawWithFisheye( theirCtx, camera, mousePos_world, detail ) {
 		// TODO fade life juice?
 		
 		const hoverTargets = []
@@ -334,9 +229,337 @@ ReplicatorView.prototype = {
 		}
 	},
 	
-	// TODO add level-of-detail parameter to (some) draw methods
-	// here, maybe don't draw connections when detail < 1.0
-	draw: function ( theirCtx, camera, detail ) {
+	drawBackside( ctx ) {
+		const { position, radius } = this.replicator
+		
+		ctx.beginPath()
+			ctx.translate( position.x, position.y )
+			ctx.scale( radius, radius )
+			
+			ctx.arc( 0, 0, 1, 0, Math.PI * 2 )
+			ctx.fillStyle = assets.backsideGradient
+			ctx.fill()
+			
+			ctx.scale( 1 / radius, 1 / radius )
+			ctx.translate( -position.x, -position.y )
+	},
+	
+	// indicate symmetric/free sections
+	drawSeparators( ctx ) {
+		const separatorDistance = 0.365 // distance from center
+		const numTines = 3
+		const tineLength = 0.1
+		
+		const replicator = this.replicator
+		
+		ctx.beginPath()
+			ctx.translate( replicator.position.x, replicator.position.y )
+			ctx.scale( replicator.radius, replicator.radius )
+			
+			for ( let i = 0; i < replicator.numBodySegments; i++ ) {
+				const separatorAngle = replicator.flipperOffset + ( i / replicator.numBodySegments * Math.PI * 2 )
+				const separatorX = Math.cos( separatorAngle ) * separatorDistance
+				const separatorY = Math.sin( separatorAngle ) * separatorDistance
+				
+				for ( let j = 0; j < numTines; j++ ) {
+					const tineAngle = separatorAngle + ( j / numTines * Math.PI * 2 )
+					ctx.moveTo( separatorX, separatorY )
+					ctx.lineTo( separatorX + Math.cos( tineAngle ) * tineLength, separatorY + Math.sin( tineAngle ) * tineLength )
+				}
+			}
+			
+			ctx.lineWidth = 0.27 / replicator.radius
+			ctx.strokeStyle = 'rgba( 90, 195, 255, 0.18 )'
+			ctx.stroke()
+			
+			ctx.scale( 1 / replicator.radius, 1 / replicator.radius )
+			ctx.translate( -replicator.position.x, -replicator.position.y )
+	},
+	
+	drawSignals( ctx ) {
+		const numNeuronViews = this.neuronViews.length
+		
+		for ( let i = 0; i < numNeuronViews; i++ ) {
+			const neuronViewI = this.neuronViews[ i ]
+			
+			for ( let j = i + 1; j < numNeuronViews; j++ ) {
+				const neuronViewJ = this.neuronViews[ j ]
+				
+				if ( neuronViewI.neuron.firing ) {
+					// signal from i to j
+					this.drawSignal(
+						ctx,
+						neuronViewI.position,
+						neuronViewI.radius,
+						neuronViewJ.position,
+						neuronViewJ.radius,
+						neuronViewJ.neuron.weights[ neuronViewI.neuron.index ],
+						1 - neuronViewI.neuron.potential,
+						Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ) )
+				}
+				
+				if ( neuronViewJ.neuron.firing ) {
+					// signal from j to i
+					this.drawSignal(
+						ctx,
+						neuronViewJ.position,
+						neuronViewJ.radius,
+						neuronViewI.position,
+						neuronViewI.radius,
+						neuronViewI.neuron.weights[ neuronViewJ.neuron.index ],
+						1 - neuronViewJ.neuron.potential,
+						Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ) )
+				}
+			}
+		}
+		
+		// flipper signals
+		for ( let flipper of this.replicator.flippers ) {
+			if ( flipper.neuron.firing ) {
+				const neuronView = this.neuronViews[ flipper.neuron.index ]
+				const r1 = this.replicator.radius
+				const a1 = flipper.angle
+				const flipperPosition = {
+					x: this.replicator.position.x + Math.cos( a1 ) * r1,
+					y: this.replicator.position.y + Math.sin( a1 ) * r1,
+				}
+				
+				this.drawSignal( ctx, neuronView.position, neuronView.radius, flipperPosition, 3, 1, 1 - flipper.neuron.potential, neuronView.connectionOpacity )
+			}
+		}
+		
+		// receptor signals
+		for ( let receptor of this.replicator.receptors ) {
+			const receptorPosition = { x: 0, y: 0 }
+			receptorPosition.x = this.replicator.position.x + Math.cos( receptor.angle ) * this.replicator.radius
+			receptorPosition.y = this.replicator.position.y + Math.sin( receptor.angle ) * this.replicator.radius
+			
+			// food
+			{
+				const neuron = receptor.neurons.food
+				const neuronView = this.neuronViews[ neuron.index ]
+				const weight = neuron.weights[ neuron.index ]
+				// TODO this is very misleading
+				const progress = neuron.sensoryPotential / weight % 1
+				
+				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+			}
+			
+			// other replicators
+			{
+				const neuron = receptor.neurons.replicator
+				const neuronView = this.neuronViews[ neuron.index ]
+				const weight = neuron.weights[ neuron.index ]
+				const progress = neuron.sensoryPotential / weight % 1
+				
+				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+			}
+			
+			// predators
+			{
+				const neuron = receptor.neurons.predator
+				const neuronView = this.neuronViews[ neuron.index ]
+				const weight = neuron.weights[ neuron.index ]
+				const progress = neuron.sensoryPotential / weight % 1
+				
+				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+			}
+		}
+		
+		// hunger neuron signal
+		{
+			const neuron = this.replicator.hungerNeuron
+			const neuronView = this.neuronViews[ neuron.index ]
+			const weight = neuron.weights[ neuron.index ]
+			const progress = neuron.sensoryPotential / weight % 1
+			
+			this.drawSignal( ctx, this.replicator.position, 0, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+		}
+	},
+	
+	drawSignal( ctx, a_center, a_radius, b_center, b_radius, weight, progress, baseOpacity ) {
+		if ( weight === 0 ) return
+		
+		const excitatoryStyle = 'rgba( 90, 195, 255, 1.0 )'
+		const inhibitoryStyle = 'rgba( 190, 0, 0, 0.666 )'
+		const maxConnWidth = 0.26
+		const minConnWidth = maxConnWidth * 0.08
+		
+		// vector from a center to b center
+		const ab_displacement = Vector2.subtract( b_center, a_center, {} )
+		const ab_distance = Vector2.distance( a_center, b_center )
+		
+		// angle from a center to b center
+		const ab_angle = Vector2.angle( ab_displacement )
+		// flip 180 degrees
+		const ba_angle = ab_angle + Math.PI
+		
+		
+		const b_edgeOffset = minConnWidth + Math.abs( weight ) * ( maxConnWidth - minConnWidth )
+		
+		const b_edge1 = Vector2.clone( b_center )
+		b_edge1.x += Math.cos( ba_angle + b_edgeOffset ) * b_radius
+		b_edge1.y += Math.sin( ba_angle + b_edgeOffset ) * b_radius
+		
+		const b_edge2 = Vector2.clone( b_center )
+		b_edge2.x += Math.cos( ba_angle + b_edgeOffset/5 ) * b_radius
+		b_edge2.y += Math.sin( ba_angle + b_edgeOffset/5 ) * b_radius
+		
+		const b_edge3 = Vector2.clone( b_center )
+		b_edge3.x += Math.cos( ba_angle - b_edgeOffset/5 ) * b_radius
+		b_edge3.y += Math.sin( ba_angle - b_edgeOffset/5 ) * b_radius
+		
+		const b_edge4 = Vector2.clone( b_center )
+		b_edge4.x += Math.cos( ba_angle - b_edgeOffset ) * b_radius
+		b_edge4.y += Math.sin( ba_angle - b_edgeOffset ) * b_radius
+		
+		
+		const a_edgeOffset = Vector2.angle( Vector2.subtract( b_edge2, a_center, {} ) ) - ab_angle
+		
+		const a_edge1 = Vector2.clone( a_center )
+		a_edge1.x += Math.cos( ab_angle + a_edgeOffset ) * a_radius
+		a_edge1.y += Math.sin( ab_angle + a_edgeOffset ) * a_radius
+		
+		const a_edge2 = Vector2.clone( a_center )
+		a_edge2.x += Math.cos( ab_angle - a_edgeOffset ) * a_radius
+		a_edge2.y += Math.sin( ab_angle - a_edgeOffset ) * a_radius
+		
+		
+		const a1b2_displacement = Vector2.subtract( b_edge2, a_edge1, {} )
+		const a1b2_distance     = Vector2.distance( b_edge2, a_edge1 )
+		
+		const a2b3_displacement = Vector2.subtract( b_edge3, a_edge2, {} )
+		const a2b3_distance     = Vector2.distance( b_edge3, a_edge2 )
+		
+		const midpoint1 = Vector2.add( a_edge1, Vector2.scale( a1b2_displacement, Math.pow( progress, 1/4 ), {} ), {} )
+		const midpoint2 = Vector2.add( a_edge2, Vector2.scale( a2b3_displacement, Math.pow( progress, 1/4 ), {} ), {} )
+		
+		
+		const ctx_globalAlpha = ctx.globalAlpha
+		const ctx_globalCompositeOperation = ctx.globalCompositeOperation
+		
+		ctx.globalAlpha = baseOpacity * Math.pow( 1 - progress, 1 )
+		ctx.globalCompositeOperation = weight < 0 ? 'darken' : 'lighten'
+		
+		ctx.fillStyle = weight < 0 ? inhibitoryStyle : excitatoryStyle
+		
+		ctx.beginPath()
+			ctx.moveTo( a_edge1.x, a_edge1.y )
+			ctx.lineTo( midpoint1.x, midpoint1.y )
+			ctx.lineTo( b_edge1.x, b_edge1.y )
+			
+			ctx.lineTo( b_edge4.x, b_edge4.y )
+			ctx.lineTo( midpoint2.x, midpoint2.y )
+			ctx.lineTo( a_edge2.x, a_edge2.y )
+			
+			ctx.fill()
+		
+		ctx.globalAlpha = ctx_globalAlpha
+		ctx.globalCompositeOperation = ctx_globalCompositeOperation
+	},
+	
+	drawEnergy( ctx ) {
+		ctx.beginPath()
+			const { position, radius } = this.replicator
+			
+			ctx.translate( position.x, position.y )
+			ctx.scale( radius, radius )
+			
+			ctx.arc( 0, 0, 1, 0, Math.PI * 2 )
+			
+			const energyOffsetY = 1 - this._apparentEnergy * 2
+			ctx.translate( 0, energyOffsetY )
+			
+			// gently slosh energy
+			// we multiply by primes to make the repeating pattern less obvious
+			const sloshAngle = 0.008 * ( Math.cos( this._slosh * 7 ) * Math.cos( this._slosh * 13 ) )
+			ctx.rotate( sloshAngle )
+			
+			const ctx_globalCompositeOperation = ctx.globalCompositeOperation
+			
+			ctx.globalCompositeOperation = 'darken'
+			ctx.fillStyle = assets.energyGradient
+			ctx.fill()
+			
+			// energyUp expects a pretransformed canvas
+			for ( let energyUp of this.effects.energyUps ) {
+				energyUp.draw( ctx, this._apparentEnergy )
+			}
+			
+			// manually restore canvas state
+			ctx.globalCompositeOperation = ctx_globalCompositeOperation
+			ctx.rotate( -sloshAngle )
+			ctx.translate( 0, -energyOffsetY )
+			ctx.scale( 1 / radius, 1 / radius )
+			ctx.translate( -position.x, -position.y )
+	},
+	
+	drawFlippers( ctx ) {
+		const replicator = this.replicator
+		
+		var p0 = replicator.position
+		var r0 = replicator.radius * 1.072
+		var flippers = replicator.flippers
+		
+		var LENGTH    = 0.4
+		var WIDTH     = 0.34
+		var SPEED     = 3.2
+		var AMPLITUDE = 0.7
+		
+		ctx.beginPath()
+			for ( var i = 0, n = flippers.length; i < n; i++ ) {
+				var a = flippers[i].angle
+				var e = 1 - flippers[i].flipProgress
+				
+				var base0 = Vector2( p0.x + ( Math.cos( a ) * r0 ), p0.y + ( Math.sin( a ) * r0 ) )
+				var base1 = Vector2( p0.x + ( Math.cos( a - WIDTH ) * r0 ), p0.y + ( Math.sin( a - WIDTH ) * r0 ) )
+				var a2 = a + Math.sin( e*e*e * Math.PI * 2 * SPEED ) * AMPLITUDE * e
+				var tip   = Vector2( base0.x + ( Math.cos( a2 ) * ( r0 * LENGTH ) ), base0.y + ( Math.sin( a2 ) * ( r0 * LENGTH ) ) )
+				var base2 = Vector2( p0.x + ( Math.cos( a + WIDTH ) * r0 ), p0.y + ( Math.sin( a + WIDTH ) * r0 ) )
+				
+				ctx.moveTo( base1.x, base1.y )
+				ctx.lineTo( tip.x,  tip.y  )
+				ctx.lineTo( base2.x, base2.y )
+			}
+			
+			ctx.fillStyle = assets.skinColor
+			ctx.fill()
+	},
+	
+	drawEdge( ctx ) {
+		// one chemoreceptor per body segment
+		const n = this.replicator.numBodySegments
+		// angular offset of chemoreceptors
+		const offset = this.replicator.receptorOffset
+		// to visualize pores in cell membrane
+		const gap = 0.062
+		
+		const cx = this.replicator.position.x
+		const cy = this.replicator.position.y
+		
+		ourCtx.strokeStyle = assets.skinColor
+		// ctx.strokeStyle = 'rgba( 255, 255, 255, 0.5 )'
+		ourCtx.lineWidth = 2.9
+		ourCtx.lineCap = 'butt' // heh
+		
+		for ( var i = 0; i < n; i++ ) {
+			ourCtx.beginPath()
+				// define arc between adjacent receptors, allowing for transmembrane channels
+				const startAngle = offset + (   i       / n * Math.PI * 2 ) + ( gap / 2 )
+				const endAngle   = offset + ( ( i + 1 ) / n * Math.PI * 2 ) - ( gap / 2 )
+				
+				ourCtx.arc( cx, cy, this.replicator.radius, startAngle, endAngle )
+				ourCtx.stroke()
+		}
+		
+		// TODO shallower notches
+		ourCtx.beginPath()
+			ourCtx.arc( cx, cy, this.replicator.radius - ourCtx.lineWidth/4, 0, Math.PI * 2 )
+			ourCtx.lineWidth /= 2
+			ourCtx.stroke()
+	},
+	
+	draw( theirCtx, camera, detail ) {
 		const replicator = this.replicator
 		const p0 = replicator.position
 		const r0 = replicator.radius
@@ -347,178 +570,29 @@ ReplicatorView.prototype = {
 		ourCtx.scale( zoomLevel, zoomLevel )
 		ourCtx.translate( -p0.x, -p0.y )
 		
-		// backside
-		ourCtx.beginPath()
-			ourCtx.translate( p0.x, p0.y )
-			ourCtx.scale( r0, r0 )
-			
-			ourCtx.arc( 0, 0, 1, 0, Math2.TAU )
-			ourCtx.fillStyle = assets.backsideGradient
-			ourCtx.fill()
-			
-			ourCtx.scale( 1 / r0, 1 / r0 )
-			ourCtx.translate( -p0.x, -p0.y )
+		this.drawBackside( ourCtx )
+		
+		this.drawSeparators( ourCtx )
 		
 		if ( this.effects.damage ) {
 			this.effects.damage.draw( ourCtx, this.replicator.position, this.replicator.radius )
 		}
 		
-		// indicate symmetric/free sections
-		ourCtx.lineWidth = 0.27
-		ourCtx.strokeStyle = 'rgba(  90, 195, 255, 0.18 )'
-		// ctx.globalCompositeOperation = 'screen'
-		for ( let i = 0; i < replicator.numBodySegments; i++ ) {
-			ourCtx.beginPath()
-				let angle = 0
-				angle += replicator.flipperOffset
-				angle += i / replicator.numBodySegments * Math.PI * 2
-				
-				const p1 = {}
-				p1.x = p0.x + Math.cos( angle ) * replicator.radius * 0.365
-				p1.y = p0.y + Math.sin( angle ) * replicator.radius * 0.365
-				
-				const p2 = {}
-				p2.x = p1.x + Math.cos( angle ) * replicator.radius * 0.1
-				p2.y = p1.y + Math.sin( angle ) * replicator.radius * 0.1
-				
-				const p3 = {}
-				angle += Math.PI * 2 / 3
-				p3.x = p1.x + Math.cos( angle ) * replicator.radius * 0.1
-				p3.y = p1.y + Math.sin( angle ) * replicator.radius * 0.1
-				
-				const p4 = {}
-				angle += Math.PI * 2 / 3
-				p4.x = p1.x + Math.cos( angle ) * replicator.radius * 0.1
-				p4.y = p1.y + Math.sin( angle ) * replicator.radius * 0.1
-				
-				ourCtx.moveTo( p1.x, p1.y )
-				ourCtx.lineTo( p2.x, p2.y )
-				
-				ourCtx.moveTo( p1.x, p1.y )
-				ourCtx.lineTo( p3.x, p3.y )
-				
-				ourCtx.moveTo( p1.x, p1.y )
-				ourCtx.lineTo( p4.x, p4.y )
-				
-				ourCtx.stroke()
-		}
+		this.drawSignals( ourCtx )
 		
-		drawConnections( ourCtx, this.neuronViews, detail )
-		
-		// flipper connections
-		for ( let flipper of this.replicator.flippers ) {
-			if ( flipper.neuron.firing ) {
-				const neuronView = this.neuronViews[ flipper.neuron.index ]
-				const r1 = r0
-				const a1 = flipper.angle
-				const flipperPosition = {
-					x: p0.x + Math.cos( a1 ) * r1,
-					y: p0.y + Math.sin( a1 ) * r1,
-				}
-				
-				drawConnection( ourCtx, neuronView.position, neuronView.radius, flipperPosition, 3, 1, 1 - flipper.neuron.potential, neuronView.connectionOpacity )
-			}
-		}
-		
-		// receptor connections
-		for ( let receptor of this.replicator.receptors ) {
-			const receptorPosition = { x: 0, y: 0 }
-			receptorPosition.x = p0.x + Math.cos( receptor.angle ) * r0
-			receptorPosition.y = p0.y + Math.sin( receptor.angle ) * r0
-			
-			// food
-			{
-				const neuron = receptor.neurons.food
-				const neuronView = this.neuronViews[ neuron.index ]
-				const weight = neuron.weights[ neuron.index ]
-				// TODO this is very misleading
-				const progress = neuron.sensoryPotential / weight % 1
-				
-				drawConnection( ourCtx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
-			}
-			
-			// other replicators
-			{
-				const neuron = receptor.neurons.replicator
-				const neuronView = this.neuronViews[ neuron.index ]
-				const weight = neuron.weights[ neuron.index ]
-				const progress = neuron.sensoryPotential / weight % 1
-				
-				drawConnection( ourCtx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
-			}
-			
-			// predators
-			{
-				const neuron = receptor.neurons.predator
-				const neuronView = this.neuronViews[ neuron.index ]
-				const weight = neuron.weights[ neuron.index ]
-				const progress = neuron.sensoryPotential / weight % 1
-				
-				drawConnection( ourCtx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
-			}
-		}
-		
-		// hunger neuron connection
-		{
-			const neuron = this.replicator.hungerNeuron
-			const neuronView = this.neuronViews[ neuron.index ]
-			const weight = neuron.weights[ neuron.index ]
-			const progress = neuron.sensoryPotential / weight % 1
-			
-			drawConnection( ourCtx, p0, 0, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
-		}
-		
-		// neurons
+		// draw neurons
 		for ( let neuronView of this.neuronViews ) {
 			neuronView.draw( ourCtx, detail )
 		}
 		
-		drawFlippers( ourCtx, replicator )
+		this.drawEnergy( ourCtx )
 		
-		// TODO clean up parameters
-		drawEnergyLevel( ourCtx, p0.x, p0.y, r0 - 2.8/2, this._apparentEnergy, this._slosh, this.effects )
+		// draw glossy face
+		ourCtx.drawImage( assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
 		
-		{
-			// const ga = ctx.globalAlpha
-			// ctx.globalAlpha = 0.666
-			ourCtx.drawImage( assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
-			// ctx.globalAlpha = ga
-		}
+		this.drawFlippers( ourCtx )
 		
-		// draw membrane with visible pores
-		{
-			// one chemoreceptor per body segment
-			const n = this.replicator.numBodySegments
-			// angular offset of chemoreceptors
-			const offset = this.replicator.receptorOffset
-			// to visualize pores in cell membrane
-			const gap = 0.062
-			
-			const cx = this.replicator.position.x
-			const cy = this.replicator.position.y
-			
-			ourCtx.strokeStyle = assets.skinColor
-			// ctx.strokeStyle = 'rgba( 255, 255, 255, 0.5 )'
-			ourCtx.lineWidth = 2.9
-			ourCtx.lineCap = 'butt'
-			
-			// TODO possible to do with one stroke?
-			for ( var i = 0; i < n; i++ ) {
-				ourCtx.beginPath()
-					// define arc between adjacent receptors, allowing for transmembrane channels
-					const startAngle = offset + (   i       / n * Math2.TAU ) + ( gap / 2 )
-					const endAngle   = offset + ( ( i + 1 ) / n * Math2.TAU ) - ( gap / 2 )
-					
-					ourCtx.arc( cx, cy, this.replicator.radius, startAngle, endAngle )
-					ourCtx.stroke()
-			}
-			
-			// TODO shallower notches
-			ourCtx.beginPath()
-				ourCtx.arc( cx, cy, this.replicator.radius - ourCtx.lineWidth/4, 0, Math.PI * 2 )
-				ourCtx.lineWidth /= 2
-				ourCtx.stroke()
-		}
+		this.drawEdge( ourCtx )
 		
 		const theirCtx_globalAlpha = theirCtx.globalAlpha
 		if ( this.effects.death ) {

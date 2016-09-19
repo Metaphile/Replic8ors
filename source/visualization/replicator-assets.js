@@ -25,10 +25,10 @@ export const energyGradient = ( () => {
 	
 	const gradient = ctx.createLinearGradient( 0, -1, 0, 1 )
 	
-	gradient.addColorStop( 0.500, 'rgba(  13, 255, 106, 0.00 )' ) // transparent green
-	gradient.addColorStop( 0.500, 'rgba(  13, 255, 106, 0.50 )' ) // green
-	gradient.addColorStop( 0.504, 'rgba(   1,  26,  11, 0.85 )' ) // dark green
-	gradient.addColorStop( 1.000, 'rgba(  13, 255, 106, 0.90 )' ) // green
+	gradient.addColorStop( 0.50, 'rgba(  13, 255, 112, 0.00 )' ) // transparent green
+	gradient.addColorStop( 0.50, 'rgba(  13, 255, 112, 0.50 )' ) // green
+	gradient.addColorStop( 0.51, 'rgba(   1,  26,  11, 0.85 )' ) // dark green
+	gradient.addColorStop( 1.00, 'rgba(   7, 141,  62, 0.88 )' ) // green
 	
 	return gradient
 } )()
@@ -50,17 +50,6 @@ const energyUpGradient = ( () => {
 	gradient.addColorStop( 0.5, 'rgba(   0, 255,   0, 0.3 )' )
 	gradient.addColorStop( 0.5, 'rgba(   0, 255,   0, 0.8 )' )
 	gradient.addColorStop( 1.0, 'rgba(   0, 255,   0, 0.2 )' )
-	
-	return gradient
-} )()
-
-const energyDownGradient = ( () => {
-	const gradient = ctx.createLinearGradient( 0, -1, 0, 1 )
-	
-	gradient.addColorStop( 0.5, 'rgba( 159,   0,   0, 0.0 )' )
-	gradient.addColorStop( 0.5, 'rgba( 159,   0,   0, 1.0 )' )
-	gradient.addColorStop( 0.504, 'rgba( 159,   0,   0, 0.7 )' )
-	gradient.addColorStop( 0.7, 'rgba( 159,   0,   0, 0.0 )' )
 	
 	return gradient
 } )()
@@ -96,45 +85,6 @@ EnergyUpEffect.prototype = {
 		ctx.globalCompositeOperation = 'screen'
 		ctx.globalAlpha = 1 - this.progress
 		ctx.fillStyle = energyUpGradient
-		ctx.fill()
-		
-		ctx.translate( 0, -gradientOffset )
-		ctx.globalAlpha = globalAlpha
-		ctx.globalCompositeOperation = globalCompositeOperation
-	},
-}
-
-export const EnergyDownEffect = ( duration, onDone ) => {
-	const self = Object.create( EnergyDownEffect.prototype )
-	self.duration = duration
-	self.onDone = onDone
-	self.progress = 0
-	
-	return self
-}
-
-EnergyDownEffect.prototype = {
-	update( dt, dt2 ) {
-		if ( this.progress < 1 ) {
-			this.progress += 1 / this.duration * dt2
-		}
-		
-		if ( this.progress >= 1 && this.onDone ) {
-			this.onDone( this )
-			this.onDone = null
-		}
-	},
-	
-	// assumes energy gradient transforms have been applied
-	draw( ctx, energy ) {
-		const globalCompositeOperation = ctx.globalCompositeOperation
-		const globalAlpha = ctx.globalAlpha
-		const gradientOffset = energy * Math.pow( this.progress, 3 )
-		ctx.translate( 0, gradientOffset )
-		
-		ctx.globalCompositeOperation = 'screen'
-		ctx.globalAlpha = Math.pow( 1 - this.progress, 1 )
-		ctx.fillStyle = energyDownGradient
 		ctx.fill()
 		
 		ctx.translate( 0, -gradientOffset )
