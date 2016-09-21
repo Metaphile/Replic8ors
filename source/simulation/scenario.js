@@ -101,7 +101,7 @@ export default function Scenario( world, opts = {} ) {
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
 			// bloom at each spring in turn
-			self.doBloom( world.springs[ bloomIndex ].position, world.springs[ bloomIndex ].radius * 0.1, 5 )
+			self.doBloom( world.springs[ bloomIndex ].position, world.springs[ bloomIndex ].radius * 0.1, 4 )
 			bloomIndex = ( bloomIndex + 1 ) % world.springs.length
 			
 			timer.setAlarm( 30, alwaysBeBlooming )
