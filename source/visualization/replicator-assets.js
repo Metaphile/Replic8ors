@@ -153,6 +153,7 @@ DeathEffect.prototype = {
 		}
 		
 		if ( this.progress >= 1 && this.onDone ) {
+			this.progress = 1
 			this.onDone( this )
 			this.onDone = null
 		}

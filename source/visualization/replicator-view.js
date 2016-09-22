@@ -147,7 +147,7 @@ ReplicatorView.prototype = {
 		
 		return new Promise( resolve => {
 			const onDone = () => {
-				this.effects.death = null
+				// this.effects.death = null
 				resolve()
 			}
 			
