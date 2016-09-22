@@ -198,6 +198,7 @@ Replic8or.prototype = {
 	},
 	
 	die: function () {
+		this.dead = true
 		this.emit( 'died', this )
 		
 		// release event handlers
