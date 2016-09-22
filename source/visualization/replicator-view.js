@@ -596,6 +596,12 @@ ReplicatorView.prototype = {
 		
 		const theirCtx_globalAlpha = theirCtx.globalAlpha
 		if ( this.effects.death ) {
+			ourCtx.beginPath()
+				ourCtx.arc( this.replicator.position.x, this.replicator.position.y, this.replicator.radius - 2.9/2, 0, Math.PI * 2 )
+				ourCtx.fillStyle = 'orange'
+				ourCtx.globalCompositeOperation = 'screen'
+				ourCtx.fill()
+			
 			theirCtx.globalAlpha = 1 - this.effects.death.progress
 		}
 		
