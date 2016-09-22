@@ -188,6 +188,14 @@ ReplicatorView.prototype = {
 			// when damage stops, allow damage animation to play out (fade out)
 			this.effects.damage.progress = 0
 		}
+		
+		// dead replicators are removed immediately from the world and no longer updated,
+		// but the view persists for a second or two while the death animation plays out
+		// for looks, we manually update the flippers and physics
+		if ( this.replicator.dead ) {
+			for ( let flipper of this.replicator.flippers ) flipper.update( dt_sim )
+			this.replicator.updatePhysics( dt_sim )
+		}
 	},
 	
 	drawWithFisheye( theirCtx, camera, mousePos_world, detail ) {
