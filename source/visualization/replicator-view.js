@@ -503,35 +503,46 @@ ReplicatorView.prototype = {
 	},
 	
 	drawFlippers( ctx ) {
+		const length    = 0.45
+		const speed     = 3.2
+		const amplitude = 0.5
+		
 		const replicator = this.replicator
 		
-		var p0 = replicator.position
-		var r0 = replicator.radius * 1.072
-		var flippers = replicator.flippers
-		
-		var LENGTH    = 0.4
-		var WIDTH     = 0.34
-		var SPEED     = 3.2
-		var AMPLITUDE = 0.7
-		
 		ctx.beginPath()
-			for ( var i = 0, n = flippers.length; i < n; i++ ) {
-				var a = flippers[i].angle
-				var e = 1 - flippers[i].flipProgress
+			ctx.translate( replicator.position.x, replicator.position.y )
+			
+			for ( let flipper of replicator.flippers ) {
+				const flipperBase = Vector2( Math.cos( flipper.angle ) * replicator.radius, Math.sin( flipper.angle ) * replicator.radius )
 				
-				var base0 = Vector2( p0.x + ( Math.cos( a ) * r0 ), p0.y + ( Math.sin( a ) * r0 ) )
-				var base1 = Vector2( p0.x + ( Math.cos( a - WIDTH ) * r0 ), p0.y + ( Math.sin( a - WIDTH ) * r0 ) )
-				var a2 = a + Math.sin( e*e*e * Math.PI * 2 * SPEED ) * AMPLITUDE * e
-				var tip   = Vector2( base0.x + ( Math.cos( a2 ) * ( r0 * LENGTH ) ), base0.y + ( Math.sin( a2 ) * ( r0 * LENGTH ) ) )
-				var base2 = Vector2( p0.x + ( Math.cos( a + WIDTH ) * r0 ), p0.y + ( Math.sin( a + WIDTH ) * r0 ) )
+				ctx.translate( flipperBase.x, flipperBase.y )
 				
-				ctx.moveTo( base1.x, base1.y )
-				ctx.lineTo( tip.x,  tip.y  )
-				ctx.lineTo( base2.x, base2.y )
+				const q = 1 - flipper.flipProgress
+				const flipAngle = Math.sin( Math.pow( q, 3 ) * Math.PI * 2 * speed ) * amplitude * q
+				
+				ctx.rotate( flipper.angle )
+				
+				// rotate base less than tip so flippers look rubbery
+				ctx.rotate( flipAngle * 0.5 )
+				ctx.moveTo( Math.cos( -0.45 * Math.PI ) * 10, Math.sin( -0.45 * Math.PI ) * 10 ) // base, left
+				ctx.lineTo( 0, 0 ) // base, middle
+				ctx.lineTo( Math.cos(  0.45 * Math.PI ) * 10, Math.sin(  0.45 * Math.PI ) * 10 ) // base, right
+				
+				ctx.rotate( flipAngle * 0.5 )
+				ctx.lineTo( replicator.radius * length, 0 ) // tip
+				
+				// this isn't necessary
+				// ctx.closePath()
+				
+				// manually undo transforms
+				ctx.rotate( -( flipper.angle + flipAngle ) )
+				ctx.translate( -flipperBase.x, -flipperBase.y )
 			}
 			
 			ctx.fillStyle = assets.skinColor
 			ctx.fill()
+			
+			ctx.translate( -replicator.position.x, -replicator.position.y )
 	},
 	
 	drawEdge( ctx ) {
