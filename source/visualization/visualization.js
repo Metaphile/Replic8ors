@@ -46,6 +46,8 @@ export default function Visualization( world ) {
 		} )
 		
 		$canvas.on( 'touchstart', ( event ) => {
+			if ( !event.originalEvent.touches[ 0 ] ) return
+			
 			const offsetX = event.originalEvent.touches[ 0 ].pageX - event.originalEvent.touches[ 0 ].target.offsetLeft
 			const offsetY = event.originalEvent.touches[ 0 ].pageY - event.originalEvent.touches[ 0 ].target.offsetTop
 			
@@ -62,6 +64,8 @@ export default function Visualization( world ) {
 		} )
 		
 		$canvas.on( 'touchmove', ( event ) => {
+			if ( !event.originalEvent.touches[ 0 ] ) return
+			
 			const offsetX = event.originalEvent.touches[ 0 ].pageX - event.originalEvent.touches[ 0 ].target.offsetLeft
 			const offsetY = event.originalEvent.touches[ 0 ].pageY - event.originalEvent.touches[ 0 ].target.offsetTop
 			
@@ -94,7 +98,13 @@ export default function Visualization( world ) {
 			}
 		} )
 		
-		$canvas.on( 'mouseup touchend', () => {
+		$canvas.on( 'touchend', () => {
+			if ( !event.originalEvent.touches[ 0 ] ) return
+			
+			$canvas.trigger( 'mouseup' )
+		} )
+		
+		$canvas.on( 'mouseup', () => {
 			dragLast_screen = null
 		} )
 		
