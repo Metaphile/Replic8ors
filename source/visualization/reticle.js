@@ -133,11 +133,11 @@ export default function Reticle() {
 						ctx.lineTo( Math2.clamp( p.x + Math.cos( angle ) * 1000, minX, maxX ), Math2.clamp( p.y + Math.sin( angle ) * 1000, minY, maxY ) )
 					}
 					
-					// ctx.globalAlpha *= 0.6
+					ctx.globalAlpha *= 0.6
 					ctx.strokeStyle = color
-					ctx.lineWidth = 1.5
+					ctx.lineWidth = 3
 					ctx.stroke()
-					// ctx.globalAlpha /= 0.6
+					ctx.globalAlpha /= 0.6
 			}
 			
 			ctx.globalAlpha = globalAlpha
