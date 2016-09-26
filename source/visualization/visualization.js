@@ -38,7 +38,7 @@ export default function Visualization( world ) {
 		let dragLast_screen = null
 		const dragThreshold = 2
 		
-		$canvas.on( 'mousedown', () => {
+		$canvas.on( 'mousedown', ( event ) => {
 			isDragging = false
 			dragLast_screen = { x: event.offsetX, y: event.offsetY }
 		} )
