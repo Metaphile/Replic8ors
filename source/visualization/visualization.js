@@ -34,33 +34,56 @@ export default function Visualization( world ) {
 	{
 		// mousedown followed by mousemove > threshold == drag
 		
+		// prevent scrolling while dragging on touchscreen devices
+		$( 'body' ).on( 'touchmove', event => event.preventDefault() )
+		
 		let isDragging = false
 		let dragLast_screen = null
 		const dragThreshold = 2
 		
 		$canvas.on( 'mousedown', ( event ) => {
+			$canvas.trigger( 'pointerdown', [ event.offsetX, event.offsetY ] )
+		} )
+		
+		$canvas.on( 'touchstart', ( event ) => {
+			const offsetX = event.originalEvent.touches[ 0 ].pageX - event.originalEvent.touches[ 0 ].target.offsetLeft
+			const offsetY = event.originalEvent.touches[ 0 ].pageY - event.originalEvent.touches[ 0 ].target.offsetTop
+			
+			$canvas.trigger( 'pointerdown', [ offsetX, offsetY ] )
+		} )
+		
+		$canvas.on( 'pointerdown', ( event, offsetX, offsetY ) => {
 			isDragging = false
-			dragLast_screen = { x: event.offsetX, y: event.offsetY }
+			dragLast_screen = { x: offsetX, y: offsetY }
 		} )
 		
 		$canvas.on( 'mousemove', ( event ) => {
+			$canvas.trigger( 'pointermove', [ event.offsetX, event.offsetY ] )
+		} )
+		
+		$canvas.on( 'touchmove', ( event ) => {
+			const offsetX = event.originalEvent.touches[ 0 ].pageX - event.originalEvent.touches[ 0 ].target.offsetLeft
+			const offsetY = event.originalEvent.touches[ 0 ].pageY - event.originalEvent.touches[ 0 ].target.offsetTop
+			
+			$canvas.trigger( 'pointermove', [ offsetX, offsetY ] )
+		} )
+		
+		$canvas.on( 'pointermove', ( event, offsetX, offsetY ) => {
 			if ( !isDragging && dragLast_screen ) {
-				const mousePos_screen = { x: event.offsetX, y: event.offsetY }
+				const mousePos_screen = { x: offsetX, y: offsetY }
 				const distance = Vector2.distance( mousePos_screen, dragLast_screen )
 				
 				if ( distance > dragThreshold ) {
 					isDragging = true
 				}
 			}
-		} )
-		
-		$canvas.on( 'mousemove', ( event ) => {
+			
 			if ( isDragging ) {
 				// important! previous world coords are probably wrong now;
 				// always get fresh coords
 				const dragLast_world = camera.toWorld( dragLast_screen )
 				
-				const dragNow_screen = { x: event.offsetX, y: event.offsetY }
+				const dragNow_screen = { x: offsetX, y: offsetY }
 				const dragNow_world  = camera.toWorld( dragNow_screen )
 				
 				const dragDelta_world = Vector2.subtract( dragLast_world, dragNow_world, {} )
@@ -71,7 +94,7 @@ export default function Visualization( world ) {
 			}
 		} )
 		
-		$canvas.on( 'mouseup', () => {
+		$canvas.on( 'mouseup touchend', () => {
 			dragLast_screen = null
 		} )
 		
