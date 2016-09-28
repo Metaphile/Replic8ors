@@ -3,8 +3,8 @@ const ctx = document.createElement( 'canvas' ).getContext( '2d' )
 const defaultOpts = {
 	numParticles: 32,
 	minParticleSize: 2,
-	maxParticleSize: 50,
-	radius: 800,
+	maxParticleSize: 32,
+	radius: 500,
 }
 
 export function Foreground( opts = {} ) {
@@ -17,28 +17,45 @@ export function Foreground( opts = {} ) {
 		
 		particle.radius = opts.minParticleSize + Math.random() * ( opts.maxParticleSize - opts.minParticleSize )
 		
-		const angle = Math.random() * Math.PI * 2
-		const distance = Math.random() * opts.radius
-		const weight = 1 - Math.pow( distance / opts.radius, 2 )
+		particle.x = -opts.radius + Math.random() * ( opts.radius * 2 )
+		particle.y = -opts.radius + Math.random() * ( opts.radius * 2 )
 		
-		particle.x = Math.cos( angle ) * weight * opts.radius
-		particle.y = Math.sin( angle ) * weight * opts.radius
-		
-		particle.opacity = Math.random() * ( 1 - weight ) * 0.07
+		particle.opacity = Math.random() * 0.1
+		// particle.opacity = 1
 		
 		particles.push( particle )
 	}
 	
 	return {
+		update( dt ) {
+			for ( let particle of particles ) {
+				particle.x -= 10 * dt
+				particle.y += 10 * dt
+				
+				if ( particle.x < -opts.radius ) {
+					particle.x =  opts.radius
+					particle.y = -opts.radius + Math.random() * ( opts.radius * 2 )
+				}
+				
+				if ( particle.y > opts.radius ) {
+					particle.x = -opts.radius + Math.random() * ( opts.radius * 2 )
+					particle.y = -opts.radius
+				}
+			}
+		},
+		
 		draw( ctx, offset ) {
 			const globalAlpha = ctx.globalAlpha
 			ctx.translate( -offset.x, -offset.y )
 			
 			for ( let particle of particles ) {
+				const distance = Math.sqrt( ( particle.x * particle.x ) + ( particle.y * particle.y ) )
+				const opacityWeight = distance < opts.radius ? 1 - ( distance / opts.radius ) : 0
+				
 				ctx.beginPath()
 					ctx.arc( particle.x, particle.y, particle.radius, 0, Math.PI * 2 )
 					ctx.fillStyle = 'white'
-					ctx.globalAlpha = particle.opacity
+					ctx.globalAlpha = particle.opacity * opacityWeight
 					ctx.fill()
 			}
 			

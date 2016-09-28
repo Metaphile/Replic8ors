@@ -118,6 +118,8 @@ export default function WorldView( world ) {
 		for ( let view of self.replicatorViews ) view.update( dt, dt2 )
 		for ( let view of self.predatorViews   ) view.update( dt, dt2 )
 		for ( let view of self.foodViews       ) view.update( dt, dt2 )
+		
+		foreground.update( dt2 )
 	}
 	
 	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {
