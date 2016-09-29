@@ -1,9 +1,9 @@
-import Reticle from './reticle'
+import FocusRing from './focus-ring'
 import Vector2 from '../engine/vector-2'
 
 export default function Hud( camera ) {
 	const trackablesMarkers = []
-	const reticle = Reticle()
+	const focusRing = FocusRing()
 	let selected
 	
 	return {
@@ -18,7 +18,7 @@ export default function Hud( camera ) {
 		
 		select( trackable ) {
 			if ( !selected ) {
-				reticle.doFocusEffect( trackable.radius * camera.zoomLevel() * 10 )
+				focusRing.doFocusEffect( camera.toScreen( trackable.position ), trackable.radius * camera.zoomLevel() )
 			}
 			
 			selected = trackable
@@ -26,24 +26,18 @@ export default function Hud( camera ) {
 		
 		deselect() {
 			if ( selected ) {
-				reticle.doBlurEffect()
+				focusRing.doBlurEffect()
 				selected = null
 			}
 		},
 		
 		update( dt ) {
 			if ( selected ) {
-				// TODO this isn't working -- why??
-				// Object.assign( reticle.position, camera.toScreen( selected.position ) )
-				
-				const selectedPosition_screen = camera.toScreen( selected.position )
-				reticle.position.x = selectedPosition_screen.x
-				reticle.position.y = selectedPosition_screen.y
-				
-				reticle.radius = selected.radius * camera.zoomLevel()
+				focusRing.moveTo( camera.toScreen( selected.position ) )
+				focusRing.sizeTo( selected.radius * camera.zoomLevel() )
 			}
 			
-			reticle.update( dt )
+			focusRing.update( dt )
 		},
 		
 		draw( ctx ) {
@@ -111,7 +105,7 @@ export default function Hud( camera ) {
 				}
 			}
 			
-			if ( selected ) reticle.draw( ctx, camera )
+			focusRing.draw( ctx, camera )
 		},
 	}
 }
