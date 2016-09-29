@@ -144,7 +144,7 @@ export function DeathEffect( onDone ) {
 }
 
 DeathEffect.prototype = {
-	duration: 1,
+	duration: 2,
 	progress: 0,
 	
 	update( dt_real, dt_sim ) {
