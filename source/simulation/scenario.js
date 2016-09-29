@@ -2,7 +2,6 @@ import Food from './food'
 import Timer from '../engine/timer'
 import Replic8or from './replic8or'
 import Predator from './predator'
-import Spring from './spring'
 import RingBuffer from '../engine/ring-buffer'
 
 const defaultOpts = {
@@ -87,12 +86,6 @@ export default function Scenario( world, opts = {} ) {
 		
 		world.predators.slice().forEach( predator => world.removePredator( predator ) )
 		
-		// world.springs[0] = Spring( { x: -256, y: 0 } )
-		// world.springs[1] = Spring( { x:  256, y: 0 } )
-		world.springs[0] = Spring( { x: 0, y: 0 } )
-		
-		let bloomIndex = 0
-		
 		const alwaysBeBlooming = () => {
 			// random point along edge of world
 			const angle = Math.random() * Math.PI * 2
@@ -100,9 +93,7 @@ export default function Scenario( world, opts = {} ) {
 			position.x = Math.cos( angle ) * ( self.designatedWidth / 2 )
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
-			// bloom at each spring in turn
-			self.doBloom( world.springs[ bloomIndex ].position, world.springs[ bloomIndex ].radius * 0.1, 4 )
-			bloomIndex = ( bloomIndex + 1 ) % world.springs.length
+			self.doBloom( { x: 0, y: 0 }, 256, 4 )
 			
 			timer.setAlarm( 30, alwaysBeBlooming )
 		}
