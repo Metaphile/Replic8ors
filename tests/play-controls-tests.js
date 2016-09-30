@@ -14,14 +14,14 @@ describe( 'play controls', () => {
 		expect( 'tagName' in controls ).toBe( true )
 	} )
 	
-	it( 'play/pause button toggles playback', () => {
+	it( 'pause/resume button toggles playback', () => {
 		const loop = GameLoop( nope, nope )
 		const controls = PlayControls( loop )
 		
-		$( '[name=play-pause]', controls ).click()
+		$( '[name=pause-resume]', controls ).click()
 		expect( loop.paused ).toBe( true )
 		
-		$( '[name=play-pause]', controls ).click()
+		$( '[name=pause-resume]', controls ).click()
 		expect( loop.paused ).toBe( false )
 	} )
 } )

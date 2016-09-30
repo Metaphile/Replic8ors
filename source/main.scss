@@ -25,6 +25,7 @@ html, body {
 #play-controls {
 	background: fade-out( black, 0.666 );
 	bottom: 0;
+	color: white;
 	// min-height: 100px;
 	position: absolute;
 	text-align: center;
@@ -51,7 +52,7 @@ html, body {
 		// color: rgba( 255, 255, 255, 0.6 );
 		// padding: 0.25rem 0.5rem;
 		// background: rgba( 0, 0, 0, 0.8 );
-		margin: 0.25rem;
+		margin: 0.25rem 0;
 	}
 	
 	input[name=timescale] {

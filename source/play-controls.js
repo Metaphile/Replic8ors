@@ -1,76 +1,53 @@
-// TODO maybe use <kbd> tag and label to indicate keyboard shortcuts
-// make clickable
-// TODO ESC key to zoom out
-
+const fs = require( 'fs' )
 import $ from '../third-party/jquery'
 
+const html = fs.readFileSync( __dirname + '/play-controls.html', 'utf8' )
+
 export default function PlayControls( gameLoop ) {
-	const $form =
-		$( '<form>' )
+	const $form = $( html )
 	
+	// prevent submit
 	$form.submit( event => event.preventDefault() )
 	
-	const $playPause =
-		$( '<button name="play-pause">Play / Pause</button>' )
+	const $pauseResume = $( '[name=pause-resume]', $form )
+	$pauseResume.click( () => {
+		gameLoop.paused = !gameLoop.paused
+	} )
+	$( document ).keydown( event => {
+		// spacebar
+		if ( event.which === 32 ) {
+			event.preventDefault()
+			$pauseResume.click()
+		}
+	} )
 	
-	// TODO fast-forward
+	const $step = $( '[name=step]', $form )
+	$step.click( () => {
+		gameLoop.paused = true
+		gameLoop.step()
+	} )
+	$( document ).keydown( event => {
+		// right arrow key
+		if ( event.which === 39 ) {
+			event.preventDefault() // necessary?
+			$step.click()
+		}
+	} )
 	
-	const $sloMo =
-		$( '<button name="slo-mo">Slow</button>' )
-	
-	$sloMo.click( () => {
+	$( '[name=speed-slow]', $form ).click( () => {
 		gameLoop.timescale = 0.2
 		gameLoop.paused = false
 	} )
 	
-	const $normalSpeed =
-		$( '<button name="normal-speed">Real time</button>' )
-	
-	$normalSpeed.click( () => {
+	$( '[name=speed-normal]', $form ).click( () => {
 		gameLoop.timescale = 1
 		gameLoop.paused = false
 	} )
 	
-	const $highSpeed =
-		$( '<button name="high-speed">Fast</button>' )
-	
-	$highSpeed.click( () => {
+	$( '[name=speed-fast]', $form ).click( () => {
 		gameLoop.timescale = 10
 		gameLoop.paused = false
 	} )
-	
-	$playPause.click( () => {
-		gameLoop.paused = !gameLoop.paused
-	} )
-	
-	const $step =
-		$( '<button name="step">Step</button>' )
-	
-	$step.click( () => {
-		gameLoop.paused = true
-		// TODO update play-pause icon
-		gameLoop.step()
-	} )
-	
-	$( document ).keydown( event => {
-		switch ( event.which ) {
-			case 32: // spacebar
-				event.preventDefault()
-				$playPause.click()
-				break
-			
-			case 39: // right arrow
-				event.preventDefault() // may be too much
-				$step.click()
-				break
-		}
-	} )
-	
-	$form.append( $playPause )
-	$form.append( $sloMo )
-	$form.append( $normalSpeed )
-	$form.append( $highSpeed )
-	$form.append( $step )
 	
 	return $form[ 0 ]
 }
