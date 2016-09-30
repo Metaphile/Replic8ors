@@ -16,7 +16,7 @@ const defaultOpts = new function () {
 	this.elasticity = 1
 	
 	this.energy = 0.5
-	this.metabolism = 1 / ( 4 * 60 )
+	this.metabolism = 1 / ( 2 * 60 )
 	
 	this.numBodySegments = 5
 	this.receptorOffset = -Math.PI / 2, // up
@@ -89,7 +89,7 @@ function programBasicInstincts( replicator ) {
 	// make all sensory input excitatory
 	for ( let neuron of replicator.brain.neurons ) {
 		neuron.weights = neuron.weights.map( ( weight, weightIndex ) => {
-			return weightIndex === neuron.index ? 0.1 : weight
+			return weightIndex === neuron.index ? 0.01 : weight
 		} )
 	}
 	
@@ -130,7 +130,7 @@ export default function Replic8or( opts = {} ) {
 	createSymmetricSegments.call( self )
 	
 	// programBasicInstincts( self )
-	programNonsense( self )
+	// programNonsense( self )
 	
 	return self
 }
@@ -208,7 +208,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.01 ) {
+	replicate: function ( quietly, mutationRate = 0.015 ) {
 		const parent = this
 		const child = Replic8or()
 		

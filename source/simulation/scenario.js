@@ -30,7 +30,8 @@ export default function Scenario( world, opts = {} ) {
 				const food = Food()
 				
 				const angle = Math.random() * Math.PI * 2
-				const radius2 = Math.random() * radius
+				const radius2 = ( radius * 0.8 ) + Math.random() * radius * 0.4
+				// const radius2 = radius
 				food.position.x = position.x + Math.cos( angle ) * radius2
 				food.position.y = position.y + Math.sin( angle ) * radius2
 				
@@ -49,7 +50,7 @@ export default function Scenario( world, opts = {} ) {
 		// repopulate world from frozen specimens
 		// shortly after first bloom
 		cryo.forEach( ( specimen, specimenIndex ) => {
-			timer.setAlarm( 5 + specimenIndex * 0.3, () => {
+			timer.setAlarm( 3 + specimenIndex * 0.3, () => {
 				const child = specimen.replicate( true )
 				
 				const angle = Math.random() * Math.PI * 2
@@ -74,7 +75,7 @@ export default function Scenario( world, opts = {} ) {
 			position.x = Math.cos( angle ) * ( self.designatedWidth / 2 )
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
-			self.doBloom( { x: 0, y: 0 }, 256, 4 )
+			self.doBloom( { x: 0, y: 0 }, 180, 4 )
 			
 			timer.setAlarm( 30, alwaysBeBlooming )
 		}
@@ -86,13 +87,13 @@ export default function Scenario( world, opts = {} ) {
 			
 			// random point past edge of world
 			const angle = Math.random() * Math.PI * 2
-			predator.position.x = Math.cos( angle ) * self.designatedWidth
-			predator.position.y = Math.sin( angle ) * self.designatedWidth
+			predator.position.x = Math.cos( angle ) * self.designatedWidth * 2
+			predator.position.y = Math.sin( angle ) * self.designatedWidth * 2
 			
 			world.addPredator( predator )
 		}
 		
-		addPredator()
+		timer.setAlarm( 3, addPredator )
 		
 		console.log( 'Reset @', new Date() )
 	}
