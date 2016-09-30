@@ -15,7 +15,7 @@ export default function WorldView( world ) {
 	self.predatorViews = []
 	self.foodViews = []
 	
-	const foreground = assets.Foreground()
+	// const foreground = assets.Foreground()
 	
 	// replicators
 	
@@ -119,7 +119,7 @@ export default function WorldView( world ) {
 		for ( let view of self.predatorViews   ) view.update( dt, dt2 )
 		for ( let view of self.foodViews       ) view.update( dt, dt2 )
 		
-		foreground.update( dt2 )
+		// foreground.update( dt2 )
 	}
 	
 	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {
@@ -142,7 +142,7 @@ export default function WorldView( world ) {
 		for ( let view of self.predatorViews   ) view.draw( ctx )
 		for ( let view of self.foodViews       ) view.draw( ctx )
 		
-		foreground.draw( ctx, camera.viewCenter( ctx.canvas ) )
+		// foreground.draw( ctx, camera.viewCenter( ctx.canvas ) )
 	}
 	
 	const pointInCircle = ( point, center, radius ) => {
