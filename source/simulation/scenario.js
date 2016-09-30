@@ -11,25 +11,6 @@ const defaultOpts = {
 	// numPredators: 2,
 }
 
-function spawnFood( x, y ) {
-	const food = Food()
-	
-	const angle = Math.random() * Math.PI * 2
-	const maxSpeed = 625
-	const speed = Math.random() * maxSpeed
-	
-	food.velocity.x = Math.cos( angle ) * speed
-	food.velocity.y = Math.sin( angle ) * speed
-	
-	// offset spawn position according to initial velocity
-	// because it looks nice
-	const maxOffset = 32
-	food.position.x = x + Math.cos( angle ) * ( speed / maxSpeed ) * maxOffset
-	food.position.y = y + Math.sin( angle ) * ( speed / maxSpeed ) * maxOffset
-	
-	return food
-}
-
 export default function Scenario( world, opts = {} ) {
 	const self = {}
 	Object.assign( self, defaultOpts, opts )
