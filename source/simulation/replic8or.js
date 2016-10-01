@@ -89,7 +89,7 @@ function programBasicInstincts( replicator ) {
 	// make all sensory input excitatory
 	for ( let neuron of replicator.brain.neurons ) {
 		neuron.weights = neuron.weights.map( ( weight, weightIndex ) => {
-			return weightIndex === neuron.index ? 0.01 : weight
+			return weightIndex === neuron.index ? 0.1 : weight
 		} )
 	}
 	
@@ -208,7 +208,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.015 ) {
+	replicate: function ( quietly, mutationRate = 0.016 ) {
 		const parent = this
 		const child = Replic8or()
 		
