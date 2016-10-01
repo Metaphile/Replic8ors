@@ -51,7 +51,7 @@ CrumbsEffect.prototype = {
 	
 	update( dt, dt2 ) {
 		if ( this.progress < 1 ) {
-			for ( let crumb of this.crumbs ) {
+			for ( const crumb of this.crumbs ) {
 				crumb.updatePhysics( dt2 )
 			}
 			
@@ -69,7 +69,7 @@ CrumbsEffect.prototype = {
 		ctx.globalAlpha = Math.pow( 1 - this.progress, 0.5 )
 		ctx.fillStyle = 'white'
 		
-		for ( let crumb of this.crumbs ) {
+		for ( const crumb of this.crumbs ) {
 			ctx.beginPath()
 				ctx.arc( crumb.position.x, crumb.position.y, crumb.radius, 0, Math.PI * 2 )
 				ctx.fill()

@@ -28,7 +28,7 @@ export function Foreground( opts = {} ) {
 	
 	return {
 		update( dt ) {
-			for ( let particle of particles ) {
+			for ( const particle of particles ) {
 				particle.x -= 10 * dt
 				particle.y += 10 * dt
 				
@@ -48,7 +48,7 @@ export function Foreground( opts = {} ) {
 			const globalAlpha = ctx.globalAlpha
 			ctx.translate( -offset.x, -offset.y )
 			
-			for ( let particle of particles ) {
+			for ( const particle of particles ) {
 				const distance = Math.sqrt( ( particle.x * particle.x ) + ( particle.y * particle.y ) )
 				const opacityWeight = distance < opts.radius ? 1 - ( distance / opts.radius ) : 0
 				

@@ -13,7 +13,7 @@ NeuralNetwork.prototype = {
 		this.neurons.push( newNeuron )
 		newNeuron.index = this.neurons.indexOf( newNeuron )
 		
-		for ( let neuron of this.neurons ) {
+		for ( const neuron of this.neurons ) {
 			// add weight _to_ new neuron
 			if ( !( neuron.index in newNeuron.weights ) ) {
 				newNeuron.weights[ neuron.index ] = 0
@@ -28,9 +28,9 @@ NeuralNetwork.prototype = {
 	
 	update: function ( dt ) {
 		// propagate signals
-		for ( let source of this.neurons ) {
+		for ( const source of this.neurons ) {
 			if ( source.firing ) {
-				for ( let target of this.neurons ) {
+				for ( const target of this.neurons ) {
 					// TODO write test
 					if ( source === target ) continue
 					target.stimulate( 1 / source.refractoryPeriod * dt, source.index )
@@ -38,7 +38,7 @@ NeuralNetwork.prototype = {
 			}
 		}
 		
-		for ( let neuron of this.neurons ) {
+		for ( const neuron of this.neurons ) {
 			neuron.update( dt )
 		}
 	},

@@ -23,7 +23,7 @@ function anchorNeuronViews() {
 	const r0 = this.replicator.radius
 	
 	// anchor flipper neurons
-	for ( let flipper of this.replicator.flippers ) {
+	for ( const flipper of this.replicator.flippers ) {
 		const neuronView = this.neuronViews[ flipper.neuron.index ]
 		const r1 = r0 * 0.655
 		const a1 = flipper.angle
@@ -32,7 +32,7 @@ function anchorNeuronViews() {
 	}
 	
 	// anchor receptor neurons
-	for ( let receptor of this.replicator.receptors ) {
+	for ( const receptor of this.replicator.receptors ) {
 		const midpoint = Vector2.clone( p0 )
 		midpoint.x += Math.cos( receptor.angle ) * r0 * 0.545
 		midpoint.y += Math.sin( receptor.angle ) * r0 * 0.545
@@ -63,7 +63,7 @@ function anchorNeuronViews() {
 	{
 		const r1 = r0 * 0.19
 		let angle = Math.PI / 2 + Math.PI / 1.5
-		for ( let thinkNeuron of this.replicator.thinkNeurons ) {
+		for ( const thinkNeuron of this.replicator.thinkNeurons ) {
 			const thinkView = this.neuronViews[ thinkNeuron.index ]
 			thinkView.anchor.x = p0.x + Math.cos( angle ) * r1
 			thinkView.anchor.y = p0.y + Math.sin( angle ) * r1
@@ -79,11 +79,11 @@ export default function ReplicatorView( replicator ) {
 	
 	self.neuronViews = []
 	
-	for ( let flipper of replicator.flippers ) {
+	for ( const flipper of replicator.flippers ) {
 		self.neuronViews[ flipper.neuron.index ] = NeuronView( flipper.neuron, 'flipper' )
 	}
 	
-	for ( let receptor of replicator.receptors ) {
+	for ( const receptor of replicator.receptors ) {
 		let neuron
 		
 		neuron = receptor.neurons.replicator
@@ -97,7 +97,7 @@ export default function ReplicatorView( replicator ) {
 	}
 	
 	self.neuronViews[ replicator.hungerNeuron.index ] = NeuronView( replicator.hungerNeuron, 'empty' )
-	for ( let thinkNeuron of replicator.thinkNeurons ) {
+	for ( const thinkNeuron of replicator.thinkNeurons ) {
 		self.neuronViews[ thinkNeuron.index ] = NeuronView( thinkNeuron, 'think' )
 	}
 	
@@ -164,7 +164,7 @@ ReplicatorView.prototype = {
 		// leave a little bit of space between neurons and the outer wall
 		const confinementRadius = r0 * 0.9
 		
-		for ( let neuronView of this.neuronViews ) {
+		for ( const neuronView of this.neuronViews ) {
 			neuronView.update( dt_real, dt_sim )
 			confineNeuronView( neuronView, p0, confinementRadius - neuronView.radius )
 		}
@@ -172,7 +172,7 @@ ReplicatorView.prototype = {
 		this._apparentEnergy += ( this.replicator.energy - this._apparentEnergy ) * 9 * dt_sim
 		this._slosh = ( this._slosh + ( 0.51 * dt_sim ) ) % ( Math.PI * 2 )
 		
-		for ( let effect of this.effects.energyUps ) effect.update( dt_real, dt_sim )
+		for ( const effect of this.effects.energyUps ) effect.update( dt_real, dt_sim )
 		if ( this.effects.damage ) this.effects.damage.update( dt_real, dt_sim )
 		if ( this.effects.death ) this.effects.death.update( dt_real, dt_sim )
 		
@@ -193,7 +193,7 @@ ReplicatorView.prototype = {
 		// but the view persists for a second or two while the death animation plays out
 		// for looks, we manually update the flippers and physics
 		if ( this.replicator.dead ) {
-			for ( let flipper of this.replicator.flippers ) flipper.update( dt_sim )
+			for ( const flipper of this.replicator.flippers ) flipper.update( dt_sim )
 			this.replicator.updatePhysics( dt_sim )
 		}
 	},
@@ -203,7 +203,7 @@ ReplicatorView.prototype = {
 		
 		const hoverTargets = []
 		
-		for ( let view of this.neuronViews ) {
+		for ( const view of this.neuronViews ) {
 			const offset = Vector2.subtract( mousePos_world, view.position, {} )
 			const distance = Vector2.getLength( offset )
 			const collisionRadius = 14
@@ -227,12 +227,12 @@ ReplicatorView.prototype = {
 		
 		this.draw( theirCtx, camera, detail )
 		
-		for ( let hoverTarget of hoverTargets ) {
+		for ( const hoverTarget of hoverTargets ) {
 			Vector2.set( hoverTarget.position, hoverTarget.originalPosition )
 			hoverTarget.radius = hoverTarget.originalRadius
 		}
 		
-		for ( let view of this.neuronViews ) {
+		for ( const view of this.neuronViews ) {
 			view.connectionOpacity = 1
 		}
 	},
@@ -322,7 +322,7 @@ ReplicatorView.prototype = {
 		}
 		
 		// flipper signals
-		for ( let flipper of this.replicator.flippers ) {
+		for ( const flipper of this.replicator.flippers ) {
 			if ( flipper.neuron.firing ) {
 				const neuronView = this.neuronViews[ flipper.neuron.index ]
 				const r1 = this.replicator.radius
@@ -337,7 +337,7 @@ ReplicatorView.prototype = {
 		}
 		
 		// receptor signals
-		for ( let receptor of this.replicator.receptors ) {
+		for ( const receptor of this.replicator.receptors ) {
 			const receptorPosition = { x: 0, y: 0 }
 			receptorPosition.x = this.replicator.position.x + Math.cos( receptor.angle ) * this.replicator.radius
 			receptorPosition.y = this.replicator.position.y + Math.sin( receptor.angle ) * this.replicator.radius
@@ -490,7 +490,7 @@ ReplicatorView.prototype = {
 			ctx.fill()
 			
 			// energyUp expects a pretransformed canvas
-			for ( let energyUp of this.effects.energyUps ) {
+			for ( const energyUp of this.effects.energyUps ) {
 				energyUp.draw( ctx, this._apparentEnergy )
 			}
 			
@@ -512,7 +512,7 @@ ReplicatorView.prototype = {
 		ctx.beginPath()
 			ctx.translate( replicator.position.x, replicator.position.y )
 			
-			for ( let flipper of replicator.flippers ) {
+			for ( const flipper of replicator.flippers ) {
 				const flipperBase = Vector2( Math.cos( flipper.angle ) * ( replicator.radius - 1.3 ), Math.sin( flipper.angle ) * ( replicator.radius - 1.3 ) )
 				
 				ctx.translate( flipperBase.x, flipperBase.y )
@@ -600,7 +600,7 @@ ReplicatorView.prototype = {
 		this.drawSignals( ourCtx )
 		
 		// draw neurons
-		for ( let neuronView of this.neuronViews ) {
+		for ( const neuronView of this.neuronViews ) {
 			neuronView.draw( ourCtx, detail )
 		}
 		

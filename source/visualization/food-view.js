@@ -47,7 +47,7 @@ FoodView.prototype = {
 	},
 	
 	update( dt, dt2 ) {
-		for ( let key of Object.keys( this.effects ) ) {
+		for ( const key of Object.keys( this.effects ) ) {
 			this.effects[ key ].update( dt, dt2 )
 		}
 	},

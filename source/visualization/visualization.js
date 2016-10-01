@@ -183,7 +183,7 @@ export default function Visualization( world ) {
 			hud.track( replicator, HudMarker( { size: 22 } ) )
 		}
 		
-		for ( let replicator of world.replicators ) trackReplicator( replicator )
+		for ( const replicator of world.replicators ) trackReplicator( replicator )
 		world.on( 'replicator-added', trackReplicator )
 	}
 	
@@ -192,7 +192,7 @@ export default function Visualization( world ) {
 			hud.track( predator, HudMarker( { size: 44 } ) )
 		}
 		
-		for ( let predator of world.predators ) trackPredator( predator )
+		for ( const predator of world.predators ) trackPredator( predator )
 		world.on( 'predator-added', trackPredator )
 	}
 	

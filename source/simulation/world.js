@@ -94,7 +94,7 @@ World.prototype = {
 			const food = foods[ foodIndex ]
 			const recipients = []
 			
-			for ( let replicator of replicators ) {
+			for ( const replicator of replicators ) {
 				const dx = food.position.x - replicator.position.x
 				const dy = food.position.y - replicator.position.y
 				
@@ -115,7 +115,7 @@ World.prototype = {
 				// at least one replicator got to the food
 				// if more than one, divvy up
 				
-				for ( let recipient of recipients ) {
+				for ( const recipient of recipients ) {
 					recipient.energy += food.calories / recipients.length
 				}
 				
@@ -132,7 +132,7 @@ World.prototype = {
 		for ( let foodIndex = 0; foodIndex < foods.length; foodIndex++ ) {
 			const food = foods[ foodIndex ]
 			
-			for ( let predator of predators ) {
+			for ( const predator of predators ) {
 				const dx = food.position.x - predator.position.x
 				const dy = food.position.y - predator.position.y
 				
@@ -156,10 +156,10 @@ World.prototype = {
 		}
 		
 		// predators-replicators
-		for ( let predator of predators ) {
+		for ( const predator of predators ) {
 			let juiciestReplicator, minDistance = Infinity
 			
-			for ( let replicator of replicators ) {
+			for ( const replicator of replicators ) {
 				const distance = Vector2.distance( predator.position, replicator.position )
 				
 				if ( distance < predator.radius + replicator.radius ) {
@@ -184,15 +184,15 @@ World.prototype = {
 			}
 		}
 		
-		for ( let replicator of replicators.slice( 0 ) ) {
+		for ( const replicator of replicators.slice( 0 ) ) {
 			replicator.update( dt )
 		}
 		
-		for ( let food of foods.slice( 0 ) ) {
+		for ( const food of foods.slice( 0 ) ) {
 			food.update( dt )
 		}
 		
-		for ( let predator of predators ) {
+		for ( const predator of predators ) {
 			predator.update( dt )
 		}
 	},

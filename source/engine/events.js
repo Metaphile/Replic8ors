@@ -3,7 +3,7 @@ export default function Events( self = {} ) {
 	
 	// TODO multiple events
 	self.on = ( events, callback ) => {
-		for ( let event of events.split( ' ' ) ) {
+		for ( const event of events.split( ' ' ) ) {
 			if ( !subscriptions[ event ] ) subscriptions[ event ] = []
 			subscriptions[ event ].push( callback )
 		}
@@ -17,7 +17,7 @@ export default function Events( self = {} ) {
 		const callbacks = subscriptions[ event ]
 		
 		if ( callbacks ) {
-			for ( let callback of callbacks ) {
+			for ( const callback of callbacks ) {
 				callback( ...args )
 			}
 		}

@@ -87,7 +87,7 @@ function programBasicInstincts( replicator ) {
 	const { numBodySegments: numSegments, receptors, flippers } = replicator
 	
 	// make all sensory input excitatory
-	for ( let neuron of replicator.brain.neurons ) {
+	for ( const neuron of replicator.brain.neurons ) {
 		neuron.weights = neuron.weights.map( ( weight, weightIndex ) => {
 			return weightIndex === neuron.index ? 0.1 : weight
 		} )
@@ -112,7 +112,7 @@ function programBasicInstincts( replicator ) {
 }
 
 function programNonsense( replicator ) {
-	for ( let neuron of replicator.brain.neurons ) {
+	for ( const neuron of replicator.brain.neurons ) {
 		neuron.weights = neuron.weights.map( weight => Math.pow( Math2.randRange( -1, 1 ), 3 ) )
 	}
 	
@@ -139,7 +139,7 @@ Replic8or.prototype = {
 	update: function ( dt ) {
 		this.brain.update( dt )
 		
-		for ( let flipper of this.flippers ) flipper.update( dt )
+		for ( const flipper of this.flippers ) flipper.update( dt )
 		
 		this.updatePhysics( dt )
 		
@@ -156,7 +156,7 @@ Replic8or.prototype = {
 	},
 	
 	senseFood: function ( food, dt ) {
-		for ( let receptor of this.receptors ) {
+		for ( const receptor of this.receptors ) {
 			const receptorPosition = Vector2.clone( this.position )
 			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
@@ -170,7 +170,7 @@ Replic8or.prototype = {
 	},
 	
 	senseReplicator: function ( replicator, dt ) {
-		for ( let receptor of this.receptors ) {
+		for ( const receptor of this.receptors ) {
 			const receptorPosition = Vector2.clone( this.position )
 			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
@@ -184,7 +184,7 @@ Replic8or.prototype = {
 	},
 	
 	sensePredator: function ( predator, dt ) {
-		for ( let receptor of this.receptors ) {
+		for ( const receptor of this.receptors ) {
 			const receptorPosition = Vector2.clone( this.position )
 			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius

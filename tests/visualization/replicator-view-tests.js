@@ -59,7 +59,7 @@ describe( 'replicator view', () => {
 		
 		expect( flippers.length ).toBe( 3 )
 		
-		for ( let flipper of flippers ) {
+		for ( const flipper of flippers ) {
 			const neuronView = neuronViews[ flipper.neuron.index ]
 			expect( neuronView.neuron ).toBe( flipper.neuron )
 		}

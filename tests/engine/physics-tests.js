@@ -51,7 +51,7 @@ describe( 'physics', () => {
 		const parachute = Body( { drag: 10.0 } )
 		
 		// same initial velocity
-		for ( let body of [ racecar, parachute ] ) {
+		for ( const body of [ racecar, parachute ] ) {
 			body.velocity = { x: 3, y: -4 }
 			body.updatePhysics( 1/60 )
 		}
@@ -63,7 +63,7 @@ describe( 'physics', () => {
 		const feather = Body( { mass:  0.1 } )
 		const hammer  = Body( { mass: 10.0 } )
 		 
-		for ( let body of [ feather, hammer ] ) {
+		for ( const body of [ feather, hammer ] ) {
 			body.velocity = { x: -5, y: 3 }
 			body.updatePhysics( 1/60 )
 		}

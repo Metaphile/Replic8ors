@@ -80,7 +80,7 @@ export default function WorldView( world ) {
 			self.foodViews.splice( i, 1 )
 		} )
 		
-		for ( let replicator of replicators ) {
+		for ( const replicator of replicators ) {
 			const replicatorView = self.replicatorViews.find( view => {
 				return view.replicator === replicator
 			} )
@@ -115,9 +115,9 @@ export default function WorldView( world ) {
 	} )
 	
 	self.update = ( dt, dt2 ) => {
-		for ( let view of self.replicatorViews ) view.update( dt, dt2 )
-		for ( let view of self.predatorViews   ) view.update( dt, dt2 )
-		for ( let view of self.foodViews       ) view.update( dt, dt2 )
+		for ( const view of self.replicatorViews ) view.update( dt, dt2 )
+		for ( const view of self.predatorViews   ) view.update( dt, dt2 )
+		for ( const view of self.foodViews       ) view.update( dt, dt2 )
 		
 		// foreground.update( dt2 )
 	}
@@ -125,7 +125,7 @@ export default function WorldView( world ) {
 	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {
 		const viewBounds = camera.viewBounds( ctx.canvas )
 		
-		for ( let view of self.replicatorViews ) {
+		for ( const view of self.replicatorViews ) {
 			// don't draw offscreen replicators
 			const p = view.replicator.position
 			const r = view.replicator.radius + 16
@@ -139,8 +139,8 @@ export default function WorldView( world ) {
 			}
 		}
 		
-		for ( let view of self.predatorViews   ) view.draw( ctx )
-		for ( let view of self.foodViews       ) view.draw( ctx )
+		for ( const view of self.predatorViews   ) view.draw( ctx )
+		for ( const view of self.foodViews       ) view.draw( ctx )
 		
 		// foreground.draw( ctx, camera.viewCenter( ctx.canvas ) )
 	}
