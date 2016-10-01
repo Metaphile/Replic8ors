@@ -97,7 +97,7 @@ NeuronView.prototype = {
 			const r = this.radius * 0.35
 			ctx.globalCompositeOperation = 'screen'
 			ctx.globalAlpha = 1 - ( 1 - detail ) / 0.9
-			ctx.drawImage( this.icon, -r + r/16, -r + r/16, r * 2, r * 2 )
+			ctx.drawImage( this.icon, -r + r/18, -r + r/18, r * 2, r * 2 )
 			ctx.globalAlpha = 1
 			
 			if ( !this.neuron.firing ) {

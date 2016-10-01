@@ -100,14 +100,18 @@ PredatorView.prototype = {
 				ctx.arc( p0.x, p0.y, r0, 0, Math.PI * 2 )
 				
 				ctx.translate( p0.x, p0.y )
+				
 				ctx.scale( r0, r0 )
 				ctx.fillStyle = assets.backsideGradient
 				ctx.fill()
 				ctx.scale( 1 / r0, 1 / r0 )
-				ctx.translate( -p0.x, -p0.y )
 				
+				ctx.scale( 8, 8 )
 				ctx.globalCompositeOperation = 'darken'
-				ctx.drawImage( neuronIcons.predator, p0.x - r0/1.6 + r0/16, p0.y - r0/1.6 + r0/16, r0/1.6 * 2, r0/1.6 * 2 )
+				ctx.drawImage( neuronIcons.predator, -9 + 0.5, -9 + 0.5, 18, 18 )
+				ctx.scale( 1/8, 1/8 )
+				
+				ctx.translate( -p0.x, -p0.y )
 				
 				const energy = 1.0
 				
