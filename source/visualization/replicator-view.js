@@ -503,7 +503,7 @@ ReplicatorView.prototype = {
 	},
 	
 	drawFlippers( ctx ) {
-		const length    = 0.49
+		const length    = 0.48
 		const speed     = 2.9
 		const amplitude = 0.5
 		
