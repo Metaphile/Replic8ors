@@ -49,5 +49,9 @@ export default function PlayControls( gameLoop ) {
 		gameLoop.paused = false
 	} )
 	
+	$( '[name=info]', $form ).click( () => {
+		$( '#info' ).fadeToggle()
+	} )
+	
 	return $form[ 0 ]
 }

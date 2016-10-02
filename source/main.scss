@@ -18,6 +18,21 @@ html, body {
 	height: 100%;
 }
 
+#info {
+	background: fade-out( black, 0.666 );
+	position: absolute;
+	width: 600px;
+	max-width: 90%;
+	margin: 1rem auto;
+	left:   0;
+	right:  0;
+	padding: 1rem 3rem 2rem 3rem;
+	z-index: 999;
+	
+	color: white;
+	overflow-y: scroll;
+}
+
 #visualization {
 	height: 100%;
 }
