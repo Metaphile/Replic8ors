@@ -7,7 +7,7 @@ const defaultOpts = {
 	shelfLife: 1 * 60,
 	eaten: false,
 	spoiled: false,
-	radius: 1.7,
+	radius: 1.8,
 	mass: 8,
 	drag: 16,
 	elasticity: 2,

@@ -5,7 +5,7 @@ const defaultOpts = {
 	mass:    90,
 	drag:    10,
 	elasticity: 7,
-	speed:  260,
+	speed:  250,
 }
 
 export default function Predator( opts = {} ) {

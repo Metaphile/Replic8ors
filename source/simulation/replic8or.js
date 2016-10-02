@@ -16,7 +16,7 @@ const defaultOpts = new function () {
 	this.elasticity = 1
 	
 	this.energy = 0.5
-	this.metabolism = 1 / ( 2 * 60 )
+	this.metabolism = 1 / ( 2.5 * 60 )
 	
 	this.numBodySegments = 5
 	this.receptorOffset = -Math.PI / 2, // up
@@ -162,7 +162,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( food.position, receptorPosition ) - food.radius
-			const strength = 50 * ( distance < 0 ? 1 :
+			const strength = 40 * ( distance < 0 ? 1 :
 				1 / ( 1 + Math.pow( distance / 32, 2 ) ) )
 			
 			receptor.neurons.food.stimulate( strength * dt )
@@ -176,7 +176,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( replicator.position, receptorPosition ) - replicator.radius
-			const strength = 50 * ( distance < 0 ? 1 :
+			const strength = 40 * ( distance < 0 ? 1 :
 				1 / ( 1 + Math.pow( distance / 32, 2 ) ) )
 			
 			receptor.neurons.replicator.stimulate( strength * dt )
@@ -190,7 +190,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( predator.position, receptorPosition ) - predator.radius
-			const strength = 50 * 7 * ( distance < 0 ? 1 :
+			const strength = 40 * 7 * ( distance < 0 ? 1 :
 				1 / ( 1 + Math.pow( distance / 32, 2 ) ) )
 			
 			receptor.neurons.predator.stimulate( strength * dt )
@@ -208,7 +208,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.016 ) {
+	replicate: function ( quietly, mutationRate = 0.014 ) {
 		const parent = this
 		const child = Replic8or()
 		
@@ -216,7 +216,7 @@ Replic8or.prototype = {
 		parent.brain.neurons.forEach( ( parentNeuron, neuronIndex ) => {
 			// TODO use map
 			parentNeuron.weights.forEach( ( parentWeight, weightIndex ) => {
-				parentWeight += ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -1.0, 1.0 ), 3 ) : 0 )
+				parentWeight += ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -0.75, 0.75 ), 3 ) : 0 )
 				
 				// inhibitory sensory input is a nuisance
 				if ( weightIndex === neuronIndex ) {

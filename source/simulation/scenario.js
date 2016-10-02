@@ -75,7 +75,7 @@ export default function Scenario( world, opts = {} ) {
 			position.x = Math.cos( angle ) * ( self.designatedWidth / 2 )
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
-			self.doBloom( { x: 0, y: 0 }, 180, 4 )
+			self.doBloom( { x: 0, y: 0 }, 180, 5 )
 			
 			timer.setAlarm( 30, alwaysBeBlooming )
 		}
@@ -87,13 +87,13 @@ export default function Scenario( world, opts = {} ) {
 			
 			// random point past edge of world
 			const angle = Math.random() * Math.PI * 2
-			predator.position.x = Math.cos( angle ) * self.designatedWidth * 2
-			predator.position.y = Math.sin( angle ) * self.designatedWidth * 2
+			predator.position.x = Math.cos( angle ) * self.designatedWidth
+			predator.position.y = Math.sin( angle ) * self.designatedWidth
 			
 			world.addPredator( predator )
 		}
 		
-		timer.setAlarm( 3, addPredator )
+		timer.setAlarm( 6, addPredator )
 		
 		console.log( 'Reset @', new Date() )
 	}
