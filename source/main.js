@@ -71,6 +71,13 @@ $( () => {
 	const controls = PlayControls( scenarioLoop )
 	
 	$( '#play-controls' ).append( controls )
+	
+	// show info box on first load
+	// adapted from https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+	if ( document.cookie.replace( /(?:(?:^|.*;\s*)showInfo\s*\=\s*([^;]*).*$)|^.*$/, '$1' ) !== 'false' ) {
+		$( '#info' ).fadeIn()
+		document.cookie = 'showInfo=false; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+	}
 } )
 
 // on when to use arrow functions vs regular:
