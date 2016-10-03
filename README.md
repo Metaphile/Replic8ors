@@ -1,12 +1,14 @@
 # Replic8ors
 
-Replic8ors is a behavioral evolution simulator that runs in your browser.
+Replic8ors is a behavioral evolution simulator that runs in your browser. It works best in desktop Chrome.
 
 ![Replic8ors screenshot](/screenshot.png?raw=true&version=9)
 
 ## Features
 
-- **Fully visualized artificial neural networks.** Watch neurons integrating input, firing, transmitting signals of varying strength and polarity.
+- **Fully visualized artificial neural networks.** Watch in real time as neurons integrate input, fire, transmit signals.
+
+- **Make sense of busy networks with cool fisheye effect.** Mouse over neurons to highlight their active connections.
 
 - **Speed up or slow down time; step through individual simulation ticks.**
 
