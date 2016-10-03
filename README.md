@@ -2,7 +2,7 @@
 
 Replic8ors is a behavioral evolution simulator that runs in your browser.
 
-![Replic8ors screenshot](/screenshot.png?raw=true)
+![Replic8ors screenshot](/screenshot.png?raw=true&version=9)
 
 ## Features
 
