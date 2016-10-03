@@ -31,6 +31,25 @@ html, body {
 	
 	color: white;
 	overflow-y: scroll;
+	
+	button[name=close] {
+		background: none;
+		border: none;
+		color: white;
+		padding: 0;
+		line-height: 1.5em;
+		width: 1.6em;
+		text-align: center;
+		font-size: x-large;
+		position: absolute;
+		top: 0;
+		right: 0;
+		
+		&:hover, &:focus {
+			color: cyan;
+			outline: none;
+		}
+	}
 }
 
 #visualization {

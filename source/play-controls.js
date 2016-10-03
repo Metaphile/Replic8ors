@@ -53,5 +53,9 @@ export default function PlayControls( gameLoop ) {
 		$( '#info' ).fadeToggle()
 	} )
 	
+	$( '#info [name=close]' ).click( () => {
+		$( '#info' ).fadeToggle()
+	} )
+	
 	return $form[ 0 ]
 }
