@@ -115,7 +115,15 @@ export default function WorldView( world ) {
 	} )
 	
 	self.update = ( dt, dt2 ) => {
-		for ( const view of self.replicatorViews ) view.update( dt, dt2 )
+		for ( const view of self.replicatorViews ) {
+			let dt3 = dt2
+			while ( dt3 > 1/60 ) {
+				view.update( 0, 1/60 )
+				dt3 -= 1/60
+			}
+			view.update( dt, dt3 )
+		}
+		
 		for ( const view of self.predatorViews   ) view.update( dt, dt2 )
 		for ( const view of self.foodViews       ) view.update( dt, dt2 )
 		
