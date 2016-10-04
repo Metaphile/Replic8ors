@@ -11,7 +11,7 @@ const defaultOpts = {
 	timestep: 1/60,
 	timescale: 1,
 	paused: false,
-	maxPendingUpdates: 10,
+	maxPendingUpdates: 30,
 }
 
 export default function GameLoop( update, draw, opts = {} ) {

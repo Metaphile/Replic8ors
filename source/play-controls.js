@@ -45,7 +45,7 @@ export default function PlayControls( gameLoop ) {
 	} )
 	
 	$( '[name=speed-fast]', $form ).click( () => {
-		gameLoop.timescale = 10
+		gameLoop.timescale = 30
 		gameLoop.paused = false
 	} )
 	
