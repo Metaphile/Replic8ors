@@ -60,7 +60,7 @@ export default function Visualization( world ) {
 		} )
 		
 		$canvas.on( 'mousemove', ( event ) => {
-			$canvas.trigger( 'pointermove', [ event.offsetX, event.offsetY ] )
+			$canvas.trigger( 'mypointermove', [ event.offsetX, event.offsetY ] )
 		} )
 		
 		$canvas.on( 'touchmove', ( event ) => {
@@ -69,10 +69,12 @@ export default function Visualization( world ) {
 			const offsetX = event.originalEvent.touches[ 0 ].pageX - event.originalEvent.touches[ 0 ].target.offsetLeft
 			const offsetY = event.originalEvent.touches[ 0 ].pageY - event.originalEvent.touches[ 0 ].target.offsetTop
 			
-			$canvas.trigger( 'pointermove', [ offsetX, offsetY ] )
+			$canvas.trigger( 'mypointermove', [ offsetX, offsetY ] )
 		} )
 		
-		$canvas.on( 'pointermove', ( event, offsetX, offsetY ) => {
+		// originally "pointermove" but that's now a standard event, oops
+		// TODO look into pointer* events which consolidate mouse/touch/pen events
+		$canvas.on( 'mypointermove', ( event, offsetX, offsetY ) => {
 			if ( !isDragging && dragLast_screen ) {
 				const mousePos_screen = { x: offsetX, y: offsetY }
 				const distance = Vector2.distance( mousePos_screen, dragLast_screen )
