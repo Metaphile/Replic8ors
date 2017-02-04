@@ -1,3 +1,5 @@
+// TODO -> CameraController
+
 import Vector2 from '../engine/vector-2'
 import Math2 from '../engine/math-2'
 
@@ -58,7 +60,7 @@ export default function CameraOperator( camera, canvas ) {
 	}
 	
 	self.update = ( dt ) => {
-		const viewCenter = camera.viewCenter( canvas)
+		const viewCenter = camera.viewCenter( canvas )
 		
 		bobAngle = ( bobAngle + 0.21 * dt ) % ( Math.PI * 2 )
 		

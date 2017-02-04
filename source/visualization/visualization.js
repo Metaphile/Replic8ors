@@ -83,7 +83,7 @@ export default function Visualization( world ) {
 			}
 			
 			if ( isDragging ) {
-				// important! previous world coords are probably wrong now;
+				// important! previous world coords are probably wrong now due to camera movement
 				// always get fresh coords
 				const dragLast_world = camera.toWorld( dragLast_screen )
 				
