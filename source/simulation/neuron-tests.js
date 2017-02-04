@@ -1,6 +1,6 @@
 // TODO test for default source index
 
-import Neuron from '../../source/simulation/neuron'
+import Neuron from './neuron'
 
 // for floating point comparison
 const precision = 9

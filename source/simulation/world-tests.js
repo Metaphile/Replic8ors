@@ -1,10 +1,10 @@
 // TODO almost made a breaking change to the foods-replicators loop
 // maybe write a test that fails if this.foods.length isn't checked per iteration
 
-import World from '../../source/simulation/world'
-import Replic8or from '../../source/simulation/replic8or'
-import Food from '../../source/simulation/food'
-import Vector2 from '../../source/engine/vector-2'
+import World from './world'
+import Replic8or from './replic8or'
+import Food from './food'
+import Vector2 from '../engine/vector-2'
 
 const precision = 9
 

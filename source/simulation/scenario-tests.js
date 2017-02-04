@@ -1,6 +1,6 @@
-import Scenario from '../../source/simulation/scenario'
-import World from '../../source/simulation/world'
-import Food from '../../source/simulation/food'
+import Scenario from './scenario'
+import World from './world'
+import Food from './food'
 
 xdescribe( 'scenario', () => {
 	it( 'adds replicators to the world', () => {

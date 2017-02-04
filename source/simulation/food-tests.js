@@ -1,4 +1,4 @@
-import Food from '../../source/simulation/food'
+import Food from './food'
 
 const precision = 9
 const error = Math.pow( 10, -precision )

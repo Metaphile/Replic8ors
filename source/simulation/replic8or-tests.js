@@ -1,6 +1,6 @@
-import Replic8or from '../../source/simulation/replic8or'
-import Network   from '../../source/simulation/neural-network'
-import Neuron    from '../../source/simulation/neuron'
+import Replic8or from './replic8or'
+import Network   from './neural-network'
+import Neuron    from './neuron'
 
 const precision = 9
 

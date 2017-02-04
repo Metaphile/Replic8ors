@@ -1,5 +1,5 @@
-import Network from '../../source/simulation/neural-network'
-import Neuron  from '../../source/simulation/neuron'
+import Network from './neural-network'
+import Neuron  from './neuron'
 
 const precision = 9
 

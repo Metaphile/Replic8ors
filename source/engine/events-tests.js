@@ -1,4 +1,4 @@
-import Events from '../../source/engine/events'
+import Events from './events'
 
 describe( 'events mixin', () => {
 	it( 'adds event logic to objects', () => {

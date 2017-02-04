@@ -34,7 +34,7 @@
   },
   "scripts": {
     "build": "npm run build:clean && npm run build:all && npm run build:success",
-    "watch": "npm run build && chokidar 'source/**/*' -c 'npm run build'",
+    "watch": "npm run build && chokidar 'source/**/*' -i 'source/**/*-tests.js' -c 'npm run build'",
     "test": "karma start",
     "--------": "--------",
     "build:clean": "rm -rf build && mkdir build && touch build/.gitignore",

@@ -1,6 +1,6 @@
 // TODO use loop.step() more
 
-import GameLoop from '../../source/engine/game-loop'
+import GameLoop from './game-loop'
 
 const precision = 9
 const error = Math.pow( 10, -precision )

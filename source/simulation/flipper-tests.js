@@ -1,5 +1,5 @@
-import Flipper from '../../source/simulation/flipper'
-import Vector2 from '../../source/engine/vector-2'
+import Flipper from './flipper'
+import Vector2 from '../engine/vector-2'
 
 const precision = 9
 const error = Math.pow( 10, -precision )

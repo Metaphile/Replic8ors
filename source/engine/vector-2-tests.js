@@ -1,4 +1,4 @@
-import Vector2 from '../../source/engine/vector-2'
+import Vector2 from './vector-2'
 
 const precision = 9
 

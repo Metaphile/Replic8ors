@@ -1,4 +1,4 @@
-import Physics from '../../source/engine/physics'
+import Physics from './physics'
 
 const precision = 9
 const error = Math.pow( 10, -precision )

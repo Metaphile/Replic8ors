@@ -1,4 +1,4 @@
-import RingBuffer from '../../source/engine/ring-buffer'
+import RingBuffer from './ring-buffer'
 
 describe( 'ring buffer', () => {
 	it( 'has a push method, like Array', () => {

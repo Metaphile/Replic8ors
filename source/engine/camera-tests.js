@@ -1,4 +1,4 @@
-import Camera from '../../source/engine/camera'
+import Camera from './camera'
 
 const precision = 9
 

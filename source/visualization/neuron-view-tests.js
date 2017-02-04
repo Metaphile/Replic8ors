@@ -1,4 +1,4 @@
-import NeuronView from '../../source/visualization/neuron-view'
+import NeuronView from './neuron-view'
 
 const precision = 9
 const error = Math.pow( 10, -precision )

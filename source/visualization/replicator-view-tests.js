@@ -8,9 +8,9 @@
 		ctx.stroke()
 } */
 
-import ReplicatorView from '../../source/visualization/replicator-view'
-import Replic8or from '../../source/simulation/replic8or'
-import Vector2 from '../../source/engine/vector-2'
+import ReplicatorView from './replicator-view'
+import Replic8or from '../simulation/replic8or'
+import Vector2 from '../engine/vector-2'
 
 describe( 'replicator view', () => {
 	/* it( 'draws neuron signals', () => {

@@ -1,6 +1,6 @@
 import $ from '../third-party/jquery'
-import GameLoop from '../source/engine/game-loop'
-import PlayControls from '../source/play-controls'
+import GameLoop from './engine/game-loop'
+import PlayControls from './play-controls'
 
 // last time I ran this I got the error,
 // "Some of your tests did a full page reload!"

@@ -1,7 +1,7 @@
-import Visualization from '../../source/visualization/visualization'
-import World from '../../source/simulation/world'
-import Replic8or from '../../source/simulation/replic8or'
-import Food from '../../source/simulation/food'
+import Visualization from './visualization'
+import World from '../simulation/world'
+import Replic8or from '../simulation/replic8or'
+import Food from '../simulation/food'
 import $ from '../../third-party/jquery'
 
 xdescribe( 'visualization', () => {

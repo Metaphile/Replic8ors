@@ -1,5 +1,5 @@
-import Hud from '../../source/visualization/hud'
-import Camera from '../../source/engine/camera'
+import Hud from './hud'
+import Camera from '../engine/camera'
 
 const precision = 9
 
