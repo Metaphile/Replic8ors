@@ -68,6 +68,11 @@ module.exports = function(config) {
     concurrency: Infinity,
 
 
+    mochaReporter: {
+        ignoreSkipped: true
+    },
+
+
     notifyReporter: {
         reportEachFailure: true
     }
