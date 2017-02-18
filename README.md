@@ -15,3 +15,7 @@ Replic8ors is a behavioral evolution simulator that runs in your browser. It wor
 - **Evolution from scratch.** First-generation replicators have completely unconnected brains. Useful connections are found through trial and error.
 
 - **No explicit fitness function.** Reproductive success is its own reward.
+
+## Todo
+
+  * Single pain neuron. Hopefully network can correlate pain signals with specific smells.
