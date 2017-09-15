@@ -38,6 +38,11 @@ import PlayControls from './play-controls'
 // but if I don't do that then I need logic to add predators at the right time, whenever that is
 // predators that have been added should persist between (soft?) resets
 
+// TODO turn scenario into controller that contains model and visualization
+// visualization subscribes to model events
+// but also controller can call visualization methods
+// edit: Presentation-Abstraction-Control
+
 // on DOM ready
 $( () => {
 	// create empty world for replicators and other entities to inhabit
