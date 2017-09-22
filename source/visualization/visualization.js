@@ -217,7 +217,7 @@ export default function Visualization( world ) {
 	
 	// fisheye
 	
-	const mousePos_screen = { x: Infinity, y: Infinity }
+	const mousePos_screen = { x: Number.MAX_SAFE_INTEGER, y: Number.MAX_SAFE_INTEGER }
 	
 	$canvas.on( 'mousemove', event => {
 		mousePos_screen.x = event.offsetX
@@ -225,8 +225,8 @@ export default function Visualization( world ) {
 	} )
 	
 	$canvas.on( 'mouseout', () => {
-		mousePos_screen.x = Infinity
-		mousePos_screen.y = Infinity
+		mousePos_screen.x = Number.MAX_SAFE_INTEGER;
+		mousePos_screen.y = Number.MAX_SAFE_INTEGER;
 	} )
 	
 	return self
