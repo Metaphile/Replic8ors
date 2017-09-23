@@ -1,6 +1,8 @@
 // Karma configuration
 // Generated on Mon May 30 2016 15:13:22 GMT-0600 (MDT)
 
+const webpackConfig = require('./webpack.config.js');
+
 module.exports = function(config) {
   config.set({
 
@@ -10,12 +12,15 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['browserify', 'jasmine'],
+    frameworks: ['jasmine'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      'source/**/*.js'
+      {
+        pattern: 'source/**/*.spec.js',
+        watched: false,
+      }
     ],
 
 
@@ -27,7 +32,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'source/**/*.js': ['browserify']
+        'source/**/*.spec.js': ['webpack']
     },
 
 
@@ -75,6 +80,8 @@ module.exports = function(config) {
 
     notifyReporter: {
         reportEachFailure: true
-    }
+    },
+
+    webpack: webpackConfig
   })
 }
