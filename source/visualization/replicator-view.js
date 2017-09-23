@@ -33,7 +33,7 @@ function anchorNeuronViews() {
 	
 	// anchor receptor neurons
 	for ( const receptor of this.replicator.receptors ) {
-		const midpoint = Vector2.clone( p0 )
+		const midpoint = Object.assign( {}, p0 )
 		midpoint.x += Math.cos( receptor.angle ) * r0 * 0.545
 		midpoint.y += Math.sin( receptor.angle ) * r0 * 0.545
 		
@@ -213,7 +213,7 @@ ReplicatorView.prototype = {
 				
 				const distortion = 0.5 * ( 1 + distort( 1 - distance / collisionRadius ) ) // 0..1
 				
-				view.originalPosition = Vector2.clone( view.position )
+				view.originalPosition = Object.assign( {}, view.position )
 				Vector2.subtract( view.position, Vector2.scale( offset, 1.2 * distortion, {} ) )
 				
 				view.originalRadius = view.radius
@@ -405,30 +405,30 @@ ReplicatorView.prototype = {
 		
 		const b_edgeOffset = minConnWidth + Math.abs( weight ) * ( maxConnWidth - minConnWidth )
 		
-		const b_edge1 = Vector2.clone( b_center )
+		const b_edge1 = Object.assign( {}, b_center )
 		b_edge1.x += Math.cos( ba_angle + b_edgeOffset ) * b_radius
 		b_edge1.y += Math.sin( ba_angle + b_edgeOffset ) * b_radius
 		
-		const b_edge2 = Vector2.clone( b_center )
+		const b_edge2 = Object.assign( {}, b_center )
 		b_edge2.x += Math.cos( ba_angle + b_edgeOffset/5 ) * b_radius
 		b_edge2.y += Math.sin( ba_angle + b_edgeOffset/5 ) * b_radius
 		
-		const b_edge3 = Vector2.clone( b_center )
+		const b_edge3 = Object.assign( {}, b_center )
 		b_edge3.x += Math.cos( ba_angle - b_edgeOffset/5 ) * b_radius
 		b_edge3.y += Math.sin( ba_angle - b_edgeOffset/5 ) * b_radius
 		
-		const b_edge4 = Vector2.clone( b_center )
+		const b_edge4 = Object.assign( {}, b_center )
 		b_edge4.x += Math.cos( ba_angle - b_edgeOffset ) * b_radius
 		b_edge4.y += Math.sin( ba_angle - b_edgeOffset ) * b_radius
 		
 		
 		const a_edgeOffset = Vector2.angle( Vector2.subtract( b_edge2, a_center, {} ) ) - ab_angle
 		
-		const a_edge1 = Vector2.clone( a_center )
+		const a_edge1 = Object.assign( {}, a_center )
 		a_edge1.x += Math.cos( ab_angle + a_edgeOffset ) * a_radius
 		a_edge1.y += Math.sin( ab_angle + a_edgeOffset ) * a_radius
 		
-		const a_edge2 = Vector2.clone( a_center )
+		const a_edge2 = Object.assign( {}, a_center )
 		a_edge2.x += Math.cos( ab_angle - a_edgeOffset ) * a_radius
 		a_edge2.y += Math.sin( ab_angle - a_edgeOffset ) * a_radius
 		

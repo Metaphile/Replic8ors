@@ -26,7 +26,7 @@ export const CrumbsEffect = ( position, opts = {} ) => {
 			y: Math.sin( crumbDirection ) * crumbSpeed,
 		}
 		
-		crumb.position = Vector2.clone( position )
+		crumb.position = Object.assign( {}, position )
 		const offset = Vector2.scale( crumb.velocity, 1/self.maxSpeed * 3, {} )
 		Vector2.add( crumb.position, offset )
 		
@@ -81,7 +81,7 @@ CrumbsEffect.prototype = {
 
 export const SpoiledEffect = ( position, onDone, opts = {} ) => {
 	const self = Object.create( SpoiledEffect.prototype )
-	self.position = Vector2.clone( position )
+	self.position = Object.assign( {}, position )
 	self.onDone = onDone
 	Object.assign( self, opts )
 	

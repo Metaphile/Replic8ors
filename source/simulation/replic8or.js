@@ -157,7 +157,7 @@ Replic8or.prototype = {
 	
 	senseFood: function ( food, dt ) {
 		for ( const receptor of this.receptors ) {
-			const receptorPosition = Vector2.clone( this.position )
+			const receptorPosition = Object.assign( {}, this.position )
 			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
 			
@@ -171,7 +171,7 @@ Replic8or.prototype = {
 	
 	senseReplicator: function ( replicator, dt ) {
 		for ( const receptor of this.receptors ) {
-			const receptorPosition = Vector2.clone( this.position )
+			const receptorPosition = Object.assign( {}, this.position )
 			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
 			
@@ -185,7 +185,7 @@ Replic8or.prototype = {
 	
 	sensePredator: function ( predator, dt ) {
 		for ( const receptor of this.receptors ) {
-			const receptorPosition = Vector2.clone( this.position )
+			const receptorPosition = Object.assign( {}, this.position )
 			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
 			

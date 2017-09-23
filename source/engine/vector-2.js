@@ -3,8 +3,6 @@ export default function Vector2( x = 0, y = 0 ) {
 }
 	
 Object.assign( Vector2, {
-	clone( v ) { return { x: v.x, y: v.y } },
-	
 	add( v1, v2, out = v1 ) {
 		out.x = v1.x + v2.x
 		out.y = v1.y + v2.y
