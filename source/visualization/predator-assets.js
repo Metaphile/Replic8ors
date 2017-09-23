@@ -1,5 +1,4 @@
-// const fs = require( 'fs' )
-const fs = { readFileSync: () => {} }
+import faceImageSrc from './replicator-face.png'
 
 const canvas = document.createElement( 'canvas' )
 const ctx = canvas.getContext( '2d' )
@@ -32,11 +31,8 @@ export default {
 	} )(),
 	
 	face: ( () => {
-		// be careful changing this line
-		// brfs is delicate
-		const imageData = fs.readFileSync( __dirname + '/replicator-face.png', 'base64' )
 		const image = document.createElement( 'img' )
-		image.src = 'data:image/png;base64,' + imageData
+		image.src = faceImageSrc
 		
 		return image
 	} )(),

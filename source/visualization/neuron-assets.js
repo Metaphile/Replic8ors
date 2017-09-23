@@ -1,51 +1,49 @@
-// const fs = require( 'fs' )
-const fs = { readFileSync: () => {} }
+import foodImageSrc       from './icons/food.png'
+import predatorImageSrc   from './icons/predator.png'
+import replicatorImageSrc from './icons/replicator.png'
+import thinkImageSrc      from './icons/think.png'
+import moveImageSrc       from './icons/move.png'
+import energyImageSrc     from './icons/energy.png'
 
 export const icons = {
 	food: ( () => {
-		const imageData = fs.readFileSync( __dirname + '/icons/food.png', 'base64' )
 		const image = document.createElement( 'img' )
-		image.src = 'data:image/png;base64,' + imageData
+		image.src = foodImageSrc
 		
 		return image
 	} )(),
 	
 	predator: ( () => {
-		const imageData = fs.readFileSync( __dirname + '/icons/predator.png', 'base64' )
 		const image = document.createElement( 'img' )
-		image.src = 'data:image/png;base64,' + imageData
+		image.src = predatorImageSrc
 		
 		return image
 	} )(),
 	
 	replicator: ( () => {
-		const imageData = fs.readFileSync( __dirname + '/icons/replicator.png', 'base64' )
 		const image = document.createElement( 'img' )
-		image.src = 'data:image/png;base64,' + imageData
+		image.src = replicatorImageSrc
 		
 		return image
 	} )(),
 	
 	think: ( () => {
-		const imageData = fs.readFileSync( __dirname + '/icons/think.png', 'base64' )
 		const image = document.createElement( 'img' )
-		image.src = 'data:image/png;base64,' + imageData
+		image.src = thinkImageSrc
 		
 		return image
 	} )(),
 	
 	flipper: ( () => {
-		const imageData = fs.readFileSync( __dirname + '/icons/move.png', 'base64' )
 		const image = document.createElement( 'img' )
-		image.src = 'data:image/png;base64,' + imageData
+		image.src = moveImageSrc
 		
 		return image
 	} )(),
 	
 	empty: ( () => {
-		const imageData = fs.readFileSync( __dirname + '/icons/energy.png', 'base64' )
 		const image = document.createElement( 'img' )
-		image.src = 'data:image/png;base64,' + imageData
+		image.src = energyImageSrc
 		
 		return image
 	} )(),
