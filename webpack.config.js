@@ -17,6 +17,7 @@ module.exports = {
 		rules: [
 			{
 				test: /\.scss$/,
+				include: path.resolve(__dirname, 'source'),
 				use: [
 					{
 						// creates style nodes from JS strings
@@ -32,7 +33,7 @@ module.exports = {
 			},
 			{
 				test: /\.js$/,
-				exclude: /node_modules/,
+				include: path.resolve(__dirname, 'source'),
 				loader: 'babel-loader',
 				options: {
 					presets: [
