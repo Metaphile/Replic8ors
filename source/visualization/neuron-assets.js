@@ -1,4 +1,5 @@
-const fs = require( 'fs' )
+// const fs = require( 'fs' )
+const fs = { readFileSync: () => {} }
 
 export const icons = {
 	food: ( () => {

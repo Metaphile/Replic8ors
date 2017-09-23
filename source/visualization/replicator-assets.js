@@ -1,4 +1,5 @@
-const fs = require( 'fs' )
+// const fs = require( 'fs' )
+const fs = { readFileSync: () => {} }
 
 const ctx = document.createElement( 'canvas' ).getContext( '2d' )
 

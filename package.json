@@ -10,6 +10,7 @@
     "brfs": "^1.4.3",
     "browserify": "^13.0.1",
     "chokidar-cli": "^1.2.0",
+    "css-loader": "^0.28.7",
     "jasmine-core": "^2.4.1",
     "karma": "^0.13.22",
     "karma-browserify": "^5.0.5",
@@ -18,8 +19,11 @@
     "karma-mocha-reporter": "^2.0.4",
     "karma-notify-reporter": "^1.0.0",
     "node-notifier": "^4.5.0",
-    "node-sass": "^3.8.0",
-    "watchify": "^3.7.0"
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "watchify": "^3.9.0",
+    "webpack": "^3.6.0"
   },
   "babel": {
     "presets": [
@@ -33,6 +37,7 @@
     ]
   },
   "scripts": {
+    "start": "webpack",
     "build": "npm run build:clean && npm run build:all && npm run build:success",
     "watch": "chokidar 'source/**/*' --ignore 'source/**/*.spec.js' -c 'npm run build' --initial",
     "test": "karma start",

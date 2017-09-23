@@ -1,4 +1,5 @@
-const fs = require( 'fs' )
+// const fs = require( 'fs' )
+const fs = { readFileSync: () => {} }
 import $ from '../third-party/jquery'
 
 const html = fs.readFileSync( __dirname + '/play-controls.html', 'utf8' )

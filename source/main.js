@@ -10,6 +10,7 @@
 //                                                                            //
 // -------------------------------------------------------------------------- //
 
+import './main.scss'
 import $ from '../third-party/jquery'
 import World from './simulation/world'
 import Scenario from './simulation/scenario'
