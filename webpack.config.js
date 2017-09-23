@@ -14,15 +14,32 @@ module.exports = {
 		})
 	],
 	module: {
-		rules: [{
+		rules: [
+			{
 				test: /\.scss$/,
-				use: [{
-						loader: "style-loader" // creates style nodes from JS strings
-				}, {
-						loader: "css-loader" // translates CSS into CommonJS
-				}, {
-						loader: "sass-loader" // compiles Sass to CSS
-				}]
-		}]
-	}
+				use: [
+					{
+						// creates style nodes from JS strings
+						loader: "style-loader",
+					}, {
+						// translates CSS into CommonJS
+						loader: "css-loader",
+					}, {
+						// compiles Sass to CSS
+						loader: "sass-loader",
+					},
+				],
+			},
+			{
+				test: /\.js$/,
+				exclude: /node_modules/,
+				loader: 'babel-loader',
+				options: {
+					presets: [
+						'es2015'
+					],
+				},
+			},
+		],
+	},
 };
