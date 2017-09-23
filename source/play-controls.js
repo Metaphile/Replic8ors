@@ -1,8 +1,5 @@
-// const fs = require( 'fs' )
-const fs = { readFileSync: () => {} }
 import $ from '../third-party/jquery'
-
-const html = fs.readFileSync( __dirname + '/play-controls.html', 'utf8' )
+import html from './play-controls.html'
 
 export default function PlayControls( gameLoop ) {
 	const $form = $( html )

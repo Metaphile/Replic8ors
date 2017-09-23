@@ -42,6 +42,11 @@ module.exports = {
 					],
 				},
 			},
+			{
+				test: /\.html$/,
+				include: path.resolve(__dirname, 'source'),
+				loader: 'html-loader',
+			},
 		],
 	},
 };
