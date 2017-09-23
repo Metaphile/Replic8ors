@@ -393,12 +393,10 @@ ReplicatorView.prototype = {
 		const maxConnWidth = 0.26
 		const minConnWidth = maxConnWidth * 0.08
 		
-		// vector from a center to b center
-		const ab_displacement = Vector2.subtract( b_center, a_center, {} )
 		const ab_distance = Vector2.distance( a_center, b_center )
 		
-		// angle from a center to b center
-		const ab_angle = Vector2.angle( ab_displacement )
+		// angle FROM a center TO b center
+		const ab_angle = Vector2.angle( Vector2.subtract( b_center, a_center, {} ) )
 		// flip 180 degrees
 		const ba_angle = ab_angle + Math.PI
 		
