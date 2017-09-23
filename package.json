@@ -28,7 +28,8 @@
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
     "watchify": "^3.9.0",
-    "webpack": "^3.6.0"
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.8.2"
   },
   "babel": {
     "presets": [
@@ -42,7 +43,7 @@
     ]
   },
   "scripts": {
-    "start": "webpack",
+    "start": "webpack-dev-server",
     "build": "npm run build:clean && npm run build:all && npm run build:success",
     "watch": "chokidar 'source/**/*' --ignore 'source/**/*.spec.js' -c 'npm run build' --initial",
     "test": "karma start",
