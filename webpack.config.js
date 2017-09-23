@@ -7,6 +7,7 @@ module.exports = {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'build')
 	},
+	devtool: 'cheap-module-eval-source-map',
 	plugins: [
 		new HtmlWebpackPlugin({
 			title: 'Replic8ors - Behavioral evolution in your browser',
