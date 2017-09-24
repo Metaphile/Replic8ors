@@ -48,7 +48,7 @@ module.exports = {
 				loader: 'html-loader',
 			},
 			{
-				test: /\.(png|jpe?g)$/,
+				test: /\.png$/,
 				include: path.resolve(__dirname, 'source'),
 				loader: 'base64-image-loader',
 			},
