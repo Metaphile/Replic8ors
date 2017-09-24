@@ -79,7 +79,7 @@ module.exports = function(config) {
 
 
     notifyReporter: {
-        reportEachFailure: true
+        // reportEachFailure: true
     },
 
     webpack: webpackConfig
