@@ -19,7 +19,8 @@ module.exports = function(config) {
     files: [
       {
         pattern: 'source/**/*.spec.js',
-        watched: false,
+        // not sure what this does, honestly
+        // watched: false,
       }
     ],
 
