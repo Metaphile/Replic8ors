@@ -42,16 +42,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "npm run build:clean && npm run build:all && npm run build:success",
-    "watch": "chokidar 'source/**/*' --ignore 'source/**/*.spec.js' -c 'npm run build' --initial",
-    "test": "karma start",
-    "--------": "--------",
-    "build:clean": "rm -rf build && mkdir build && touch build/.gitignore",
-    "build:all": "npm run build:js && npm run build:sass && npm run build:static",
-    "build:static": "cp source/{index.html,logo.png} build/",
-    "build:sass": "node-sass --output-style compressed --source-map true source/main.scss build/bundle.css",
-    "build:js": "browserify source/main.js -o build/bundle.js --debug",
-    "build:success": "notify -t 'Build Complete' -m 'One spicy build.'"
+    "test": "karma start"
   },
   "author": "Metaphile",
   "license": "CC-BY-NC-4.0",
