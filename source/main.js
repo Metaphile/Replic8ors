@@ -87,5 +87,10 @@ $( () => {
 	}
 } )
 
+// prevent accidental navigation
+$( window ).on( 'beforeunload', () => {
+	return "Progress can't be saved. Are you sure?";
+});
+
 // on when to use arrow functions vs regular:
 // http://stackoverflow.com/a/23045200/40356
