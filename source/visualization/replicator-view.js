@@ -386,60 +386,41 @@ ReplicatorView.prototype = {
 	},
 	
 	drawSignal( ctx, a_center, a_radius, b_center, b_radius, weight, progress, baseOpacity ) {
+		// it is a silly number
 		if ( weight === 0 ) return
 		
-		const excitatoryStyle = 'rgba( 90, 195, 255, 1.0 )'
-		const inhibitoryStyle = 'rgba( 190, 0, 0, 0.666 )'
-		const maxConnWidth = 0.26
-		const minConnWidth = maxConnWidth * 0.08
+		// 1D
 		
-		const ab_distance = Vector2.distance( a_center, b_center )
+		const edge2EdgeDist = Math.abs( Vector2.distance( a_center, b_center ) - a_radius - b_radius )
+		// MAYBE signal should never start at 0; scale progress to 0.1..1.0
+		const signalStartDist = Math.pow( progress, 1/4 ) * edge2EdgeDist
 		
-		// angle FROM a center TO b center
-		const ab_angle = Vector2.angle( Vector2.subtract( b_center, a_center, {} ) )
-		// flip 180 degrees
-		const ba_angle = ab_angle + Math.PI
+		const signalWidth = Math.abs( weight ) * 1.3
+		const guideWidth = signalWidth * 0.2
 		
+		// 2D
 		
-		const b_edgeOffset = minConnWidth + Math.abs( weight ) * ( maxConnWidth - minConnWidth )
+		// angle of vector from a to b
+		const abAngle = Vector2.angle( Vector2.subtract( b_center, a_center, {} ) )
+		const baAngle = abAngle + Math.PI
 		
-		const b_edge1 = Object.assign( {}, b_center )
-		b_edge1.x += Math.cos( ba_angle + b_edgeOffset ) * b_radius
-		b_edge1.y += Math.sin( ba_angle + b_edgeOffset ) * b_radius
+		// MAYBE embed start and end points by width/2
+		const startPoint = {}
+		startPoint.x = a_center.x + Math.cos( abAngle ) * a_radius
+		startPoint.y = a_center.y + Math.sin( abAngle ) * a_radius
 		
-		const b_edge2 = Object.assign( {}, b_center )
-		b_edge2.x += Math.cos( ba_angle + b_edgeOffset/5 ) * b_radius
-		b_edge2.y += Math.sin( ba_angle + b_edgeOffset/5 ) * b_radius
+		const endPoint = {}
+		endPoint.x = b_center.x + Math.cos( baAngle ) * b_radius
+		endPoint.y = b_center.y + Math.sin( baAngle ) * b_radius
 		
-		const b_edge3 = Object.assign( {}, b_center )
-		b_edge3.x += Math.cos( ba_angle - b_edgeOffset/5 ) * b_radius
-		b_edge3.y += Math.sin( ba_angle - b_edgeOffset/5 ) * b_radius
+		const midpoint = {}
+		midpoint.x = startPoint.x + Math.cos( abAngle ) * signalStartDist
+		midpoint.y = startPoint.y + Math.sin( abAngle ) * signalStartDist
 		
-		const b_edge4 = Object.assign( {}, b_center )
-		b_edge4.x += Math.cos( ba_angle - b_edgeOffset ) * b_radius
-		b_edge4.y += Math.sin( ba_angle - b_edgeOffset ) * b_radius
+		// draw
 		
-		
-		const a_edgeOffset = Vector2.angle( Vector2.subtract( b_edge2, a_center, {} ) ) - ab_angle
-		
-		const a_edge1 = Object.assign( {}, a_center )
-		a_edge1.x += Math.cos( ab_angle + a_edgeOffset ) * a_radius
-		a_edge1.y += Math.sin( ab_angle + a_edgeOffset ) * a_radius
-		
-		const a_edge2 = Object.assign( {}, a_center )
-		a_edge2.x += Math.cos( ab_angle - a_edgeOffset ) * a_radius
-		a_edge2.y += Math.sin( ab_angle - a_edgeOffset ) * a_radius
-		
-		
-		const a1b2_displacement = Vector2.subtract( b_edge2, a_edge1, {} )
-		const a1b2_distance     = Vector2.distance( b_edge2, a_edge1 )
-		
-		const a2b3_displacement = Vector2.subtract( b_edge3, a_edge2, {} )
-		const a2b3_distance     = Vector2.distance( b_edge3, a_edge2 )
-		
-		const midpoint1 = Vector2.add( a_edge1, Vector2.scale( a1b2_displacement, Math.pow( progress, 1/4 ), {} ), {} )
-		const midpoint2 = Vector2.add( a_edge2, Vector2.scale( a2b3_displacement, Math.pow( progress, 1/4 ), {} ), {} )
-		
+		const excitatoryColor = 'rgba( 90, 195, 255, 1.0 )'
+		const inhibitoryColor = 'rgba( 190, 0, 0, 0.666 )'
 		
 		const ctx_globalAlpha = ctx.globalAlpha
 		const ctx_globalCompositeOperation = ctx.globalCompositeOperation
@@ -447,18 +428,21 @@ ReplicatorView.prototype = {
 		ctx.globalAlpha = baseOpacity * Math.pow( 1 - progress, 1 )
 		ctx.globalCompositeOperation = weight < 0 ? 'darken' : 'lighten'
 		
-		ctx.fillStyle = weight < 0 ? inhibitoryStyle : excitatoryStyle
+		ctx.strokeStyle = weight < 0 ? inhibitoryColor : excitatoryColor
 		
 		ctx.beginPath()
-			ctx.moveTo( a_edge1.x, a_edge1.y )
-			ctx.lineTo( midpoint1.x, midpoint1.y )
-			ctx.lineTo( b_edge1.x, b_edge1.y )
+			ctx.moveTo( startPoint.x, startPoint.y )
+			ctx.lineTo( midpoint.x, midpoint.y )
 			
-			ctx.lineTo( b_edge4.x, b_edge4.y )
-			ctx.lineTo( midpoint2.x, midpoint2.y )
-			ctx.lineTo( a_edge2.x, a_edge2.y )
+			ctx.lineWidth = guideWidth
+			ctx.stroke()
+		
+		ctx.beginPath()
+			ctx.moveTo( midpoint.x, midpoint.y )
+			ctx.lineTo( endPoint.x, endPoint.y )
 			
-			ctx.fill()
+			ctx.lineWidth = signalWidth
+			ctx.stroke()
 		
 		ctx.globalAlpha = ctx_globalAlpha
 		ctx.globalCompositeOperation = ctx_globalCompositeOperation
