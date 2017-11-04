@@ -23,6 +23,8 @@ import PlayControls from './play-controls'
 // REMEMBER TO INCREMENT AS NECESSARY
 $( () => $( '#version-number' ).html( 1.1 ) )
 
+// TODO copy-webpack-plugin?
+
 // TODO Save Genome button adds history item and updates URL without page load
 
 // TODO replicator death animation
