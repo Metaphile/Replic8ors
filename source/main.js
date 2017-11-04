@@ -24,6 +24,7 @@ import PlayControls from './play-controls'
 $( () => $( '#version-number' ).html( '1.1' ) )
 
 // TODO copy-webpack-plugin?
+// TODO update screenshot for new signals
 
 // TODO Save Genome button adds history item and updates URL without page load
 

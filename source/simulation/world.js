@@ -28,6 +28,7 @@ World.prototype = {
 		this.emit( 'food-added', food )
 	},
 	
+	// TODO replicator -> prey (instance of replicator)
 	addReplicator: function ( replicator ) {
 		// TODO make like food.spoiled
 		replicator.on( 'died', () => {
@@ -152,6 +153,7 @@ World.prototype = {
 		}
 		
 		// replicators-predators
+		// MAYBE swap loops to match comment?
 		for ( const predator of predators ) {
 			let juiciestReplicator, minDistance = Infinity
 			
