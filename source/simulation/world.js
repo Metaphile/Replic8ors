@@ -7,14 +7,27 @@ export default function World() {
 	const self = Object.create( World.prototype )
 	Events( self )
 	
-	self.replicators = []
 	self.foods = []
+	self.replicators = []
 	self.predators = []
 	
 	return self
 }
 
 World.prototype = {
+	addFood: function ( food ) {
+		food.on( 'spoiled', () => {
+			const i = this.foods.indexOf( food )
+			this.foods.splice( i, 1 )
+			
+			this.emit( 'food-spoiled', food )
+		} )
+		
+		this.foods.push( food )
+		
+		this.emit( 'food-added', food )
+	},
+	
 	addReplicator: function ( replicator ) {
 		// TODO make like food.spoiled
 		replicator.on( 'died', () => {
@@ -37,19 +50,6 @@ World.prototype = {
 		this.emit( 'replicator-added', replicator )
 	},
 	
-	addFood: function ( food ) {
-		food.on( 'spoiled', () => {
-			const i = this.foods.indexOf( food )
-			this.foods.splice( i, 1 )
-			
-			this.emit( 'food-spoiled', food )
-		} )
-		
-		this.foods.push( food )
-		
-		this.emit( 'food-added', food )
-	},
-	
 	addPredator: function ( predator ) {
 		this.predators.push( predator )
 		this.emit( 'predator-added', predator )
@@ -62,32 +62,12 @@ World.prototype = {
 	},
 	
 	update: function ( dt ) {
-		const { replicators, foods, predators } = this
+		const { foods, replicators, predators } = this
 		
-		// replicators-replicators
-		for ( let i = 0, n = replicators.length; i < n; i++ ) {
-			const replicatorA = replicators[ i ]
-			
-			for ( let j = i + 1; j < n; j++ ) {
-				const replicatorB = replicators[ j ]
-				
-				replicatorA.collideWith( replicatorB, dt )
-				
-				replicatorA.senseReplicator( replicatorB, dt )
-				replicatorB.senseReplicator( replicatorA, dt )
-			}
-		}
+		// collisions
 		
-		// predators-predators
-		for ( let i = 0, n = predators.length; i < n; i++ ) {
-			const predatorA = predators[ i ]
-			
-			for ( let j = i + 1; j < n; j++ ) {
-				const predatorB = predators[ j ]
-				
-				predatorA.collideWith( predatorB, dt )
-			}
-		}
+		// foods-foods would go here
+		// ...
 		
 		// foods-replicators
 		for ( let foodIndex = 0; foodIndex < foods.length; foodIndex++ ) {
@@ -155,7 +135,23 @@ World.prototype = {
 			}
 		}
 		
-		// predators-replicators
+		// replicators-foods is covered above
+		
+		// replicators-replicators
+		for ( let i = 0, n = replicators.length; i < n; i++ ) {
+			const replicatorA = replicators[ i ]
+			
+			for ( let j = i + 1; j < n; j++ ) {
+				const replicatorB = replicators[ j ]
+				
+				replicatorA.collideWith( replicatorB, dt )
+				
+				replicatorA.senseReplicator( replicatorB, dt )
+				replicatorB.senseReplicator( replicatorA, dt )
+			}
+		}
+		
+		// replicators-predators
 		for ( const predator of predators ) {
 			let juiciestReplicator, minDistance = Infinity
 			
@@ -183,6 +179,21 @@ World.prototype = {
 				predator.applyForce( Vector2.setLength( Vector2.subtract( juiciestReplicator.position, predator.position, {} ), predator.speed ), dt )
 			}
 		}
+		
+		// predators-foods, predators-replicators are covered above
+		
+		// predators-predators
+		for ( let i = 0, n = predators.length; i < n; i++ ) {
+			const predatorA = predators[ i ]
+			
+			for ( let j = i + 1; j < n; j++ ) {
+				const predatorB = predators[ j ]
+				
+				predatorA.collideWith( predatorB, dt )
+			}
+		}
+		
+		// updates
 		
 		for ( const replicator of replicators.slice( 0 ) ) {
 			replicator.update( dt )
