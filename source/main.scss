@@ -96,3 +96,14 @@ html, body {
 		display: none;
 	}
 }
+
+#version-number {
+	color: white;
+	font-size: x-small;
+	display: inline-block;
+	margin: 0;
+	padding: 0.25rem 0.5rem;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}

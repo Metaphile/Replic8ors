@@ -19,6 +19,10 @@ import Visualization from './visualization/visualization'
 import GameLoop from './engine/game-loop'
 import PlayControls from './play-controls'
 
+// display version number on document ready
+// REMEMBER TO INCREMENT AS NECESSARY
+$( () => $( '#version-number' ).html( 1.1 ) )
+
 // TODO Save Genome button adds history item and updates URL without page load
 
 // TODO replicator death animation
