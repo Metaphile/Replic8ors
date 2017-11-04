@@ -62,6 +62,7 @@ export default function CameraOperator( camera, canvas ) {
 	self.update = ( dt ) => {
 		const viewCenter = camera.viewCenter( canvas )
 		
+		// TODO pause camera bob when simulation is paused
 		bobAngle = ( bobAngle + 0.21 * dt ) % ( Math.PI * 2 )
 		
 		var m = 0.03

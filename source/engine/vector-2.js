@@ -17,6 +17,12 @@ Object.assign( Vector2, {
 		return out
 	},
 	
+	// MAYBE doing subtract( b, a ) to get vector FROM a TO b has always felt unintuitive
+	// how about Vector2.from( a, b )?
+	from( v1, v2 ) {
+		return this.subtract( v2, v1, {} )
+	},
+	
 	scale( v, s, out = v ) {
 		out.x = v.x * s
 		out.y = v.y * s
@@ -83,6 +89,7 @@ Object.assign( Vector2, {
 		return out
 	},
 	
+	// TODO -> hasLength or isPositive
 	isNonZero( v ) {
 		return ( v.x !== 0 ) || ( v.y !== 0 )
 	},

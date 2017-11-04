@@ -21,6 +21,11 @@ import PlayControls from './play-controls'
 
 // TODO Save Genome button adds history item and updates URL without page load
 
+// TODO replicator death animation
+// each component of replicator scales up and fades out
+// effect moves accross replicator (esp neuron) away from direction of predator
+// or outward from center if death from starvation
+
 // TODO assign defaultOpts to prototypes
 
 // TODO dt, dt2 -> dt_real, dt_sim
