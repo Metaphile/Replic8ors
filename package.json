@@ -42,7 +42,8 @@
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "test": "karma start"
+    "test": "karma start",
+    "build": "webpack"
   },
   "author": "Metaphile",
   "license": "CC-BY-NC-4.0",
