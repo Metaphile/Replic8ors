@@ -81,9 +81,9 @@ $( () => {
 	
 	// show info box on first load
 	// adapted from https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
-	if ( document.cookie.replace( /(?:(?:^|.*;\s*)showInfo\s*\=\s*([^;]*).*$)|^.*$/, '$1' ) !== 'false' ) {
+	if ( document.cookie.replace( /(?:(?:^|.*;\s*)hideInfo\s*\=\s*([^;]*).*$)|^.*$/, '$1' ) !== '1' ) {
 		$( '#info' ).fadeIn()
-		document.cookie = 'showInfo=false; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+		document.cookie = 'hideInfo=1; expires=Fri, 31 Dec 9999 23:59:59 GMT'
 	}
 } )
 
