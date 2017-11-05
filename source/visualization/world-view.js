@@ -3,7 +3,8 @@
 // returns topmost replicator so needs to be aware of draw order
 
 import ReplicatorView from './replicator-view'
-import PredatorView from './predator-view'
+// import PredatorView from './predator-view'
+import PredatorView from './replicator-view'
 import FoodView from './food-view'
 import * as assets from './world-assets'
 import Vector2 from '../engine/vector-2'
@@ -49,16 +50,32 @@ export default function WorldView( world ) {
 	
 	// predators
 	
+	world.on( 'predator-replicated', ( parent, child ) => {
+		const parentViewIndex = self.predatorViews.findIndex( view => view.replicator === parent )
+		const childView = PredatorView( child, { skinColor: 'black' } )
+		// put child behind parent
+		self.predatorViews.splice( parentViewIndex, 0, childView )
+	} )
+	
 	const addPredatorView = predator => {
-		self.predatorViews.push( PredatorView( predator ) )
+		// HACK added event fires after replicated event; check if view has already been added
+		if ( !self.predatorViews.find( view => view.replicator === predator ) ) {
+			self.predatorViews.push( PredatorView( predator, { skinColor: 'black' } ) )
+		}
 	}
 	
 	world.predators.forEach( addPredatorView )
 	world.on( 'predator-added', addPredatorView )
 	
-	world.on( 'predator-removed', predator => {
-		const i = self.predatorViews.findIndex( view => view.predator === predator )
-		self.predatorViews.splice( i, 1 )
+	world.on( 'predator-died', predator => {
+		const view = self.predatorViews.find( view => {
+			return view.replicator === predator
+		} )
+		
+		view.doDeathEffect().then( () => {
+			const i = self.predatorViews.indexOf( view )
+			self.predatorViews.splice( i, 1 )
+		} )
 	} )
 	
 	// foods
@@ -100,7 +117,7 @@ export default function WorldView( world ) {
 		} )
 	} )
 	
-	world.on( 'food-destroyed', ( food, predator ) => {
+	/* world.on( 'food-destroyed', ( food, predator ) => {
 		const view = self.foodViews.find( view => {
 			return view.food === food
 		} )
@@ -112,7 +129,7 @@ export default function WorldView( world ) {
 			const i = self.foodViews.indexOf( view )
 			self.foodViews.splice( i, 1 )
 		} )
-	} )
+	} ) */
 	
 	self.update = ( dt, dt2 ) => {
 		for ( const view of self.replicatorViews ) {
@@ -124,7 +141,15 @@ export default function WorldView( world ) {
 			view.update( dt, dt3 )
 		}
 		
-		for ( const view of self.predatorViews   ) view.update( dt, dt2 )
+		for ( const view of self.predatorViews ) {
+			let dt3 = dt2
+			while ( dt3 > 1/60 ) {
+				view.update( 0, 1/60 )
+				dt3 -= 1/60
+			}
+			view.update( dt, dt3 )
+		}
+		
 		for ( const view of self.foodViews       ) view.update( dt, dt2 )
 		
 		// foreground.update( dt2 )
@@ -147,7 +172,20 @@ export default function WorldView( world ) {
 			}
 		}
 		
-		for ( const view of self.predatorViews   ) view.draw( ctx )
+		for ( const view of self.predatorViews ) {
+			// don't draw offscreen predators
+			const p = view.replicator.position
+			const r = view.replicator.radius + 16
+			if ( p.x + r < viewBounds.topLeft.x || p.x - r > viewBounds.bottomRight.x || p.y + r < viewBounds.topLeft.y || p.y - r > viewBounds.bottomRight.y ) continue
+			
+			const mouseDistance = Vector2.distance( mousePos_world, view.replicator.position )
+			if ( mouseDistance < view.replicator.radius ) {
+				view.drawWithFisheye( ctx, camera, mousePos_world, detail )
+			} else {
+				view.draw( ctx, camera, detail )
+			}
+		}
+		
 		for ( const view of self.foodViews       ) view.draw( ctx )
 		
 		// foreground.draw( ctx, camera.viewCenter( ctx.canvas ) )

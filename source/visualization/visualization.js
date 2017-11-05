@@ -170,7 +170,7 @@ export default function Visualization( world ) {
 		} )
 		
 		// TODO -> replicator-removed
-		world.on( 'replicator-died predator-removed', entity => {
+		world.on( 'replicator-died predator-died', entity => {
 			if ( selection === entity ) {
 				cameraOp.unfollow()
 				hud.deselect()

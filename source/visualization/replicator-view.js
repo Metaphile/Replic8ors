@@ -72,8 +72,9 @@ function anchorNeuronViews() {
 	}
 }
 
-export default function ReplicatorView( replicator ) {
+export default function ReplicatorView( replicator, config = {} ) {
 	const self = Object.create( ReplicatorView.prototype )
+	self.config = config;
 	
 	self.replicator = replicator
 	
@@ -521,7 +522,7 @@ ReplicatorView.prototype = {
 				ctx.translate( -flipperBase.x, -flipperBase.y )
 			}
 			
-			ctx.fillStyle = assets.skinColor
+			ctx.fillStyle = this.config.skinColor || assets.skinColor
 			ctx.fill()
 			
 			ctx.translate( -replicator.position.x, -replicator.position.y )
@@ -538,7 +539,7 @@ ReplicatorView.prototype = {
 		const cx = this.replicator.position.x
 		const cy = this.replicator.position.y
 		
-		ourCtx.strokeStyle = assets.skinColor
+		ourCtx.strokeStyle = this.config.skinColor || assets.skinColor
 		// ctx.strokeStyle = 'rgba( 255, 255, 255, 0.5 )'
 		ourCtx.lineWidth = 2.9
 		ourCtx.lineCap = 'butt' // heh

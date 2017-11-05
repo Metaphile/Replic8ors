@@ -52,14 +52,24 @@ World.prototype = {
 	},
 	
 	addPredator: function ( predator ) {
+		predator.on( 'died', () => {
+			const i = this.predators.indexOf( predator )
+			this.predators.splice( i, 1 )
+			
+			// notify after removing
+			this.emit( 'predator-died', predator )
+		} )
+		
+		predator.on( 'replicated', ( parent, child ) => {
+			// propagate replicated event before added
+			this.emit( 'predator-replicated', parent, child )
+			
+			this.addPredator( child )
+		} )
+		
 		this.predators.push( predator )
+		
 		this.emit( 'predator-added', predator )
-	},
-	
-	removePredator: function ( predator ) {
-		const index = this.predators.indexOf( predator )
-		this.predators.splice( index, 1 )
-		this.emit( 'predator-removed', predator )
 	},
 	
 	update: function ( dt ) {
@@ -109,32 +119,8 @@ World.prototype = {
 			}
 		}
 		
-		// foods-predators
-		for ( let foodIndex = 0; foodIndex < foods.length; foodIndex++ ) {
-			const food = foods[ foodIndex ]
-			
-			for ( const predator of predators ) {
-				const dx = food.position.x - predator.position.x
-				const dy = food.position.y - predator.position.y
-				
-				const r1 = food.radius
-				const r2 = predator.radius
-				
-				const actual  = dx*dx + dy*dy // center to center
-				const minimum = Math.pow( r1 + r2, 2 )
-				
-				if ( actual < minimum ) {
-					// TODO destroy method?
-					// food.spoil()
-					food.spoiled = true
-					
-					foods.splice( foodIndex, 1 )
-					foodIndex--
-					
-					this.emit( 'food-destroyed', food, Vector2.angle( Vector2.subtract( predator.position, food.position, {} ) ) - Math.PI/2 )
-				}
-			}
-		}
+		// foods-predators would go here
+		// ...
 		
 		// replicators-foods is covered above
 		
@@ -153,32 +139,22 @@ World.prototype = {
 		}
 		
 		// replicators-predators
-		// MAYBE swap loops to match comment?
-		for ( const predator of predators ) {
-			let juiciestReplicator, minDistance = Infinity
+		for ( const replicator of replicators ) {
+			replicator.takingDamage = false;
 			
-			for ( const replicator of replicators ) {
+			for ( const predator of predators ) {
 				const distance = Vector2.distance( predator.position, replicator.position )
 				
 				if ( distance < predator.radius + replicator.radius ) {
 					replicator.takingDamage = true
-					replicator.energy -= dt * 0.07
+					// TODO don't transfer energy if replicator out of energy
+					replicator.energy -= dt * 0.3
+					predator.energy   += dt * 0.6
 					predator.collideWith( replicator, dt )
-				} else {
-					replicator.takingDamage = false
 				}
 				
-				if ( distance < minDistance ) {
-					minDistance = distance
-					juiciestReplicator = replicator
-				}
-				
-				// while we're here...
 				replicator.sensePredator( predator, dt )
-			}
-			
-			if ( juiciestReplicator ) {
-				predator.applyForce( Vector2.setLength( Vector2.subtract( juiciestReplicator.position, predator.position, {} ), predator.speed ), dt )
+				predator.senseReplicator( replicator, dt )
 			}
 		}
 		
@@ -192,6 +168,9 @@ World.prototype = {
 				const predatorB = predators[ j ]
 				
 				predatorA.collideWith( predatorB, dt )
+				
+				predatorA.sensePredator( predatorB, dt )
+				predatorB.sensePredator( predatorA, dt )
 			}
 		}
 		
@@ -205,7 +184,7 @@ World.prototype = {
 			food.update( dt )
 		}
 		
-		for ( const predator of predators ) {
+		for ( const predator of predators.slice( 0 ) ) {
 			predator.update( dt )
 		}
 	},
