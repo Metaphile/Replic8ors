@@ -53,6 +53,12 @@ export default function Scenario( world, opts = {} ) {
 		
 		// repopulate world from frozen specimens
 		// shortly after first bloom
+		
+		// ensure some genetic variation even if no members manage to reproduce
+		for ( let i = 0; i < replicatorCryo.length; i++ ) {
+			replicatorCryo[ i ] = replicatorCryo[ i ].replicate( true )
+		}
+		
 		replicatorCryo.forEach( ( specimen, specimenIndex ) => {
 			timer.setAlarm( 3 + specimenIndex * 0.3, () => {
 				const child = specimen.replicate( true )
@@ -65,6 +71,11 @@ export default function Scenario( world, opts = {} ) {
 				world.addReplicator( child )
 			} )
 		} )
+		
+		// ensure some genetic variation even if no members manage to reproduce
+		for ( let i = 0; i < predatorCryo.length; i++ ) {
+			predatorCryo[ i ] = predatorCryo[ i ].replicate( true )
+		}
 		
 		predatorCryo.forEach( ( specimen, specimenIndex ) => {
 			timer.setAlarm( 3 + specimenIndex * 0.3, () => {
