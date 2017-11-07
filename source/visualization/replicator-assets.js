@@ -3,7 +3,7 @@ import faceImageSrc from './replicator-face.png'
 const ctx = document.createElement( 'canvas' ).getContext( '2d' )
 
 export const skinColor = 'rgba( 230, 240, 250, 1.0 )'
-	
+
 export const backsideGradient = ( () => {
 	const angle = -Math.PI / 4 // -45 degrees
 	const offset = -1/3
