@@ -52,7 +52,7 @@ export default function WorldView( world ) {
 	
 	world.on( 'predator-replicated', ( parent, child ) => {
 		const parentViewIndex = self.predatorViews.findIndex( view => view.replicator === parent )
-		const childView = PredatorView( child, { skinColor: 'black' } )
+		const childView = PredatorView( child, {}, 'predator' )
 		// put child behind parent
 		self.predatorViews.splice( parentViewIndex, 0, childView )
 	} )
@@ -60,7 +60,7 @@ export default function WorldView( world ) {
 	const addPredatorView = predator => {
 		// HACK added event fires after replicated event; check if view has already been added
 		if ( !self.predatorViews.find( view => view.replicator === predator ) ) {
-			self.predatorViews.push( PredatorView( predator, { skinColor: 'black' } ) )
+			self.predatorViews.push( PredatorView( predator, {}, 'predator' ) )
 		}
 	}
 	

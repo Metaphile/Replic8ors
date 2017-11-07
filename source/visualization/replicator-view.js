@@ -1,7 +1,8 @@
 // TODO initial position for neuron views
 // apply constant repulsive force; let springiness and collisions do their thing
 
-import * as assets from './replicator-assets'
+import * as replicatorAssets from './replicator-assets'
+import * as predatorAssets from './predator-assets'
 import NeuronView from './neuron-view'
 import Vector2 from '../engine/vector-2'
 
@@ -72,9 +73,19 @@ function anchorNeuronViews() {
 	}
 }
 
-export default function ReplicatorView( replicator, opts = {} ) {
+export default function ReplicatorView( replicator, opts = {}, theme = 'prey' ) {
 	const self = Object.create( ReplicatorView.prototype )
 	self.opts = opts;
+	
+	switch ( theme ) {
+		case 'predator':
+			self.assets = predatorAssets
+			break
+		
+		default:
+			self.assets = replicatorAssets
+			break
+	}
 	
 	self.replicator = replicator
 	
@@ -127,7 +138,7 @@ ReplicatorView.prototype = {
 			}
 			
 			// TODO check for energy downs?
-			this.effects.energyUps.push( assets.EnergyUpEffect( 0.4, onDone ) )
+			this.effects.energyUps.push( this.assets.EnergyUpEffect( 0.4, onDone ) )
 		} )
 	},
 	
@@ -138,7 +149,7 @@ ReplicatorView.prototype = {
 				resolve()
 			}
 			
-			this.effects.damage = assets.DamageEffect( onDone )
+			this.effects.damage = this.assets.DamageEffect( onDone )
 		} )
 	},
 	
@@ -152,7 +163,7 @@ ReplicatorView.prototype = {
 				resolve()
 			}
 			
-			this.effects.death = assets.DeathEffect( onDone )
+			this.effects.death = this.assets.DeathEffect( onDone )
 		} )
 	},
 	
@@ -246,7 +257,7 @@ ReplicatorView.prototype = {
 			ctx.scale( radius, radius )
 			
 			ctx.arc( 0, 0, 1, 0, Math.PI * 2 )
-			ctx.fillStyle = assets.backsideGradient
+			ctx.fillStyle = this.assets.backsideGradient
 			ctx.fill()
 			
 			ctx.scale( 1 / radius, 1 / radius )
@@ -469,7 +480,7 @@ ReplicatorView.prototype = {
 			const ctx_globalCompositeOperation = ctx.globalCompositeOperation
 			
 			ctx.globalCompositeOperation = 'darken'
-			ctx.fillStyle = assets.energyGradient
+			ctx.fillStyle = this.assets.energyGradient
 			ctx.fill()
 			
 			// energyUp expects a pretransformed canvas
@@ -522,7 +533,7 @@ ReplicatorView.prototype = {
 				ctx.translate( -flipperBase.x, -flipperBase.y )
 			}
 			
-			ctx.fillStyle = this.opts.skinColor || assets.skinColor
+			ctx.fillStyle = this.assets.skinColor
 			ctx.fill()
 			
 			ctx.translate( -replicator.position.x, -replicator.position.y )
@@ -539,7 +550,7 @@ ReplicatorView.prototype = {
 		const cx = this.replicator.position.x
 		const cy = this.replicator.position.y
 		
-		ourCtx.strokeStyle = this.opts.skinColor || assets.skinColor
+		ourCtx.strokeStyle = this.assets.skinColor
 		// ctx.strokeStyle = 'rgba( 255, 255, 255, 0.5 )'
 		ourCtx.lineWidth = 2.9
 		ourCtx.lineCap = 'butt' // heh
@@ -590,7 +601,7 @@ ReplicatorView.prototype = {
 		this.drawEnergy( ourCtx )
 		
 		// draw glossy face
-		ourCtx.drawImage( assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
+		ourCtx.drawImage( this.assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
 		
 		this.drawFlippers( ourCtx )
 		
