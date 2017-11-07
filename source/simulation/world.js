@@ -147,9 +147,22 @@ World.prototype = {
 				
 				if ( distance < predator.radius + replicator.radius ) {
 					replicator.takingDamage = true
-					// TODO don't transfer energy if replicator out of energy
-					replicator.energy -= dt * 0.3
-					predator.energy   += dt * 0.6
+					
+					// transfer energy,
+					// don't transfer more than is available
+					
+					const take = dt * 0.3
+					
+					if ( replicator.energy <= 0) {
+						// do nothing
+					} else if ( replicator.energy < take ) {
+						predator.energy += replicator.energy * 2
+						replicator.energy = 0
+					} else {
+						predator.energy += take * 2
+						replicator.energy -= take
+					}
+					
 					predator.collideWith( replicator, dt )
 				}
 				
