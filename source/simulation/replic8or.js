@@ -18,7 +18,7 @@ const defaultOpts = new function () {
 	this.energy = 0.5
 	this.metabolism = 1 / ( 2.5 * 60 )
 	
-	this.numBodySegments = 5
+	this.numBodySegments = 3
 	this.receptorOffset = -Math.PI / 2, // up
 	this.flipperOffset = this.receptorOffset + ( Math.PI / this.numBodySegments )
 	
