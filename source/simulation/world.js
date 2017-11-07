@@ -151,15 +151,16 @@ World.prototype = {
 					// transfer energy,
 					// don't transfer more than is available
 					
-					const take = dt * 0.3
+					const take = dt * 0.25
+					const mult = 1.25
 					
 					if ( replicator.energy <= 0) {
 						// do nothing
 					} else if ( replicator.energy < take ) {
-						predator.energy += replicator.energy * 2
+						predator.energy += replicator.energy * mult
 						replicator.energy = 0
 					} else {
-						predator.energy += take * 2
+						predator.energy += take * mult
 						replicator.energy -= take
 					}
 					

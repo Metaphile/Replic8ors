@@ -9,7 +9,7 @@ const defaultOpts = {
 	designatedWidth:  580,
 	designatedHeight: 480,
 	numReplicators: 11,
-	numPredators: 8,
+	numPredators: 7,
 }
 
 export default function Scenario( world, opts = {} ) {
@@ -22,7 +22,7 @@ export default function Scenario( world, opts = {} ) {
 	// const seed = Replic8or()
 	// for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( seed.replicate() )
 	for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( Replic8or() )
-	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Predator( { metabolism: 1 / ( 1.8 * 60 ) } ) )
+	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Predator( { metabolism: 1 / ( 2.0 * 60 ) } ) )
 	
 	const timer = Timer()
 	
@@ -33,8 +33,8 @@ export default function Scenario( world, opts = {} ) {
 				const food = Food()
 				
 				const angle = Math.random() * Math.PI * 2
-				const radius2 = ( radius * 0.8 ) + Math.random() * radius * 0.4
-				// const radius2 = radius
+				// const radius2 = ( radius * 0.8 ) + Math.random() * radius * 0.4
+				const radius2 = Math.pow( Math.random(), 1/3) * radius
 				food.position.x = position.x + Math.cos( angle ) * radius2
 				food.position.y = position.y + Math.sin( angle ) * radius2
 				
@@ -101,7 +101,7 @@ export default function Scenario( world, opts = {} ) {
 			position.x = Math.cos( angle ) * ( self.designatedWidth / 2 )
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
-			self.doBloom( { x: 0, y: 0 }, 300, 28 )
+			self.doBloom( { x: 0, y: 0 }, 375, 28 )
 			
 			timer.setAlarm( 30, alwaysBeBlooming )
 		}
