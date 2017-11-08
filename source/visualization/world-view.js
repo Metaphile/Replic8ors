@@ -158,6 +158,8 @@ export default function WorldView( world ) {
 	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {
 		const viewBounds = camera.viewBounds( ctx.canvas )
 		
+		for ( const view of self.foodViews ) view.draw( ctx )
+		
 		for ( const view of self.replicatorViews ) {
 			// don't draw offscreen replicators
 			const p = view.replicator.position
@@ -185,8 +187,6 @@ export default function WorldView( world ) {
 				view.draw( ctx, camera, detail )
 			}
 		}
-		
-		for ( const view of self.foodViews       ) view.draw( ctx )
 		
 		// foreground.draw( ctx, camera.viewCenter( ctx.canvas ) )
 	}
