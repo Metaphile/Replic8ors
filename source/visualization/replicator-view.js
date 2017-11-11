@@ -75,7 +75,7 @@ function anchorNeuronViews() {
 
 export default function ReplicatorView( replicator, opts = {}, theme = 'prey' ) {
 	const self = Object.create( ReplicatorView.prototype )
-	self.opts = opts;
+	self.opts = opts
 	
 	switch ( theme ) {
 		case 'predator':
