@@ -8,8 +8,8 @@ import RingBuffer from '../engine/ring-buffer'
 const defaultOpts = {
 	designatedWidth:  580,
 	designatedHeight: 480,
-	numReplicators: 11,
-	numPredators: 7,
+	numReplicators: 9,
+	numPredators: 5,
 }
 
 export default function Scenario( world, opts = {} ) {
@@ -22,7 +22,7 @@ export default function Scenario( world, opts = {} ) {
 	// const seed = Replic8or()
 	// for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( seed.replicate() )
 	for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( Replic8or() )
-	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Predator( { metabolism: 1 / ( 2.0 * 60 ) } ) )
+	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Predator( { metabolism: 1 / ( 1.6 * 60 ) } ) )
 	
 	const timer = Timer()
 	
@@ -64,7 +64,7 @@ export default function Scenario( world, opts = {} ) {
 				const child = specimen.replicate( true )
 				
 				const angle = Math.random() * Math.PI * 2
-				const radius2 = 200 + Math.random() * ( 250 - 200 )
+				const radius2 = 170 + Math.random() * ( 240 - 170 )
 				child.position.x = Math.cos( angle ) * radius2
 				child.position.y = Math.sin( angle ) * radius2
 				
@@ -101,7 +101,7 @@ export default function Scenario( world, opts = {} ) {
 			position.x = Math.cos( angle ) * ( self.designatedWidth / 2 )
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
-			self.doBloom( { x: 0, y: 0 }, 375, 28 )
+			self.doBloom( { x: 0, y: 0 }, 400, 9 )
 			
 			timer.setAlarm( 30, alwaysBeBlooming )
 		}

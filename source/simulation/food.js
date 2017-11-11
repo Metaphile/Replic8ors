@@ -3,11 +3,11 @@ import Events from '../engine/events'
 
 const defaultOpts = {
 	age: 0,
-	calories: 0.25,
+	calories: 0.66,
 	shelfLife: 1 * 60,
 	eaten: false,
 	spoiled: false,
-	radius: 1.8,
+	radius: 2.7,
 	mass: 8,
 	drag: 16,
 	elasticity: 2,
