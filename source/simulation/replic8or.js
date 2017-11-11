@@ -161,8 +161,8 @@ Replic8or.prototype = {
 	senseFood: function ( food, dt ) {
 		for ( const receptor of this.receptors ) {
 			const receptorPosition = Object.assign( {}, this.position )
-			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
-			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
+			receptorPosition.x += Math.cos( this.rotation + receptor.angle ) * this.radius
+			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( food.position, receptorPosition ) - food.radius
 			const strength = 40 * ( distance < 0 ? 1 :
@@ -175,8 +175,8 @@ Replic8or.prototype = {
 	senseReplicator: function ( replicator, dt ) {
 		for ( const receptor of this.receptors ) {
 			const receptorPosition = Object.assign( {}, this.position )
-			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
-			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
+			receptorPosition.x += Math.cos( this.rotation + receptor.angle ) * this.radius
+			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( replicator.position, receptorPosition ) - replicator.radius
 			const strength = 40 * ( distance < 0 ? 1 :
@@ -189,8 +189,8 @@ Replic8or.prototype = {
 	sensePredator: function ( predator, dt ) {
 		for ( const receptor of this.receptors ) {
 			const receptorPosition = Object.assign( {}, this.position )
-			receptorPosition.x += Math.cos( receptor.angle ) * this.radius
-			receptorPosition.y += Math.sin( receptor.angle ) * this.radius
+			receptorPosition.x += Math.cos( this.rotation + receptor.angle ) * this.radius
+			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( predator.position, receptorPosition ) - predator.radius
 			const strength = 40 * 7 * ( distance < 0 ? 1 :
