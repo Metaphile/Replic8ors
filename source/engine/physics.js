@@ -5,6 +5,8 @@ const defaultOpts = {
 	drag: 1,
 	radius: 1,
 	elasticity: 1,
+	rotation: 0,
+	angularVelocity: 0,
 }
 
 export default function Physics( self = {}, opts = {} ) {
@@ -28,9 +30,12 @@ Physics.prototype = {
 		
 		// apply drag force directly
 		Vector2.scale( this.velocity, scale )
+		this.angularVelocity *= scale
 		
 		this.position.x += this.velocity.x * dt
 		this.position.y += this.velocity.y * dt
+		
+		this.rotation += this.angularVelocity * dt
 	},
 	
 	// MAYBE optional offset param
@@ -38,6 +43,10 @@ Physics.prototype = {
 	applyForce: function ( force, dt ) {
 		this.velocity.x += force.x / this.mass * dt
 		this.velocity.y += force.y / this.mass * dt
+	},
+	
+	applyTorque: function ( angle, dt ) {
+		this.angularVelocity += angle / this.mass * dt
 	},
 	
 	collideWith: function ( that, dt ) {

@@ -15,7 +15,7 @@ describe( 'physics', () => {
 		return Physics( body, opts )
 	}
 	
-	it( 'forces applied to a body change its velocity', () => {
+	it( 'forces change velocity', () => {
 		const body = Body()
 		const force = { x: 2, y: -3 } // any non-zero value
 		
@@ -25,7 +25,7 @@ describe( 'physics', () => {
 		expect( body.velocity.y < -error ).toBe( true )
 	} )
 	
-	it( 'forces affect smaller masses more than larger masses', () => {
+	it( 'forces change velocity proportionate to mass', () => {
 		const pebble  = Body( { mass:  0.1 } )
 		const boulder = Body( { mass: 10.0 } )
 		const force = { x: 3, y: 4 }
@@ -36,7 +36,47 @@ describe( 'physics', () => {
 		expect( pebble.speed() > boulder.speed() + error ).toBe( true )
 	} )
 	
-	it( 'drag slows down moving bodies', () => {
+	it( 'angular velocity changes rotation', () => {
+		const body = Body()
+		body.angularVelocity = 1
+		
+		body.updatePhysics( 1/60 )
+		
+		expect( body.rotation > 0 ).toBe( true )
+	} )
+	
+	it( 'torque changes angular velocity', () => {
+		const body = Body()
+		
+		expect( body.angularVelocity ).toBe( 0 )
+		body.applyTorque( 1, 1/60 )
+		expect( body.angularVelocity > 0 ).toBe( true )
+	} )
+	
+	// TODO
+	xit( 'torque changes angular velocity proportionate to mass', () => {
+		
+	} )
+	
+	it( 'drag reduces angular velocity', () => {
+		const body = Body()
+		body.angularVelocity = 1
+		
+		body.updatePhysics( 1/60 )
+		
+		expect( body.angularVelocity < 1 )
+	} )
+	
+	it( 'drag reduces negative angular velocity', () => {
+		const body = Body()
+		body.angularVelocity = -1
+		
+		body.updatePhysics( 1/60 )
+		
+		expect( body.angularVelocity > -1 )
+	} )
+	
+	it( 'drag reduces velocity', () => {
 		const body = Body()
 		
 		body.velocity = { x: 4, y: 3 }
@@ -47,7 +87,7 @@ describe( 'physics', () => {
 		expect( body.speed() < initialSpeed - error ).toBe( true )
 	} )
 	
-	it( 'drag is variable', () => {
+	it( 'less drag < more drag', () => {
 		const racecar   = Body( { drag:  0.1 } )
 		const parachute = Body( { drag: 10.0 } )
 		
