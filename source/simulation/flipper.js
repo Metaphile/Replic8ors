@@ -34,7 +34,8 @@ Flipper.prototype = {
 			force.x = Math.cos( direction ) * effort
 			force.y = Math.sin( direction ) * effort
 			
-			this.emit( 'flipping', force, dt )
+			// TODO config param
+			this.emit( 'flipping', force, dt, 0.006 * effort )
 			
 			this.flipProgress += dt / this.flipTime
 		}

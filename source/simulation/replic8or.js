@@ -43,7 +43,10 @@ function createSymmetricSegments() {
 			// but it's convenient to store a reference on flipper
 			flipper.neuron = motorNeuron
 			
-			flipper.on( 'flipping', ( force, dt ) => this.applyForce( force, dt ) )
+			flipper.on( 'flipping', ( force, dt, torque ) => {
+				this.applyForce( Vector2.rotate( force, this.rotation ), dt )
+				this.applyTorque( torque, dt )
+			} )
 			
 			this.flippers.push( flipper )
 		}
