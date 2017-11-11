@@ -22,27 +22,28 @@ function confineNeuronView( neuronView, replicatorPosition, adjustedConfinementR
 function anchorNeuronViews() {
 	const p0 = this.replicator.position
 	const r0 = this.replicator.radius
+	const a0 = this.replicator.rotation
 	
 	// anchor flipper neurons
 	for ( const flipper of this.replicator.flippers ) {
 		const neuronView = this.neuronViews[ flipper.neuron.index ]
 		const r1 = r0 * 0.655
 		const a1 = flipper.angle
-		neuronView.anchor.x = p0.x + Math.cos( a1 ) * r1
-		neuronView.anchor.y = p0.y + Math.sin( a1 ) * r1
+		neuronView.anchor.x = p0.x + Math.cos( a0 + a1 ) * r1
+		neuronView.anchor.y = p0.y + Math.sin( a0 + a1 ) * r1
 	}
 	
 	// anchor receptor neurons
 	for ( const receptor of this.replicator.receptors ) {
 		const midpoint = Object.assign( {}, p0 )
-		midpoint.x += Math.cos( receptor.angle ) * r0 * 0.545
-		midpoint.y += Math.sin( receptor.angle ) * r0 * 0.545
+		midpoint.x += Math.cos( a0 + receptor.angle ) * r0 * 0.545
+		midpoint.y += Math.sin( a0 + receptor.angle ) * r0 * 0.545
 		
 		for ( let i = 0, n = receptor.neurons.length; i < n; i++ ) {
 			const neuron = receptor.neurons[ i ]
 			const neuronView = this.neuronViews[ neuron.index ]
 			
-			let angle = receptor.angle
+			let angle = a0 + receptor.angle
 			angle += ( Math.PI * 2 ) * ( i / n )
 			
 			neuronView.anchor.x = midpoint.x + Math.cos( angle ) * r0 * 0.14
@@ -56,21 +57,21 @@ function anchorNeuronViews() {
 		
 		const r1 = r0 * 0.17
 		
-		hungerView.anchor.x = p0.x + Math.cos( Math.PI / 2 ) * r1
-		hungerView.anchor.y = p0.y + Math.sin( Math.PI / 2 ) * r1
+		hungerView.anchor.x = p0.x + Math.cos( a0 + Math.PI / 2 ) * r1
+		hungerView.anchor.y = p0.y + Math.sin( a0 + Math.PI / 2 ) * r1
 	}
 	
 	// think neurons
-	{
-		const r1 = r0 * 0.19
-		let angle = Math.PI / 2 + Math.PI / 1.5
-		for ( const thinkNeuron of this.replicator.thinkNeurons ) {
-			const thinkView = this.neuronViews[ thinkNeuron.index ]
-			thinkView.anchor.x = p0.x + Math.cos( angle ) * r1
-			thinkView.anchor.y = p0.y + Math.sin( angle ) * r1
-			angle += Math.PI / 1.5
-		}
-	}
+	// {
+	// 	const r1 = r0 * 0.19
+	// 	let angle = Math.PI / 2 + Math.PI / 1.5
+	// 	for ( const thinkNeuron of this.replicator.thinkNeurons ) {
+	// 		const thinkView = this.neuronViews[ thinkNeuron.index ]
+	// 		thinkView.anchor.x = p0.x + Math.cos( angle ) * r1
+	// 		thinkView.anchor.y = p0.y + Math.sin( angle ) * r1
+	// 		angle += Math.PI / 1.5
+	// 	}
+	// }
 }
 
 export default function ReplicatorView( replicator, opts = {}, theme = 'prey' ) {
@@ -298,6 +299,7 @@ ReplicatorView.prototype = {
 	
 	drawSignals( ctx ) {
 		const numNeuronViews = this.neuronViews.length
+		const a0 = this.replicator.rotation
 		
 		for ( let i = 0; i < numNeuronViews; i++ ) {
 			const neuronViewI = this.neuronViews[ i ]
@@ -338,7 +340,7 @@ ReplicatorView.prototype = {
 			if ( flipper.neuron.firing ) {
 				const neuronView = this.neuronViews[ flipper.neuron.index ]
 				const r1 = this.replicator.radius
-				const a1 = flipper.angle
+				const a1 = a0 + flipper.angle
 				const flipperPosition = {
 					x: this.replicator.position.x + Math.cos( a1 ) * r1,
 					y: this.replicator.position.y + Math.sin( a1 ) * r1,
@@ -351,8 +353,8 @@ ReplicatorView.prototype = {
 		// receptor signals
 		for ( const receptor of this.replicator.receptors ) {
 			const receptorPosition = { x: 0, y: 0 }
-			receptorPosition.x = this.replicator.position.x + Math.cos( receptor.angle ) * this.replicator.radius
-			receptorPosition.y = this.replicator.position.y + Math.sin( receptor.angle ) * this.replicator.radius
+			receptorPosition.x = this.replicator.position.x + Math.cos( a0 + receptor.angle ) * this.replicator.radius
+			receptorPosition.y = this.replicator.position.y + Math.sin( a0 + receptor.angle ) * this.replicator.radius
 			
 			// food
 			{
@@ -600,16 +602,24 @@ ReplicatorView.prototype = {
 			this.effects.damage.draw( ourCtx, this.replicator.position, this.replicator.radius )
 		}
 		
+		ourCtx.translate( p0.x, p0.y )
+		ourCtx.rotate( -this.replicator.rotation )
+		ourCtx.translate( -p0.x, -p0.y )
+		
 		this.drawSignals( ourCtx )
 		
 		// draw neurons
 		for ( const neuronView of this.neuronViews ) {
+			ourCtx.translate( neuronView.position.x, neuronView.position.y )
+			ourCtx.rotate( this.replicator.rotation )
+			ourCtx.translate( -neuronView.position.x, -neuronView.position.y )
+			
 			neuronView.draw( ourCtx, detail )
+			
+			ourCtx.translate( neuronView.position.x, neuronView.position.y )
+			ourCtx.rotate( -this.replicator.rotation )
+			ourCtx.translate( -neuronView.position.x, -neuronView.position.y )
 		}
-		
-		ourCtx.translate( p0.x, p0.y )
-		ourCtx.rotate( -this.replicator.rotation )
-		ourCtx.translate( -p0.x, -p0.y )
 		
 		this.drawEnergy( ourCtx )
 		
