@@ -589,6 +589,11 @@ ReplicatorView.prototype = {
 		
 		this.drawBackside( ourCtx )
 		
+		// rotate (some parts) with replicator
+		ourCtx.translate( p0.x, p0.y )
+		ourCtx.rotate( this.replicator.rotation )
+		ourCtx.translate( -p0.x, -p0.y )
+		
 		this.drawSeparators( ourCtx )
 		
 		if ( this.effects.damage ) {
@@ -602,10 +607,18 @@ ReplicatorView.prototype = {
 			neuronView.draw( ourCtx, detail )
 		}
 		
+		ourCtx.translate( p0.x, p0.y )
+		ourCtx.rotate( -this.replicator.rotation )
+		ourCtx.translate( -p0.x, -p0.y )
+		
 		this.drawEnergy( ourCtx )
 		
 		// draw glossy face
 		ourCtx.drawImage( this.assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
+		
+		ourCtx.translate( p0.x, p0.y )
+		ourCtx.rotate( this.replicator.rotation )
+		ourCtx.translate( -p0.x, -p0.y )
 		
 		this.drawFlippers( ourCtx )
 		
