@@ -2,8 +2,8 @@ import * as assets from './neuron-assets'
 import Math2 from '../engine/math-2'
 
 const defaultOpts = {
-	radius: 3.4,
-	clinginess: 8,
+	radius: 3.6,
+	clinginess: 6,
 }
 
 function jiggle( x ) {

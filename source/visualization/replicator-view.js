@@ -27,7 +27,7 @@ function anchorNeuronViews() {
 	// anchor flipper neurons
 	for ( const flipper of this.replicator.flippers ) {
 		const neuronView = this.neuronViews[ flipper.neuron.index ]
-		const r1 = r0 * 0.655
+		const r1 = r0 * 0.695
 		const a1 = flipper.angle
 		neuronView.anchor.x = p0.x + Math.cos( a0 + a1 ) * r1
 		neuronView.anchor.y = p0.y + Math.sin( a0 + a1 ) * r1
@@ -36,18 +36,18 @@ function anchorNeuronViews() {
 	// anchor receptor neurons
 	for ( const receptor of this.replicator.receptors ) {
 		const midpoint = Object.assign( {}, p0 )
-		midpoint.x += Math.cos( a0 + receptor.angle ) * r0 * 0.545
-		midpoint.y += Math.sin( a0 + receptor.angle ) * r0 * 0.545
+		midpoint.x += Math.cos( a0 + receptor.angle ) * r0 * 0.615
+		midpoint.y += Math.sin( a0 + receptor.angle ) * r0 * 0.615
 		
 		for ( let i = 0, n = receptor.neurons.length; i < n; i++ ) {
 			const neuron = receptor.neurons[ i ]
 			const neuronView = this.neuronViews[ neuron.index ]
 			
-			let angle = a0 + receptor.angle
+			let angle = a0 + receptor.angle + Math.PI
 			angle += ( Math.PI * 2 ) * ( i / n )
 			
-			neuronView.anchor.x = midpoint.x + Math.cos( angle ) * r0 * 0.14
-			neuronView.anchor.y = midpoint.y + Math.sin( angle ) * r0 * 0.14
+			neuronView.anchor.x = midpoint.x + Math.cos( angle ) * r0 * 0.16
+			neuronView.anchor.y = midpoint.y + Math.sin( angle ) * r0 * 0.16
 		}
 	}
 	
