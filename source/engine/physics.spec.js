@@ -2,6 +2,7 @@ import Physics from './physics'
 
 const precision = 9
 const error = Math.pow( 10, -precision )
+// TODO const dt = 1/60
 
 describe( 'physics', () => {
 	// test body with known configuration

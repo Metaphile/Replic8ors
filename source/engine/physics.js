@@ -33,6 +33,8 @@ Physics.prototype = {
 		this.position.y += this.velocity.y * dt
 	},
 	
+	// MAYBE optional offset param
+	// offset forces change angular velocity as well
 	applyForce: function ( force, dt ) {
 		this.velocity.x += force.x / this.mass * dt
 		this.velocity.y += force.y / this.mass * dt

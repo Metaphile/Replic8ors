@@ -1,3 +1,5 @@
+// TODO hot key for normal speed (1?)
+
 import $ from '../third-party/jquery'
 import html from './play-controls.html'
 
