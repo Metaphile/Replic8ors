@@ -497,9 +497,13 @@ ReplicatorView.prototype = {
 	},
 	
 	drawFlippers( ctx ) {
-		const length    = 0.48
-		const speed     = 2.9
-		const amplitude = 0.5
+		const speed     =   2.9
+		const amplitude =   0.5
+		
+		const length    =   0.55
+		const lengthMid =   8.1
+		const baseAngle =   0.25 * Math.PI
+		const tilt      =  -0.25 * Math.PI
 		
 		const replicator = this.replicator
 		
@@ -514,13 +518,13 @@ ReplicatorView.prototype = {
 				const q = 1 - flipper.flipProgress
 				const flipAngle = Math.sin( Math.pow( q, 3 ) * Math.PI * 2 * speed ) * amplitude * q
 				
-				ctx.rotate( flipper.angle )
+				ctx.rotate( flipper.angle + tilt )
 				
 				// rotate base less than tip so flippers look rubbery
 				ctx.rotate( flipAngle * 0.5 )
-				ctx.moveTo( Math.cos( -0.4 * Math.PI ) * 9, Math.sin( -0.4 * Math.PI ) * 9 ) // base, left
+				ctx.moveTo( Math.cos( -baseAngle ) * lengthMid, Math.sin( -baseAngle ) * lengthMid ) // base, left
 				ctx.lineTo( 0, 0 ) // base, middle
-				ctx.lineTo( Math.cos(  0.4 * Math.PI ) * 9, Math.sin(  0.4 * Math.PI ) * 9 ) // base, right
+				ctx.lineTo( Math.cos(  baseAngle ) * lengthMid, Math.sin(  baseAngle ) * lengthMid ) // base, right
 				
 				ctx.rotate( flipAngle * 0.5 )
 				ctx.lineTo( replicator.radius * length, 0 ) // tip
@@ -529,7 +533,7 @@ ReplicatorView.prototype = {
 				// ctx.closePath()
 				
 				// manually undo transforms
-				ctx.rotate( -( flipper.angle + flipAngle ) )
+				ctx.rotate( -( flipper.angle + tilt + flipAngle ) )
 				ctx.translate( -flipperBase.x, -flipperBase.y )
 			}
 			
