@@ -36,8 +36,8 @@ function anchorNeuronViews() {
 	// anchor receptor neurons
 	for ( const receptor of this.replicator.receptors ) {
 		const midpoint = Object.assign( {}, p0 )
-		midpoint.x += Math.cos( a0 + receptor.angle ) * r0 * 0.615
-		midpoint.y += Math.sin( a0 + receptor.angle ) * r0 * 0.615
+		midpoint.x += Math.cos( a0 + receptor.angle ) * r0 * 0.590
+		midpoint.y += Math.sin( a0 + receptor.angle ) * r0 * 0.590
 		
 		for ( let i = 0, n = receptor.neurons.length; i < n; i++ ) {
 			const neuron = receptor.neurons[ i ]
