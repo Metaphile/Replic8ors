@@ -174,6 +174,12 @@ World.prototype = {
 		
 		// predators-foods, predators-replicators are covered above
 		
+		for ( const predator of this.predators ) {
+			for ( const food of this.foods ) {
+				predator.collideWith( food, dt )
+			}
+		}
+		
 		// predators-predators
 		for ( let i = 0, n = predators.length; i < n; i++ ) {
 			const predatorA = predators[ i ]
