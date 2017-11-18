@@ -119,6 +119,11 @@ export default function Scenario( world, opts = {} ) {
 		predatorCryo.push( parent )
 	} )
 	
+	// TODO this is causing a weird bug where more than the expected number of predatores spawn after the first round
+	// world.on( 'replicator-died', parent => {
+	// 	if ( world.replicators.length === 0 ) self.reset()
+	// } )
+	
 	world.on( 'predator-died', parent => {
 		if ( world.predators.length === 0 ) self.reset()
 	} )
