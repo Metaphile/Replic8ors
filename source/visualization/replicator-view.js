@@ -212,8 +212,6 @@ ReplicatorView.prototype = {
 	},
 	
 	drawWithFisheye( theirCtx, camera, mousePos_world, detail ) {
-		// TODO fade life juice?
-		
 		const hoverTargets = []
 		
 		for ( const view of this.neuronViews ) {
@@ -621,10 +619,25 @@ ReplicatorView.prototype = {
 			ourCtx.translate( -neuronView.position.x, -neuronView.position.y )
 		}
 		
-		this.drawEnergy( ourCtx )
-		
-		// draw glossy face
-		ourCtx.drawImage( this.assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
+		// fade energy on hover
+		// TODO smooth transition
+		{
+			let oldGlobalAlpha
+			
+			if ( keepHoverOverride ) {
+				oldGlobalAlpha = ourCtx.globalAlpha
+				ourCtx.globalAlpha = 0.3
+			}
+			
+			this.drawEnergy( ourCtx )
+			
+			// draw glossy face
+			ourCtx.drawImage( this.assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
+			
+			if ( keepHoverOverride ) {
+				ourCtx.globalAlpha = oldGlobalAlpha
+			}
+		}
 		
 		ourCtx.translate( p0.x, p0.y )
 		ourCtx.rotate( this.replicator.rotation )
