@@ -82,7 +82,7 @@ NeuronView.prototype = {
 		ctx.beginPath()
 			ctx.arc( this.position.x, this.position.y, this.radius, 0, Math.PI * 2 )
 			ctx.globalCompositeOperation = 'screen'
-			ctx.fillStyle = 'rgba( 90, 195, 255, 0.09 )'
+			ctx.fillStyle = this.active ? 'rgba( 90, 195, 255, 1.0 )' : 'rgba( 90, 195, 255, 0.09 )'
 			ctx.fill()
 		
 		// icon

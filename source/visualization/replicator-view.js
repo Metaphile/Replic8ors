@@ -217,12 +217,12 @@ ReplicatorView.prototype = {
 		for ( const view of this.neuronViews ) {
 			const offset = Vector2.subtract( mousePos_world, view.position, {} )
 			const distance = Vector2.getLength( offset )
-			const collisionRadius = 14
+			const fisheyeStartDist = 14
 			
-			if ( distance < collisionRadius ) {
+			if ( distance < fisheyeStartDist ) {
 				hoverTargets.push( view )
 				
-				const distortion = 0.5 * ( 1 + distort( 1 - distance / collisionRadius ) ) // 0..1
+				const distortion = 0.5 * ( 1 + distort( 1 - distance / fisheyeStartDist ) ) // 0..1
 				
 				view.originalPosition = Object.assign( {}, view.position )
 				Vector2.subtract( view.position, Vector2.scale( offset, 1.2 * distortion, {} ) )
@@ -230,13 +230,37 @@ ReplicatorView.prototype = {
 				view.originalRadius = view.radius
 				view.radius += view.radius * 1.0 * distortion
 				
-				view.connectionOpacity = Math.pow( distortion, 3 )
+				// highlight hover neuron(s) and incoming/outgoing signals; hide other traffic
+				
+				const distortedOffset = Vector2.subtract( mousePos_world, view.position, {} )
+				const distortedDistance = Vector2.getLength( distortedOffset )
+				
+				if ( distortedDistance < view.radius ) {
+					view.connectionOpacity = 1
+					view.overrideSignalOpacity = true
+					// multiple neurons can be active hover targets and that's OK
+					view.active = true
+				} else {
+					view.connectionOpacity = 0.0
+					view.overrideSignalOpacity = false
+					view.active = false
+				}
 			} else {
-				view.connectionOpacity = 0
+				view.connectionOpacity = 0.0
+				view.overrideSignalOpacity = false
+				view.active = false
 			}
 		}
 		
-		this.draw( theirCtx, camera, detail )
+		// if no hover neurons, use default opacity rules
+		if ( this.neuronViews.filter( view => view.active ).length === 0 ) {
+			for ( const view of this.neuronViews ) {
+				view.connectionOpacity = 1
+				view.overrideSignalOpacity = false
+			}
+		}
+		
+		this.draw( theirCtx, camera, detail, true )
 		
 		for ( const hoverTarget of hoverTargets ) {
 			Vector2.set( hoverTarget.position, hoverTarget.originalPosition )
@@ -315,7 +339,8 @@ ReplicatorView.prototype = {
 						neuronViewJ.radius,
 						neuronViewJ.neuron.weights[ neuronViewI.neuron.index ],
 						1 - neuronViewI.neuron.potential,
-						Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ) )
+						Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ),
+						neuronViewI.overrideSignalOpacity || neuronViewJ.overrideSignalOpacity )
 				}
 				
 				if ( neuronViewJ.neuron.firing ) {
@@ -328,7 +353,8 @@ ReplicatorView.prototype = {
 						neuronViewI.radius,
 						neuronViewI.neuron.weights[ neuronViewJ.neuron.index ],
 						1 - neuronViewJ.neuron.potential,
-						Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ) )
+						Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ),
+						neuronViewI.overrideSignalOpacity || neuronViewJ.overrideSignalOpacity )
 				}
 			}
 		}
@@ -344,7 +370,7 @@ ReplicatorView.prototype = {
 					y: this.replicator.position.y + Math.sin( a1 ) * r1,
 				}
 				
-				this.drawSignal( ctx, neuronView.position, neuronView.radius, flipperPosition, 3, 1, 1 - flipper.neuron.potential, neuronView.connectionOpacity )
+				this.drawSignal( ctx, neuronView.position, neuronView.radius, flipperPosition, 3, 1, 1 - flipper.neuron.potential, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
 			}
 		}
 		
@@ -362,7 +388,7 @@ ReplicatorView.prototype = {
 				// TODO this is very misleading
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
 			}
 			
 			// other replicators
@@ -372,7 +398,7 @@ ReplicatorView.prototype = {
 				const weight = neuron.weights[ neuron.index ]
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
 			}
 			
 			// predators
@@ -382,7 +408,7 @@ ReplicatorView.prototype = {
 				const weight = neuron.weights[ neuron.index ]
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
 			}
 		}
 		
@@ -393,11 +419,11 @@ ReplicatorView.prototype = {
 			const weight = neuron.weights[ neuron.index ]
 			const progress = neuron.sensoryPotential / weight % 1
 			
-			this.drawSignal( ctx, this.replicator.position, 0, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity )
+			this.drawSignal( ctx, this.replicator.position, 0, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
 		}
 	},
 	
-	drawSignal( ctx, a_center, a_radius, b_center, b_radius, weight, progress, baseOpacity ) {
+	drawSignal( ctx, a_center, a_radius, b_center, b_radius, weight, progress, baseOpacity, hoverOverride ) {
 		// it is a silly number
 		if ( weight === 0 ) return
 		
@@ -407,7 +433,7 @@ ReplicatorView.prototype = {
 		// MAYBE signal should never start at 0; scale progress to 0.1..1.0
 		const signalStartDist = Math.pow( progress, 1/4 ) * edge2EdgeDist
 		
-		const signalWidth = Math.abs( weight ) * 1.3
+		const signalWidth = Math.abs( weight ) * 1.4
 		const guideWidth = signalWidth * 0.2
 		
 		// 2D
@@ -437,7 +463,7 @@ ReplicatorView.prototype = {
 		const ctx_globalAlpha = ctx.globalAlpha
 		const ctx_globalCompositeOperation = ctx.globalCompositeOperation
 		
-		ctx.globalAlpha = baseOpacity * Math.pow( 1 - progress, 1 )
+		ctx.globalAlpha = hoverOverride ? baseOpacity : baseOpacity * Math.pow( 1 - progress, 1 )
 		ctx.globalCompositeOperation = weight < 0 ? 'darken' : 'lighten'
 		
 		ctx.strokeStyle = weight < 0 ? inhibitoryColor : excitatoryColor
@@ -576,7 +602,13 @@ ReplicatorView.prototype = {
 			ourCtx.stroke()
 	},
 	
-	draw( theirCtx, camera, detail ) {
+	draw( theirCtx, camera, detail, keepHoverOverride ) {
+		if ( !keepHoverOverride ) {
+			for ( const view of this.neuronViews ) {
+				view.overrideSignalOpacity = false
+			}
+		}
+		
 		const replicator = this.replicator
 		const p0 = replicator.position
 		const r0 = replicator.radius
