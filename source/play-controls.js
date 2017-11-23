@@ -44,6 +44,8 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 		gameLoop.paused = false
 	} )
 	
+	// TODO measure time and squeeze as many simulation ticks as possible into 1/60 sec
+	// don't go too much over because it affects UI responsiveness
 	$( '[name=speed-fast]', $form ).click( () => {
 		gameLoop.timescale = 10
 		gameLoop.paused = false

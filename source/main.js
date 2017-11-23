@@ -24,7 +24,9 @@ import PlayControls from './play-controls'
 $( () => $( '#version-number' ).html( '1.1' ) )
 
 // TODO copy-webpack-plugin?
-// TODO update screenshot for new signals
+// TODO add htaccess file to redirect to HTTPS
+// https://help.dreamhost.com/hc/en-us/articles/215747758-How-do-I-force-my-site-to-load-securely-with-an-htaccess-file-
+// TODO update screenshot
 
 // TODO Save Genome button adds history item and updates URL without page load
 
@@ -57,6 +59,8 @@ $( () => $( '#version-number' ).html( '1.1' ) )
 // but also controller can call visualization methods
 // edit: Presentation-Abstraction-Control
 
+// MAYBE pain neuron, 
+
 // on DOM ready
 $( () => {
 	// create empty world for replicators and other entities to inhabit
@@ -68,6 +72,9 @@ $( () => {
 	const scenario = Scenario( world )
 	
 	// drive scenario/world
+	// MAYBE time object
+	// e.g., time = { sim: 0.016, real: 0.017, simTotal: 123.456, realTotal: 124.567 }
+	// only need one instance; update between frames
 	const scenarioLoop = GameLoop(
 		( dt, t ) => scenario.update( dt, t ),
 		() => {} )
@@ -84,6 +91,7 @@ $( () => {
 		dt => visualization.update( dt, dt * ( scenarioLoop.paused ? 0 : scenarioLoop.timescale ) ),
 		() => yesDraw && visualization.draw( 0 ) )
 	
+	// MAYBE 'updated' event from world?
 	scenarioLoop.on( 'step', dt => {
 		// TODO scale dt2 parameter?
 		visualization.update( dt, dt )

@@ -174,6 +174,7 @@ World.prototype = {
 		
 		// predators-foods, predators-replicators are covered above
 		
+		// TODO move up
 		for ( const predator of this.predators ) {
 			predator.takingDamage = false;
 			

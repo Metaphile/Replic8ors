@@ -11,6 +11,7 @@ const defaultOpts = {
 	timestep: 1/60,
 	timescale: 1,
 	paused: false,
+	// MAYBE -> maxBehind
 	maxPendingUpdates: 30,
 }
 
