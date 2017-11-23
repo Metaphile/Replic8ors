@@ -16,7 +16,7 @@ const defaultOpts = new function () {
 	this.elasticity = 1
 	
 	this.energy = 0.5
-	this.metabolism = 1 / ( 2.5 * 60 )
+	this.metabolism = 1 / ( 1.75 * 60 )
 	
 	this.numBodySegments = 3
 	this.receptorOffset = -Math.PI / 2, // up
@@ -133,7 +133,7 @@ export default function Replic8or( opts = {} ) {
 	createSymmetricSegments.call( self )
 	
 	// programBasicInstincts( self )
-	programNonsense( self )
+	// programNonsense( self )
 	
 	return self
 }
@@ -211,7 +211,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.08 ) {
+	replicate: function ( quietly, mutationRate = 0.03 ) {
 		const parent = this
 		const child = Replic8or( { metabolism: this.metabolism } )
 		

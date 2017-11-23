@@ -8,8 +8,8 @@ import RingBuffer from '../engine/ring-buffer'
 const defaultOpts = {
 	designatedWidth:  580,
 	designatedHeight: 480,
-	numReplicators: 9,
-	numPredators: 5,
+	numReplicators: 11,
+	numPredators: 7,
 }
 
 export default function Scenario( world, opts = {} ) {
@@ -22,7 +22,7 @@ export default function Scenario( world, opts = {} ) {
 	// const seed = Replic8or()
 	// for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( seed.replicate() )
 	for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( Replic8or() )
-	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Predator( { metabolism: 1 / ( 1.6 * 60 ) } ) )
+	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Predator() )
 	
 	const timer = Timer()
 	
@@ -34,7 +34,7 @@ export default function Scenario( world, opts = {} ) {
 				
 				const angle = Math.random() * Math.PI * 2
 				// const radius2 = ( radius * 0.8 ) + Math.random() * radius * 0.4
-				const radius2 = Math.pow( Math.random(), 1/3) * radius
+				const radius2 = Math.pow( Math.random(), 1/4) * radius
 				food.position.x = position.x + Math.cos( angle ) * radius2
 				food.position.y = position.y + Math.sin( angle ) * radius2
 				
@@ -64,7 +64,7 @@ export default function Scenario( world, opts = {} ) {
 				const child = specimen.replicate( true )
 				
 				const angle = Math.random() * Math.PI * 2
-				const radius2 = 170 + Math.random() * ( 240 - 170 )
+				const radius2 = 160 + Math.random() * ( 220 - 160 )
 				child.position.x = Math.cos( angle ) * radius2
 				child.position.y = Math.sin( angle ) * radius2
 				
@@ -101,9 +101,9 @@ export default function Scenario( world, opts = {} ) {
 			position.x = Math.cos( angle ) * ( self.designatedWidth / 2 )
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
-			self.doBloom( { x: 0, y: 0 }, 400, 9 )
+			self.doBloom( { x: 0, y: 0 }, 400, 11 )
 			
-			timer.setAlarm( 30, alwaysBeBlooming )
+			timer.setAlarm( 20, alwaysBeBlooming )
 		}
 		
 		timer.setAlarm( 0, alwaysBeBlooming )
