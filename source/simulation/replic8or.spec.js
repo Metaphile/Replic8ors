@@ -52,7 +52,7 @@ describe( 'replicator', () => {
 			// expect( neurons[3].weights ).toEqual( weights_s1n3 )
 		} )
 		
-		it( 'syncs free neuron weights differentlyf', () => {
+		it( 'syncs free neuron weights differently', () => {
 			const numSegments = 3
 			const neuronsPerSegment = 1
 			const numNeurons = numSegments * neuronsPerSegment
