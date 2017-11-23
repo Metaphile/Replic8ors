@@ -77,17 +77,22 @@ $( () => {
 	// initialize dimensions
 	visualization.$element.trigger( 'appended' )
 	
+	let yesDraw = true;
+	
 	// drive visualization
 	const visualizationLoop = GameLoop(
 		dt => visualization.update( dt, dt * ( scenarioLoop.paused ? 0 : scenarioLoop.timescale ) ),
-		() => visualization.draw( 0 ) )
+		() => yesDraw && visualization.draw( 0 ) )
 	
 	scenarioLoop.on( 'step', dt => {
 		// TODO scale dt2 parameter?
 		visualization.update( dt, dt )
 	} )
 	
-	const controls = PlayControls( scenarioLoop )
+	function onToggleOffline( toggleState ) {
+		yesDraw = toggleState
+	}
+	const controls = PlayControls( scenarioLoop, onToggleOffline )
 	
 	$( '#play-controls' ).append( controls )
 	

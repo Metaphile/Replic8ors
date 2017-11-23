@@ -3,7 +3,7 @@
 import $ from '../third-party/jquery'
 import html from './play-controls.html'
 
-export default function PlayControls( gameLoop ) {
+export default function PlayControls( gameLoop, onToggleOffline ) {
 	const $form = $( html )
 	
 	// prevent submit
@@ -35,7 +35,7 @@ export default function PlayControls( gameLoop ) {
 	} )
 	
 	$( '[name=speed-slow]', $form ).click( () => {
-		gameLoop.timescale = 0.2
+		gameLoop.timescale = 0.1
 		gameLoop.paused = false
 	} )
 	
@@ -45,7 +45,7 @@ export default function PlayControls( gameLoop ) {
 	} )
 	
 	$( '[name=speed-fast]', $form ).click( () => {
-		gameLoop.timescale = 30
+		gameLoop.timescale = 10
 		gameLoop.paused = false
 	} )
 	
@@ -55,6 +55,33 @@ export default function PlayControls( gameLoop ) {
 	
 	$( '#info [name=close]' ).click( () => {
 		$( '#info' ).fadeToggle()
+	} )
+	
+	$( '[name=offline]', $form ).click( () => {
+		if ( $( '[name=offline]' ).is( ':checked' ) ) {
+			// run simulation at "max" speed when going offline
+			gameLoop.timescale = 30 // simulation ticks per requestAnimationFrame
+			gameLoop.paused = false
+			
+			// disable playback controls when simulating offline
+			// they work fine, but it's not clear when you're paused/etc.
+			$( '[name=step]' ).prop( 'disabled', true )
+			$( '[name=pause-resume]' ).prop( 'disabled', true )
+			$( '[name^=speed-]' ).prop( 'disabled', true ) // name begins with "speed-"
+			
+			// notify
+			onToggleOffline( false )
+		} else {
+			// run simulation at normal speed when going online
+			$( '[name=speed-normal]', $form ).click()
+			
+			// re-enable playback controls
+			$( '[name=step]' ).prop( 'disabled', false )
+			$( '[name=pause-resume]' ).prop( 'disabled', false )
+			$( '[name^=speed-]' ).prop( 'disabled', false )
+			
+			onToggleOffline( true )
+		}
 	} )
 	
 	return $form[ 0 ]
