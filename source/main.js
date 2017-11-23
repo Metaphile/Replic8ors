@@ -92,10 +92,21 @@ $( () => {
 	$( '#play-controls' ).append( controls )
 	
 	// show info box on first load
-	// adapted from https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
-	if ( document.cookie.replace( /(?:(?:^|.*;\s*)hideInfo\s*\=\s*([^;]*).*$)|^.*$/, '$1' ) !== '1' ) {
-		$( '#info' ).fadeIn()
-		document.cookie = 'hideInfo=1; expires=Fri, 31 Dec 9999 23:59:59 GMT'
+	{
+		const cookieName = 'hideInfo';
+		const cookieValue = '1';
+		
+		// adapted from https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+		const magic = new RegExp( '(?:(?:^|.*;\s*)' + cookieName + '\s*\=\s*([^;]*).*$)|^.*$' )
+		const cookieIsSet = ( document.cookie.replace( magic, '$1' ) === cookieValue )
+		
+		if ( !cookieIsSet ) {
+			// no cookie? show info box
+			$( '#info' ).fadeIn()
+			
+			// set cookie so info box isn't shown automatically next time
+			document.cookie = `${cookieName}=${cookieValue}; expires=Fri, 31 Dec 9999 23:59:59 GMT`
+		}
 	}
 } )
 
