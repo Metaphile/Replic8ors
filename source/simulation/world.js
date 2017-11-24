@@ -175,8 +175,24 @@ World.prototype = {
 		// predators-foods, predators-replicators are covered above
 		
 		for ( const predator of this.predators ) {
+			predator.takingDamage = false;
+			
 			for ( const food of this.foods ) {
-				predator.collideWith( food, dt )
+				if ( Vector2.distance( predator.position, food.position ) < predator.radius + food.radius ) {
+					predator.takingDamage = true
+					
+					const damage = 0.25 * dt
+					
+					if ( predator.energy <= 0) {
+						// do nothing
+					} else if ( predator.energy < damage ) {
+						predator.energy = 0
+					} else {
+						predator.energy -= damage
+					}
+					
+					predator.collideWith( food, dt )
+				}
 			}
 		}
 		
