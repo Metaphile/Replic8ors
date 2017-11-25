@@ -178,6 +178,8 @@ World.prototype = {
 			predator.takingDamage = false;
 			
 			for ( const food of this.foods ) {
+				predator.senseFood( food, dt )
+				
 				if ( Vector2.distance( predator.position, food.position ) < predator.radius + food.radius ) {
 					predator.takingDamage = true
 					
