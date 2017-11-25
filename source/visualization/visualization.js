@@ -199,7 +199,7 @@ export default function Visualization( world ) {
 	}
 	
 	self.update = ( dt, dt2 ) => {
-		cameraOp.update( dt )
+		cameraOp.update( dt, dt2 )
 		worldView.update( dt, dt2 )
 		hud.update( dt )
 	},
