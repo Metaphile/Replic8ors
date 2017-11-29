@@ -213,7 +213,15 @@ Replic8or.prototype = {
 	// TODO quietly -> emitEvent
 	replicate: function ( quietly, mutationRate = 0.03 ) {
 		const parent = this
-		const child = Replic8or( { metabolism: this.metabolism } )
+		const child = Replic8or( {
+			radius: this.radius,
+			mass: this.mass,
+			drag: this.drag,
+			elasticity: this.elasticity,
+			
+			energy: this.energy,
+			metabolism: this.metabolism,
+		} )
 		
 		// TEMP mutations
 		parent.brain.neurons.forEach( ( parentNeuron, neuronIndex ) => {
