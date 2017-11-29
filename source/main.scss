@@ -19,9 +19,10 @@ html, body {
 }
 
 #info {
-	background: fade-out( black, 0.666 );
+	background: fade-out( black, 0.4 );
+	font-size: 12pt;
 	position: absolute;
-	width: 600px;
+	width: 700px;
 	max-width: 90%;
 	margin: 1rem auto;
 	left:   0;
@@ -31,6 +32,10 @@ html, body {
 	
 	color: white;
 	overflow-y: scroll;
+	
+	strong {
+		color: rgb(0, 225, 255);
+	}
 	
 	button[name=close] {
 		background: none;
