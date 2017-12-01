@@ -8,8 +8,8 @@ import RingBuffer from '../engine/ring-buffer'
 const defaultOpts = {
 	designatedWidth:  580,
 	designatedHeight: 480,
-	numReplicators: 11,
-	numPredators: 7,
+	numReplicators: 9,
+	numPredators: 9,
 }
 
 export default function Scenario( world, opts = {} ) {
@@ -34,7 +34,7 @@ export default function Scenario( world, opts = {} ) {
 				
 				const angle = Math.random() * Math.PI * 2
 				// const radius2 = ( radius * 0.8 ) + Math.random() * radius * 0.4
-				const radius2 = Math.pow( Math.random(), 1/4) * radius
+				const radius2 = Math.pow( Math.random(), 1/5) * radius
 				food.position.x = position.x + Math.cos( angle ) * radius2
 				food.position.y = position.y + Math.sin( angle ) * radius2
 				
@@ -167,7 +167,7 @@ export default function Scenario( world, opts = {} ) {
 			position.x = Math.cos( angle ) * ( self.designatedWidth / 2 )
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
-			self.doBloom( { x: 0, y: 0 }, 400, 11 )
+			self.doBloom( { x: 0, y: 0 }, 450, 11 )
 			
 			timer.setAlarm( 20, alwaysBeBlooming )
 		}
