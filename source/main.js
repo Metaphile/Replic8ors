@@ -28,6 +28,9 @@ $( () => $( '#version-number' ).html( '1.1' ) )
 // https://help.dreamhost.com/hc/en-us/articles/215747758-How-do-I-force-my-site-to-load-securely-with-an-htaccess-file-
 // TODO update screenshot
 
+// seedable PRNG
+// https://github.com/davidbau/seedrandom
+
 // TODO Save Genome button adds history item and updates URL without page load
 
 // TODO replicator death animation
