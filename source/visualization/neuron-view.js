@@ -13,7 +13,7 @@ function jiggle( x ) {
 function drawGauge( ctx, neuron ) {
 	const tau = Math.PI * 2
 	const gaugeStart = tau / 4 // down
-	const innerRadius = 0.6
+	const innerRadius = 0.65
 	const outerRadius = 1.0
 	
 	// while firing, do Pacman death animation
@@ -94,7 +94,7 @@ NeuronView.prototype = {
 				ctx.rotate( rotation )
 			}
 			
-			const r = this.radius * 0.35
+			const r = this.radius * 0.4
 			ctx.globalCompositeOperation = 'screen'
 			ctx.globalAlpha = 1 - ( 1 - detail ) / 0.9
 			ctx.drawImage( this.icon, -r + r/18, -r + r/18, r * 2, r * 2 )

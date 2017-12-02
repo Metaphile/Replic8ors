@@ -76,11 +76,11 @@ EnergyUpEffect.prototype = {
 	draw( ctx, energy ) {
 		const globalCompositeOperation = ctx.globalCompositeOperation
 		const globalAlpha = ctx.globalAlpha
-		const gradientOffset = energy - energy * Math.pow( this.progress, 3 )
+		const gradientOffset = energy - energy * Math.pow( this.progress, 4 )
 		ctx.translate( 0, gradientOffset )
 		
 		ctx.globalCompositeOperation = 'screen'
-		ctx.globalAlpha = 1 - this.progress
+		ctx.globalAlpha = Math.pow( 1 - this.progress, 2 )
 		ctx.fillStyle = energyUpGradient
 		ctx.fill()
 		

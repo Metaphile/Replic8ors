@@ -137,7 +137,7 @@ ReplicatorView.prototype = {
 			}
 			
 			// TODO check for energy downs?
-			this.effects.energyUps.push( this.assets.EnergyUpEffect( 0.4, onDone ) )
+			this.effects.energyUps.push( this.assets.EnergyUpEffect( 1, onDone ) )
 		} )
 	},
 	
@@ -431,7 +431,7 @@ ReplicatorView.prototype = {
 		// MAYBE signal should never start at 0; scale progress to 0.1..1.0
 		const signalStartDist = Math.pow( progress, 1/4 ) * edge2EdgeDist
 		
-		const signalWidth = Math.abs( weight ) * 1.4
+		const signalWidth = Math.abs( weight ) * 0.8
 		const guideWidth = signalWidth * 0.2
 		
 		// 2D
@@ -624,7 +624,7 @@ ReplicatorView.prototype = {
 		ourCtx.rotate( this.replicator.rotation )
 		ourCtx.translate( -p0.x, -p0.y )
 		
-		this.drawSeparators( ourCtx )
+		// this.drawSeparators( ourCtx )
 		
 		if ( this.effects.damage ) {
 			this.effects.damage.draw( ourCtx, this.replicator.position, this.replicator.radius )
