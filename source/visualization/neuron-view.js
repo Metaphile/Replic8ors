@@ -2,7 +2,7 @@ import * as assets from './neuron-assets'
 import Math2 from '../engine/math-2'
 
 const defaultOpts = {
-	radius: 3.6,
+	radius: 3.2,
 	clinginess: 6,
 }
 

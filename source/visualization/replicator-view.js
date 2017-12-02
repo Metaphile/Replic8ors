@@ -27,7 +27,7 @@ function anchorNeuronViews() {
 	// anchor flipper neurons
 	for ( const flipper of this.replicator.flippers ) {
 		const neuronView = this.neuronViews[ flipper.neuron.index ]
-		const r1 = r0 * 0.695
+		const r1 = r0 * 0.73
 		const a1 = flipper.angle
 		neuronView.anchor.x = p0.x + Math.cos( a0 + a1 ) * r1
 		neuronView.anchor.y = p0.y + Math.sin( a0 + a1 ) * r1
@@ -35,19 +35,16 @@ function anchorNeuronViews() {
 	
 	// anchor receptor neurons
 	for ( const receptor of this.replicator.receptors ) {
-		const midpoint = Object.assign( {}, p0 )
-		midpoint.x += Math.cos( a0 + receptor.angle ) * r0 * 0.590
-		midpoint.y += Math.sin( a0 + receptor.angle ) * r0 * 0.590
+		const deltaAngle = 0.37
+		const radius = r0 * 0.73
+		const startAngle = a0 + receptor.angle - ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
 		
 		for ( let i = 0, n = receptor.neurons.length; i < n; i++ ) {
 			const neuron = receptor.neurons[ i ]
 			const neuronView = this.neuronViews[ neuron.index ]
 			
-			let angle = a0 + receptor.angle + Math.PI
-			angle += ( Math.PI * 2 ) * ( i / n )
-			
-			neuronView.anchor.x = midpoint.x + Math.cos( angle ) * r0 * 0.16
-			neuronView.anchor.y = midpoint.y + Math.sin( angle ) * r0 * 0.16
+			neuronView.anchor.x = p0.x + Math.cos( startAngle + ( i * deltaAngle ) ) * radius
+			neuronView.anchor.y = p0.y + Math.sin( startAngle + ( i * deltaAngle ) ) * radius
 		}
 	}
 	
@@ -55,23 +52,24 @@ function anchorNeuronViews() {
 	{
 		const hungerView = this.neuronViews[ this.replicator.hungerNeuron.index ]
 		
-		const r1 = r0 * 0.17
+		const r1 = r0 * 0
 		
 		hungerView.anchor.x = p0.x + Math.cos( a0 + Math.PI / 2 ) * r1
 		hungerView.anchor.y = p0.y + Math.sin( a0 + Math.PI / 2 ) * r1
 	}
 	
 	// think neurons
-	// {
-	// 	const r1 = r0 * 0.19
-	// 	let angle = Math.PI / 2 + Math.PI / 1.5
-	// 	for ( const thinkNeuron of this.replicator.thinkNeurons ) {
-	// 		const thinkView = this.neuronViews[ thinkNeuron.index ]
-	// 		thinkView.anchor.x = p0.x + Math.cos( angle ) * r1
-	// 		thinkView.anchor.y = p0.y + Math.sin( angle ) * r1
-	// 		angle += Math.PI / 1.5
-	// 	}
-	// }
+	{
+		const r1 = r0 * 0.3
+		// let angle = a0 + Math.PI / 2
+		let angle = a0
+		for ( const thinkNeuron of this.replicator.thinkNeurons ) {
+			const thinkView = this.neuronViews[ thinkNeuron.index ]
+			thinkView.anchor.x = p0.x + Math.cos( angle ) * r1
+			thinkView.anchor.y = p0.y + Math.sin( angle ) * r1
+			angle += Math.PI * 2 / this.replicator.thinkNeurons.length
+		}
+	}
 }
 
 export default function ReplicatorView( replicator, opts = {}, theme = 'prey' ) {
