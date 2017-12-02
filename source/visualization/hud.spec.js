@@ -37,7 +37,7 @@ describe( 'hud', () => {
 	} )
 	
 	it( 'draws offscreen indicators at screen edge', () => {
-		const padding = 24
+		const padding = 12
 		const markerPosition = () => marker.draw.calls.mostRecent().args[1]
 		
 		trackable.position = { x: 9999, y: 300 } // far right

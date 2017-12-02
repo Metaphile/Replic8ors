@@ -44,7 +44,7 @@ export default function Hud( camera ) {
 			const viewBounds_world = camera.viewBounds( ctx.canvas )
 			const viewCenter_world = camera.viewCenter( ctx.canvas )
 			
-			const padding = 24
+			const padding = 12
 			const zoom = camera.zoomLevel()
 			
 			for ( let { trackable, marker } of trackablesMarkers ) {
