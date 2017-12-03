@@ -106,6 +106,16 @@ export default function WorldView( world ) {
 		}
 	} )
 	
+	world.on( 'predator-eating-prey', ( predator ) => {
+		const predatorView = self.predatorViews.find( view => view.replicator === predator )
+		
+		// loop energy up effect while predator is eating
+		// predator-eating-prey event fires once per tick
+		if ( predatorView.effects.energyUps.length === 0 ) {
+			predatorView.doEnergyUpEffect()
+		}
+	} )
+	
 	world.on( 'food-spoiled', food => {
 		const view = self.foodViews.find( view => {
 			return view.food === food

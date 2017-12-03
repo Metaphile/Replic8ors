@@ -158,9 +158,11 @@ World.prototype = {
 						// do nothing
 					} else if ( replicator.energy < take ) {
 						predator.energy += replicator.energy * mult
+						this.emit( 'predator-eating-prey', predator, replicator )
 						replicator.energy = 0
 					} else {
 						predator.energy += take * mult
+						this.emit( 'predator-eating-prey', predator, replicator )
 						replicator.energy -= take
 					}
 					
