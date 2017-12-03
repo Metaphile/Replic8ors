@@ -154,7 +154,7 @@ World.prototype = {
 					const take = dt * 2
 					const mult = 1
 					
-					if ( replicator.energy <= 0) {
+					if ( replicator.energy <= 0 || replicator.dead ) {
 						// do nothing
 					} else if ( replicator.energy < take ) {
 						predator.energy += replicator.energy * mult
