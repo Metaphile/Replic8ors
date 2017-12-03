@@ -59,8 +59,9 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 		$( '#info' ).fadeToggle()
 	} )
 	
-	$( '[name=offline]', $form ).click( () => {
-		if ( $( '[name=offline]' ).is( ':checked' ) ) {
+	const $background = $( '[name=offline]', $form )
+	$background.click( () => {
+		if ( $background.is( ':checked' ) ) {
 			// run simulation at "max" speed when going offline
 			gameLoop.timescale = 30 // simulation ticks per requestAnimationFrame
 			gameLoop.paused = false
@@ -83,6 +84,13 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 			$( '[name^=speed-]' ).prop( 'disabled', false )
 			
 			onToggleOffline( true )
+		}
+	} )
+	$( document ).keydown( event => {
+		// B key
+		if ( event.which === 66 ) {
+			event.preventDefault()
+			$background.click()
 		}
 	} )
 	
