@@ -230,9 +230,8 @@ Replic8or.prototype = {
 				parentWeight += ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -0.75, 0.75 ), 3 ) : 0 )
 				
 				// inhibitory sensory input is a nuisance
-				// but let's try it again
 				if ( weightIndex === neuronIndex ) {
-					parentWeight = Math2.clamp( parentWeight, -1, 1 )
+					parentWeight = Math2.clamp( parentWeight, 0, 1 )
 				} else {
 					parentWeight = Math2.clamp( parentWeight, -1, 1 )
 				}
