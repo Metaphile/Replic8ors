@@ -36,7 +36,7 @@ Marker.prototype = {
 			ctx.lineTo( base3.x, base3.y )
 			ctx.closePath()
 			
-			ctx.fillStyle = 'rgba( 255, 60, 0, 0.51 )'
+			ctx.fillStyle = 'rgba( 255, 30, 0, 0.51 )'
 			ctx.fill()
 	}
 }
