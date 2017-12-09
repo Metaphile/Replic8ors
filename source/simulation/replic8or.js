@@ -116,7 +116,7 @@ function programBasicInstincts( replicator ) {
 
 function programNonsense( replicator ) {
 	for ( const neuron of replicator.brain.neurons ) {
-		neuron.weights = neuron.weights.map( weight => Math2.randRange( -1.0, 1.0 ) )
+		neuron.weights = neuron.weights.map( weight => Math2.randRange( -0.5, 0.5 ) )
 	}
 	
 	const neuronsPerSegment = 4
@@ -165,7 +165,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( food.position, receptorPosition ) - food.radius
-			const strength = 40 * ( distance < 0 ? 1 :
+			const strength = 50 * ( distance < 0 ? 1 :
 				1 / ( 1 + Math.pow( distance / 32, 2 ) ) )
 			
 			receptor.neurons.food.stimulate( strength * dt )
@@ -179,7 +179,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( replicator.position, receptorPosition ) - replicator.radius
-			const strength = 40 * ( distance < 0 ? 1 :
+			const strength = 50 * ( distance < 0 ? 1 :
 				1 / ( 1 + Math.pow( distance / 32, 2 ) ) )
 			
 			receptor.neurons.replicator.stimulate( strength * dt )
@@ -193,7 +193,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( predator.position, receptorPosition ) - predator.radius
-			const strength = 40 * 7 * ( distance < 0 ? 1 :
+			const strength = 50 * ( distance < 0 ? 1 :
 				1 / ( 1 + Math.pow( distance / 32, 2 ) ) )
 			
 			receptor.neurons.predator.stimulate( strength * dt )
@@ -211,7 +211,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.02 ) {
+	replicate: function ( quietly, mutationRate = 0.0036 ) {
 		const parent = this
 		const child = Replic8or( {
 			radius: this.radius,
