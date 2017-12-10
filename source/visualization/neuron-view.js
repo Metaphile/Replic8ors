@@ -41,8 +41,9 @@ function drawGauge( ctx, neuron ) {
 			ctx.arc( 0, 0, innerRadius, gaugeStart, inhibitoryStop, true ) // ccw
 			ctx.arc( 0, 0, outerRadius, inhibitoryStop, gaugeStart ) // cw
 			
-			ctx.fillStyle = 'rgba( 190, 0, 0, 0.666 )'
-			ctx.globalCompositeOperation = 'darken'
+			ctx.fillStyle = 'rgba( 110, 90, 255, 0.8 )'
+			// 'source-over' is default GCO
+			ctx.globalCompositeOperation = 'source-over'
 			ctx.fill()
 	}
 }
@@ -82,7 +83,7 @@ NeuronView.prototype = {
 		ctx.beginPath()
 			ctx.arc( this.position.x, this.position.y, this.radius, 0, Math.PI * 2 )
 			ctx.globalCompositeOperation = 'screen'
-			ctx.fillStyle = this.active ? 'rgba( 90, 195, 255, 1.0 )' : 'rgba( 90, 195, 255, 0.09 )'
+			ctx.fillStyle = this.active ? 'rgba( 90, 195, 255, 0.9 )' : 'rgba( 90, 195, 255, 0.09 )'
 			ctx.fill()
 		
 		// icon

@@ -455,13 +455,14 @@ ReplicatorView.prototype = {
 		// draw
 		
 		const excitatoryColor = 'rgba( 90, 195, 255, 1.0 )'
-		const inhibitoryColor = 'rgba( 190, 0, 0, 0.666 )'
+		const inhibitoryColor = 'rgba( 110, 90, 255, 0.8 )'
 		
 		const ctx_globalAlpha = ctx.globalAlpha
 		const ctx_globalCompositeOperation = ctx.globalCompositeOperation
 		
 		ctx.globalAlpha = hoverOverride ? baseOpacity : baseOpacity * Math.pow( 1 - progress, 1 )
-		ctx.globalCompositeOperation = weight < 0 ? 'darken' : 'lighten'
+		// 'source-over' is default GCO
+		ctx.globalCompositeOperation = weight < 0 ? 'source-over' : 'lighten'
 		
 		ctx.strokeStyle = weight < 0 ? inhibitoryColor : excitatoryColor
 		
