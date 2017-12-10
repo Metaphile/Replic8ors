@@ -13,8 +13,8 @@ function jiggle( x ) {
 function drawGauge( ctx, neuron ) {
 	const tau = Math.PI * 2
 	const gaugeStart = tau / 4 // down
-	const innerRadius = 0.65
-	const outerRadius = 1.0
+	const innerRadius = 0.64
+	const outerRadius = 0.9
 	
 	// while firing, do Pacman death animation
 	// rotate potential bar counter-clockwise so gap is top center
