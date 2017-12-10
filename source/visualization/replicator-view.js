@@ -637,14 +637,26 @@ ReplicatorView.prototype = {
 		
 		// draw neurons
 		for ( const neuronView of this.neuronViews ) {
+			let downAngle
+			
+			if ( neuronView.neuron !== this.replicator.hungerNeuron ) {
+				// rotate neurons (except hunger neuron) so their "down" angle points toward the replicator center of mass
+				// it looks nice
+				downAngle = Vector2.angle( Vector2.subtract( this.replicator.position, neuronView.position, {} ) ) - Math.PI/2
+			} else {
+				// the hunger neuron is different because it's _at_ the center
+				// use the replicator down angle instead
+				downAngle = this.replicator.rotation
+			}
+			
 			ourCtx.translate( neuronView.position.x, neuronView.position.y )
-			ourCtx.rotate( this.replicator.rotation )
+			ourCtx.rotate( downAngle )
 			ourCtx.translate( -neuronView.position.x, -neuronView.position.y )
 			
 			neuronView.draw( ourCtx, detail )
 			
 			ourCtx.translate( neuronView.position.x, neuronView.position.y )
-			ourCtx.rotate( -this.replicator.rotation )
+			ourCtx.rotate( -downAngle )
 			ourCtx.translate( -neuronView.position.x, -neuronView.position.y )
 		}
 		
