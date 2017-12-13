@@ -1,6 +1,7 @@
 // TODO initial position for neuron views
 // apply constant repulsive force; let springiness and collisions do their thing
 
+import config from '../config'
 import * as replicatorAssets from './replicator-assets'
 import * as predatorAssets from './predator-assets'
 import NeuronView from './neuron-view'
@@ -454,17 +455,14 @@ ReplicatorView.prototype = {
 		
 		// draw
 		
-		const excitatoryColor = 'rgba( 90, 195, 255, 1.0 )'
-		const inhibitoryColor = 'rgba( 110, 90, 255, 0.8 )'
-		
 		const ctx_globalAlpha = ctx.globalAlpha
 		const ctx_globalCompositeOperation = ctx.globalCompositeOperation
 		
 		ctx.globalAlpha = hoverOverride ? baseOpacity : baseOpacity * Math.pow( 1 - progress, 1 )
 		// 'source-over' is default GCO
-		ctx.globalCompositeOperation = weight < 0 ? 'source-over' : 'lighten'
+		ctx.globalCompositeOperation = weight < 0 ? config.inhibitoryCompositeOperation : config.excitatoryCompositeOperation
 		
-		ctx.strokeStyle = weight < 0 ? inhibitoryColor : excitatoryColor
+		ctx.strokeStyle = weight < 0 ? config.inhibitoryColor : config.excitatoryColor
 		
 		ctx.beginPath()
 			ctx.moveTo( startPoint.x, startPoint.y )

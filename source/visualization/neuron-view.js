@@ -1,3 +1,4 @@
+import config from '../config'
 import * as assets from './neuron-assets'
 import Math2 from '../engine/math-2'
 
@@ -28,8 +29,8 @@ function drawGauge( ctx, neuron ) {
 		ctx.arc( 0, 0, innerRadius, potentialStart, potentialStop ) // cw
 		ctx.arc( 0, 0, outerRadius, potentialStop, potentialStart, true ) // ccw
 		
-		ctx.fillStyle = 'rgba( 90, 195, 255, 1.0 )'
-		ctx.globalCompositeOperation = 'screen'
+		ctx.fillStyle = config.excitatoryColor
+		ctx.globalCompositeOperation = config.excitatoryCompositeOperation
 		ctx.fill()
 	
 	if ( !neuron.firing ) {
@@ -41,9 +42,8 @@ function drawGauge( ctx, neuron ) {
 			ctx.arc( 0, 0, innerRadius, gaugeStart, inhibitoryStop, true ) // ccw
 			ctx.arc( 0, 0, outerRadius, inhibitoryStop, gaugeStart ) // cw
 			
-			ctx.fillStyle = 'rgba( 110, 90, 255, 0.8 )'
-			// 'source-over' is default GCO
-			ctx.globalCompositeOperation = 'source-over'
+			ctx.fillStyle = config.inhibitoryColor
+			ctx.globalCompositeOperation = config.inhibitoryCompositeOperation
 			ctx.fill()
 	}
 }
