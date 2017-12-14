@@ -3,8 +3,8 @@ import * as assets from './neuron-assets'
 import Math2 from '../engine/math-2'
 
 const defaultOpts = {
-	radius: 3.2,
-	clinginess: 6,
+	radius: 3.3,
+	clinginess: 4,
 }
 
 function jiggle( x ) {
@@ -14,8 +14,8 @@ function jiggle( x ) {
 function drawGauge( ctx, neuron ) {
 	const tau = Math.PI * 2
 	const gaugeStart = tau / 4 // down
-	const innerRadius = 0.64
-	const outerRadius = 0.9
+	const innerRadius = 0.59
+	const outerRadius = 0.93
 	
 	// while firing, do Pacman death animation
 	// rotate potential bar counter-clockwise so gap is top center
@@ -95,10 +95,10 @@ NeuronView.prototype = {
 				ctx.rotate( rotation )
 			}
 			
-			const r = this.radius * 0.4
+			const r = this.radius * 0.36
 			ctx.globalCompositeOperation = 'screen'
 			ctx.globalAlpha = 1 - ( 1 - detail ) / 0.9
-			ctx.drawImage( this.icon, -r + r/18, -r + r/18, r * 2, r * 2 )
+			ctx.drawImage( this.icon, -r, -r, r * 2, r * 2 )
 			ctx.globalAlpha = 1
 			
 			if ( !this.neuron.firing ) {
