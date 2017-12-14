@@ -5,7 +5,7 @@ export default function Marker( opts = {} ) {
 }
 
 Marker.prototype = {
-	size: 22,
+	size: 21,
 	
 	draw( ctx, tip, angleToTrackable, trackableSelected ) {
 		// Math.random() > 0.996 && console.log( tip )

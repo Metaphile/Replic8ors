@@ -182,7 +182,7 @@ export default function Visualization( world ) {
 	
 	{
 		const trackReplicator = ( replicator ) => {
-			hud.track( replicator, HudMarker( { size: 22 } ) )
+			hud.track( replicator, HudMarker() )
 		}
 		
 		for ( const replicator of world.replicators ) trackReplicator( replicator )
@@ -191,7 +191,7 @@ export default function Visualization( world ) {
 	
 	{
 		const trackPredator = ( predator ) => {
-			hud.track( predator, HudMarker( { size: 44 } ) )
+			hud.track( predator, HudMarker() )
 		}
 		
 		for ( const predator of world.predators ) trackPredator( predator )
