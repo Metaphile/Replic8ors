@@ -22,7 +22,10 @@ export default function Visualization( world ) {
 	self.$element = $container
 	
 	const camera = Camera()
+	
+	// center and slightly zoom camera
 	camera.pan( Vector2.invert( camera.viewCenter( canvas ) ) )
+	camera.zoom( 0.8, camera.viewCenter( canvas ) )
 	
 	const cameraOp = CameraOperator( camera, canvas )
 	
