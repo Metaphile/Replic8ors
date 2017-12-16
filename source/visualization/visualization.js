@@ -164,7 +164,7 @@ export default function Visualization( world ) {
 			selection = selection || worldView.getReplicatorAt( clickPos_world )
 			
 			if ( selection ) {
-				cameraOp.smoothZoomTo( 7, clickPos_world )
+				cameraOp.smoothZoomTo( 7.5, clickPos_world )
 				cameraOp.follow( selection )
 				hud.select( selection )
 				
