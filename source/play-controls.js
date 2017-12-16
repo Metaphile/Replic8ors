@@ -55,8 +55,16 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 		$( '#info' ).fadeToggle()
 	} )
 	
-	$( '#info [name=close]' ).click( () => {
-		$( '#info' ).fadeToggle()
+	$( '#info' ).click( () => {
+		$( '#info' ).fadeOut()
+	} )
+	
+	$( document ).keydown( event => {
+		// 27 == escape
+		if ( event.which === 27 ) {
+			// toggle because it's convenient for development
+			$( '#info' ).fadeToggle()
+		}
 	} )
 	
 	const $background = $( '[name=offline]', $form )

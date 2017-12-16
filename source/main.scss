@@ -37,6 +37,12 @@ html, body {
 		color: rgb(0, 225, 255);
 	}
 	
+	// show pointer cursor over entire info modal (including close button)
+	// to indicate that it's clickable
+	&, & button {
+		cursor: pointer;
+	}
+	
 	button[name=close] {
 		background: none;
 		border: none;
@@ -51,7 +57,6 @@ html, body {
 		right: 0;
 		
 		&:hover, &:focus {
-			color: cyan;
 			outline: none;
 		}
 	}
