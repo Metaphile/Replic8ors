@@ -135,6 +135,11 @@ export default function Replic8or( opts = {} ) {
 	// programBasicInstincts( self )
 	// programNonsense( self )
 	
+	// make all sensory input excitatory to begin with
+	for ( const neuron of self.brain.neurons ) {
+		neuron.weights[ neuron.index ] = 0.1
+	}
+	
 	return self
 }
 
