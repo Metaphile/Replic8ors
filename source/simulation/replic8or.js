@@ -227,7 +227,11 @@ Replic8or.prototype = {
 		parent.brain.neurons.forEach( ( parentNeuron, neuronIndex ) => {
 			// TODO use map
 			parentNeuron.weights.forEach( ( parentWeight, weightIndex ) => {
-				parentWeight += ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -0.75, 0.75 ), 3 ) : 0 )
+				if ( mutationRate > Math.random() ) {
+					// distributed so most mutations are small, some are game-changers
+					let mutation = 2 * Math.pow( Math2.randRange( -1, 1 ), 11 )
+					parentWeight += mutation
+				}
 				
 				// inhibitory sensory input is a nuisance
 				if ( weightIndex === neuronIndex ) {
