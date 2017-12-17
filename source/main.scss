@@ -9,9 +9,19 @@ body {
 	margin: 0;
 }
 
-h1 {
+$green: rgb(7, 141,  62);
+$blue: rgb(90, 195, 255);
+$red: rgb(110, 0, 0);
+
+h2 {
 	font-size: larger;
+}
+
+h2, h3 {
+	// color: lighten($red, 25%);
+	color: $blue;
 	font-weight: normal;
+	border-bottom: 1px solid $blue;
 }
 
 html, body {
@@ -19,28 +29,31 @@ html, body {
 }
 
 #info {
-	background: fade-out( black, 0.4 );
+	background: fade-out( black, 0.2 );
 	font-size: 12pt;
 	position: absolute;
-	width: 700px;
-	max-width: 90%;
-	margin: 1rem auto;
+	width: 100%;
+	min-height: 100%;
 	left:   0;
 	right:  0;
-	padding: 1rem 3rem 2rem 3rem;
 	z-index: 999;
 	
 	color: white;
 	overflow-y: scroll;
 	
 	strong {
-		color: rgb(0, 225, 255);
+		color: $blue;
+		font-weight: normal;
 	}
 	
 	// show pointer cursor over entire info modal (including close button)
 	// to indicate that it's clickable
 	&, & button {
 		cursor: pointer;
+	}
+	
+	li {
+		height: 1.5rem;
 	}
 	
 	button[name=close] {
@@ -59,6 +72,12 @@ html, body {
 		&:hover, &:focus {
 			outline: none;
 		}
+	}
+	
+	.column {
+		max-width: 640px;
+		padding: 1rem;
+		margin: 0 auto;
 	}
 }
 

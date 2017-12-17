@@ -21,20 +21,37 @@
 		<section id='info' style='display: none;'>
 			<button name='close'>×</button>
 			
-			<h1 style='text-align: center;'><img src=<%= require('./logo.png') %> alt='Replic8ors' style='image-rendering: pixelated; width: 420px; max-width: 100%;'></h1>
-			
-			<p>Replic8ors is a behavioral evolution simulator featuring fully visualized artificial neural networks. It uses self-replication and natural selection to evolve lifelike behavior in virtual organisms.</p>
-			
-			<h3>Controls</h3>
-			
-			<ul>
-				<li>Click and drag to <strong>pan around</strong></li>
-				<li><strong>Zoom in and out</strong> with the mouse wheel</li>
-				<li>Click on a replicator to <strong>automatically track it</strong> (double click to <strong>track and zoom</strong>)</li>
-				<li><strong>Pause / resume</strong> with the space bar</li>
-				<li><strong>Advance frame-by-frame</strong> with the right arrow key</li>
-				<li>Hover over replicators or individual neurons to <strong>analyze network activity</strong> as it happens</li>
-			</ul>
+			<div class='column'>
+				<h1 style='text-align: center;'><img src=<%= require('./logo.png') %> alt='Replic8ors' style='image-rendering: pixelated; width: 520px; max-width: 100%;'></h1>
+				
+				<h3>Introduction</h3>
+				
+				<p>Replic8ors is a behavioral evolution simulator.</p>
+				
+				<p>Features:</p>
+				
+				<ul>
+					<li>Fully visualized neural networks</li>
+					<li>Self-replication and natural selection</li>
+					<li>Adjustable timescale, including pause and step</li>
+					<li>Camera target tracking</li>
+					<li>Limited stats in the developer console</li>
+				</ul>
+				
+				<p>It takes a while for the algorithm to work, so leave it running and check in periodically.</p>
+				
+				<h3>Controls</h3>
+				
+				<ul>
+					<li><strong>Click and drag</strong> to look around</li>
+					<li>Zoom in and out with the <strong>mouse wheel</strong></li>
+					<li><strong>Hover over replicators</strong> to ...</li>
+					<li><strong>Hover over neurons</strong> to highlight incoming/outgoing signals</li>
+					<li><strong>Click on replicators</strong> to track them (<strong>double click</strong> to track and zoom)</li>
+					<li>Pause / resume with the <strong>space bar</strong></li>
+					<li>Step frame-by-frame with the <strong>right arrow key</strong></li>
+				</ul>
+			</div>
 		</section>
 		
 		<section id='visualization'></section>
