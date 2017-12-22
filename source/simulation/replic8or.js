@@ -146,6 +146,11 @@ export default function Replic8or( opts = {} ) {
 
 Replic8or.prototype = {
 	update: function ( dt ) {
+		// stimulate hunger neuron _before_ updating brain
+		// may fix rare issue where neuron has potential == 1 on activation frame
+		// instead of 1 - delta
+		this.hungerNeuron.stimulate( Math.pow( 1 - this.energy, 2 ) * 5 * dt )
+		
 		this.brain.update( dt )
 		
 		for ( const flipper of this.flippers ) flipper.update( dt )
@@ -158,8 +163,6 @@ Replic8or.prototype = {
 		}
 		
 		this.energy -= this.metabolism * dt
-		
-		this.hungerNeuron.stimulate( Math.pow( 1 - this.energy, 2 ) * 5 * dt )
 		
 		if ( this.energy <= 0 ) this.die()
 	},
