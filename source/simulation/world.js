@@ -151,8 +151,8 @@ World.prototype = {
 					// transfer energy,
 					// don't transfer more than is available
 					
-					const take = dt * 1
-					const mult = 1.4
+					const take = dt * 0.8
+					const mult = 1.2
 					
 					if ( replicator.energy <= 0 || replicator.dead ) {
 						// do nothing
