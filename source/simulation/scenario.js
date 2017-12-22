@@ -22,7 +22,7 @@ export default function Scenario( world, opts = {} ) {
 	// const seed = Replic8or()
 	// for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( seed.replicate() )
 	for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( Replic8or() )
-	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Predator() )
+	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Predator( { flipperStrength: 7000 } ) )
 	
 	const timer = Timer()
 	

@@ -23,6 +23,7 @@ const defaultOpts = new function () {
 	this.flipperOffset = this.receptorOffset + ( Math.PI / this.numBodySegments )
 	
 	this.takingDamage = false
+	this.flipperStrength = 4500
 }
 
 function createSymmetricSegments() {
@@ -33,7 +34,7 @@ function createSymmetricSegments() {
 		// flipper
 		{
 			const angle = this.flipperOffset + ( i / this.numBodySegments * Math.PI * 2 )
-			const flipper = Flipper( angle )
+			const flipper = Flipper( angle, { strength: this.flipperStrength } )
 			
 			const motorNeuron = Neuron()
 			motorNeuron.on( 'fire', () => flipper.flip() )
@@ -226,6 +227,7 @@ Replic8or.prototype = {
 			
 			energy: this.energy,
 			metabolism: this.metabolism,
+			flipperStrength: this.flipperStrength,
 		} )
 		
 		// TEMP mutations
