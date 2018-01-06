@@ -227,6 +227,7 @@ Replic8or.prototype = {
 			mass: this.mass,
 			drag: this.drag,
 			elasticity: this.elasticity,
+			numBodySegments: this.numBodySegments,
 			
 			energy: this.energy,
 			metabolism: this.metabolism,
