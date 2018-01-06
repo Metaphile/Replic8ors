@@ -24,7 +24,8 @@ describe( 'replicator', () => {
 		} )
 	} )
 	
-	describe( 'radial symmetry', () => {
+	// turns out the radial symmetry logic also correctly handles bilateral symmetry
+	describe( 'radial/lateral symmetry', () => {
 		it( 'maintains symmetric neuron weights', () => {
 			const numSegments = 3
 			const neuronsPerSegment = 2
