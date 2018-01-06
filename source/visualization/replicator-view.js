@@ -581,14 +581,17 @@ ReplicatorView.prototype = {
 		ourCtx.lineWidth = 2.9
 		ourCtx.lineCap = 'butt' // heh
 		
-		for ( var i = 0; i < n; i++ ) {
-			ourCtx.beginPath()
-				// define arc between adjacent receptors, allowing for transmembrane channels
-				const startAngle = offset + (   i       / n * Math.PI * 2 ) + ( gap / 2 )
-				const endAngle   = offset + ( ( i + 1 ) / n * Math.PI * 2 ) - ( gap / 2 )
-				
-				ourCtx.arc( cx, cy, this.replicator.radius, startAngle, endAngle )
-				ourCtx.stroke()
+		{
+			const receptors = this.replicator.receptors
+			
+			for ( let i = 0; i < receptors.length; i++ ) {
+				ourCtx.beginPath()
+					const startAngle = receptors[ i ].angle + ( gap / 2 )
+					const endAngle   = receptors[ ( i + 1 ) % receptors.length ].angle - ( gap / 2 )
+					
+					ourCtx.arc( cx, cy, this.replicator.radius, startAngle, endAngle )
+					ourCtx.stroke()
+			}
 		}
 		
 		// TODO shallower notches
