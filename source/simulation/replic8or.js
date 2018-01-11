@@ -80,7 +80,7 @@ function createSymmetricSegments() {
 	this.brain.addNeuron( this.hungerNeuron )
 	
 	this.thinkNeurons = []
-	for ( let n = 3; n > 0; n-- ) {
+	for ( let n = 5; n > 0; n-- ) {
 		const thinkNeuron = Neuron()
 		this.brain.addNeuron( thinkNeuron )
 		this.thinkNeurons.push( thinkNeuron )
