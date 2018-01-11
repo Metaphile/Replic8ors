@@ -26,6 +26,7 @@ export default function Neuron( opts = {} ) {
 	// ours is normalized to 0..1
 	self.potential = 0
 	self.sensoryPotential = 0
+	self.gotSensoryInput = false
 	
 	// total inhibitory input since neuron last fired
 	self.inhibitoryInput = 0
@@ -50,7 +51,10 @@ Neuron.prototype = {
 			this.potential += input
 		}
 		
-		if ( sourceIndex === this.index ) this.sensoryPotential += input
+		if ( sourceIndex === this.index ) {
+			this.sensoryPotential += input
+			this.gotSensoryInput = true
+		}
 		
 		// call to update() ensures neuron is in good state
 		this.update( 0 )
@@ -66,6 +70,10 @@ Neuron.prototype = {
 	},
 	
 	update: function ( dt ) {
+		if ( !this.gotSensoryInput ) {
+			this.sensoryPotential = 0
+		}
+		
 		if ( !this.firing ) {
 			// decay
 			const decayedPotential = this.potentialDecayRate * dt
