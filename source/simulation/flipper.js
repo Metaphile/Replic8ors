@@ -1,6 +1,7 @@
 import Events from '../engine/events'
 
 const defaultOpts = {
+	// overridden in scenario
 	strength: 4500,
 	flipTime: 1.25,
 }

@@ -70,6 +70,7 @@ export default function Scenario( world, opts = {} ) {
 		// TODO timeRatio
 	}
 	
+	// TODO instead of resetting scenario, incrementally replenish predators/prey to keep simulation going
 	self.reset = function ( hard ) {
 		// stats
 		{

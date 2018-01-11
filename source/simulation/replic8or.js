@@ -238,6 +238,8 @@ Replic8or.prototype = {
 		parent.brain.neurons.forEach( ( parentNeuron, neuronIndex ) => {
 			// TODO use map
 			parentNeuron.weights.forEach( ( parentWeight, weightIndex ) => {
+				// TODO for clarity, mutation should be applied to child weight
+				
 				if ( mutationRate > Math.random() ) {
 					// distributed so most mutations are small, some are game-changers
 					let mutation = 2 * Math.pow( Math2.randRange( -1, 1 ), 11 )

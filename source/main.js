@@ -23,6 +23,10 @@ import PlayControls from './play-controls'
 // REMEMBER TO INCREMENT AS NECESSARY
 $( () => $( '#version-number' ).html( '1.1' ) )
 
+// TODO renormalization
+// allow mutations to exceed +/- 1
+// but at some point rescale all weights so largest value is +/- 1
+
 // TODO copy-webpack-plugin?
 // TODO add htaccess file to redirect to HTTPS
 // https://help.dreamhost.com/hc/en-us/articles/215747758-How-do-I-force-my-site-to-load-securely-with-an-htaccess-file-
