@@ -247,9 +247,9 @@ Replic8or.prototype = {
 					parentWeight += mutation
 				}
 				
-				// inhibitory sensory input is a nuisance
 				if ( weightIndex === neuronIndex ) {
-					parentWeight = Math2.clamp( parentWeight, 0, 1 )
+					// sensory weights are hard coded with excitatory values so networks are forced to incorporate sensory input
+					parentWeight = 0.3
 				} else {
 					parentWeight = Math2.clamp( parentWeight, -1, 1 )
 				}
