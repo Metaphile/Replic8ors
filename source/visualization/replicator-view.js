@@ -585,7 +585,7 @@ ReplicatorView.prototype = {
 		// angular offset of chemoreceptors
 		const offset = this.replicator.receptorOffset
 		// to visualize pores in cell membrane
-		const gap = 0.062
+		const gap = 0.16
 		
 		const cx = this.replicator.position.x
 		const cy = this.replicator.position.y
