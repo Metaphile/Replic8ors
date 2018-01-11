@@ -18,9 +18,9 @@ const defaultOpts = new function () {
 	this.energy = 0.5
 	this.metabolism = 1 / ( 1.75 * 60 )
 	
-	this.numBodySegments = 3
-	this.receptorOffset = -Math.PI / 2, // up
-	this.flipperOffset = this.receptorOffset + ( Math.PI / this.numBodySegments )
+	this.numBodySegments = 2
+	this.receptorOffset = -1/8 * ( Math.PI * 2 ),
+	this.flipperOffset  = -5/8 * ( Math.PI * 2 ),
 	
 	this.takingDamage = false
 	this.flipperStrength = 4500
@@ -33,7 +33,7 @@ function createSymmetricSegments() {
 	for ( let i = 0; i < this.numBodySegments; i++ ) {
 		// flipper
 		{
-			const angle = this.flipperOffset + ( i / this.numBodySegments * Math.PI * 2 )
+			const angle = this.flipperOffset + i * ( Math.PI / 2 )
 			const flipper = Flipper( angle, { strength: this.flipperStrength } )
 			
 			const motorNeuron = Neuron()
@@ -46,7 +46,12 @@ function createSymmetricSegments() {
 			
 			flipper.on( 'flipping', ( force, dt, torque ) => {
 				this.applyForce( Vector2.rotate( force, this.rotation ), dt )
-				this.applyTorque( torque, dt )
+				
+				if ( this.flippers.indexOf( flipper ) === 0 ) {
+					this.applyTorque( -torque, dt )
+				} else {
+					this.applyTorque( torque, dt )
+				}
 			} )
 			
 			this.flippers.push( flipper )
@@ -54,7 +59,7 @@ function createSymmetricSegments() {
 		
 		// receptor
 		{
-			const angle = this.receptorOffset + ( i / this.numBodySegments * Math.PI * 2 )
+			const angle = this.receptorOffset + i * ( Math.PI / 2 )
 			const receptor = { angle }
 			
 			const foodNeuron = Neuron()

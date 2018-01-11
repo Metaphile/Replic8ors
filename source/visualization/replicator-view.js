@@ -522,9 +522,9 @@ ReplicatorView.prototype = {
 		const speed     =   2.6
 		const amplitude =   0.6
 		
-		const length    =   0.55
-		const lengthMid =   8.1
-		const baseAngle =   0.25 * Math.PI
+		const length    =   0.48
+		const lengthMid =   8.4
+		const baseAngle =   0.26 * Math.PI
 		const tilt      =  -0.25 * Math.PI
 		
 		const replicator = this.replicator
@@ -532,10 +532,16 @@ ReplicatorView.prototype = {
 		ctx.beginPath()
 			ctx.translate( replicator.position.x, replicator.position.y )
 			
-			for ( const flipper of replicator.flippers ) {
-				const flipperBase = Vector2( Math.cos( flipper.angle ) * ( replicator.radius - 1.3 ), Math.sin( flipper.angle ) * ( replicator.radius - 1.3 ) )
+			for ( let i = 0; i < replicator.flippers.length; i++ ) {
+				const flipper = replicator.flippers[ i ]
+				
+				const flipperBase = Vector2( Math.cos( flipper.angle + ( i === 0 ? -0.19 : 0.19 ) ) * ( replicator.radius - 1.3 ), Math.sin( flipper.angle + ( i === 0 ? -0.19 : 0.19 )  ) * ( replicator.radius - 1.3 ) )
 				
 				ctx.translate( flipperBase.x, flipperBase.y )
+				
+				if ( i === 0 ) {
+					ctx.rotate( Math.PI / 2 )
+				}
 				
 				const q = 1 - flipper.flipProgress
 				const flipAngle = Math.sin( Math.pow( q, 3 ) * Math.PI * 2 * speed ) * amplitude * q
@@ -555,7 +561,15 @@ ReplicatorView.prototype = {
 				// ctx.closePath()
 				
 				// manually undo transforms
-				ctx.rotate( -( flipper.angle + tilt + flipAngle ) )
+				ctx.rotate( -flipper.angle - tilt )
+				
+				ctx.rotate( -flipAngle * 0.5 )
+				ctx.rotate( -flipAngle * 0.5 )
+				
+				if ( i === 0 ) {
+					ctx.rotate( -Math.PI / 2 )
+				}
+				
 				ctx.translate( -flipperBase.x, -flipperBase.y )
 			}
 			
