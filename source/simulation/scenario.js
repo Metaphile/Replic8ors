@@ -135,6 +135,8 @@ export default function Scenario( world, opts = {} ) {
 				child.position.x = Math.cos( angle ) * radius2
 				child.position.y = Math.sin( angle ) * radius2
 				
+				child.rotation = Math.random() * Math.PI * 2
+				
 				world.addReplicator( child )
 			} )
 		} )
@@ -152,6 +154,8 @@ export default function Scenario( world, opts = {} ) {
 				const radius2 = Math.random() * 3
 				child.position.x = Math.cos( angle ) * radius2
 				child.position.y = Math.sin( angle ) * radius2
+				
+				child.rotation = Math.random() * Math.PI * 2
 				
 				world.addPredator( child )
 			} )
