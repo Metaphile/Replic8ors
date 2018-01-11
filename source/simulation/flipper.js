@@ -3,7 +3,7 @@ import Events from '../engine/events'
 const defaultOpts = {
 	// overridden in scenario
 	strength: 4500,
-	flipTime: 1.25,
+	flipTime: 0.8,
 }
 
 export default function Flipper( angle, opts = {} ) {
@@ -36,7 +36,7 @@ Flipper.prototype = {
 			force.y = Math.sin( direction ) * effort
 			
 			// TODO config param
-			this.emit( 'flipping', force, dt, 0.006 * effort )
+			this.emit( 'flipping', force, dt, 0.024 * effort )
 			
 			this.flipProgress += dt / this.flipTime
 		}
