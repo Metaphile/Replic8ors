@@ -226,6 +226,7 @@ Replic8or.prototype = {
 			radius: this.radius,
 			mass: this.mass,
 			drag: this.drag,
+			rotation: this.rotation,
 			elasticity: this.elasticity,
 			numBodySegments: this.numBodySegments,
 			
