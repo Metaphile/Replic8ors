@@ -16,7 +16,7 @@ const defaultOpts = new function () {
 	this.elasticity = 1
 	
 	this.energy = 0.5
-	this.metabolism = 1 / ( 1.75 * 60 )
+	this.metabolism = 1 / ( 2 * 60 )
 	
 	this.numBodySegments = 2
 	this.receptorOffset = -1/8 * ( Math.PI * 2 ),
@@ -154,7 +154,7 @@ Replic8or.prototype = {
 		// stimulate hunger neuron _before_ updating brain
 		// may fix rare issue where neuron has potential == 1 on activation frame
 		// instead of 1 - delta
-		this.hungerNeuron.stimulate( Math.pow( 1 - this.energy, 2 ) * 5 * dt )
+		this.hungerNeuron.stimulate( Math.pow( 1 - this.energy, 2 ) * 30 * dt )
 		
 		this.brain.update( dt )
 		
@@ -248,7 +248,7 @@ Replic8or.prototype = {
 				
 				if ( mutationRate > Math.random() ) {
 					// distributed so most mutations are small, some are game-changers
-					let mutation = 2 * Math.pow( Math2.randRange( -1, 1 ), 11 )
+					let mutation = 2 * Math.pow( Math2.randRange( -1, 1 ), 3 )
 					parentWeight += mutation
 				}
 				

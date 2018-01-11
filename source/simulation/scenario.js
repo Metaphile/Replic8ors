@@ -22,7 +22,7 @@ export default function Scenario( world, opts = {} ) {
 	// const seed = Replic8or()
 	// for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( seed.replicate() )
 	for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( Replic8or() )
-	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Predator( { flipperStrength: 7000 } ) )
+	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Predator( { flipperStrength: 5000 } ) )
 	
 	const timer = Timer()
 	
@@ -172,7 +172,7 @@ export default function Scenario( world, opts = {} ) {
 			position.x = Math.cos( angle ) * ( self.designatedWidth / 2 )
 			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
 			
-			self.doBloom( { x: 0, y: 0 }, 450, 22 )
+			self.doBloom( { x: 0, y: 0 }, 470, 11 )
 			
 			timer.setAlarm( 20, alwaysBeBlooming )
 		}
