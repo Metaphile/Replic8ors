@@ -417,7 +417,12 @@ ReplicatorView.prototype = {
 			const weight = neuron.weights[ neuron.index ]
 			const progress = neuron.sensoryPotential / weight % 1
 			
-			this.drawSignal( ctx, this.replicator.position, 0, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
+			const r = this.replicator;
+			
+			const sourcePos = { x: r.position.x, y: 0 } // y set below
+			sourcePos.y = r.position.y + r.radius - r.energy * r.radius * 2
+			
+			this.drawSignal( ctx, sourcePos, 0, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
 		}
 	},
 	
