@@ -35,17 +35,39 @@ function anchorNeuronViews() {
 	}
 	
 	// anchor receptor neurons
-	for ( const receptor of this.replicator.receptors ) {
+	for ( let j = 0, jn = this.replicator.receptors.length; j < jn; j++ ) {
+		const receptor = this.replicator.receptors[ j ]
+		
 		const deltaAngle = 0.37
 		const radius = r0 * 0.73
-		const startAngle = a0 + receptor.angle - ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
+		
+		let startAngle
+		
+		switch ( j ) {
+			case 0:
+				startAngle = a0 + receptor.angle - ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
+				break;
+			
+			case 1:
+				startAngle = a0 + receptor.angle + ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
+				break;
+		}
 		
 		for ( let i = 0, n = receptor.neurons.length; i < n; i++ ) {
 			const neuron = receptor.neurons[ i ]
 			const neuronView = this.neuronViews[ neuron.index ]
 			
-			neuronView.anchor.x = p0.x + Math.cos( startAngle + ( i * deltaAngle ) ) * radius
-			neuronView.anchor.y = p0.y + Math.sin( startAngle + ( i * deltaAngle ) ) * radius
+			switch ( j ) {
+				case 0:
+					neuronView.anchor.x = p0.x + Math.cos( startAngle + ( i * deltaAngle ) ) * radius
+					neuronView.anchor.y = p0.y + Math.sin( startAngle + ( i * deltaAngle ) ) * radius
+					break;
+				
+				case 1:
+					neuronView.anchor.x = p0.x + Math.cos( startAngle - ( i * deltaAngle ) ) * radius
+					neuronView.anchor.y = p0.y + Math.sin( startAngle - ( i * deltaAngle ) ) * radius
+					break;
+			}
 		}
 	}
 	
