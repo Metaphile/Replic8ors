@@ -662,7 +662,7 @@ ReplicatorView.prototype = {
 			} else {
 				// the hunger neuron is different because it's _at_ the center
 				// use the replicator down angle instead
-				downAngle = this.replicator.rotation
+				downAngle = this.replicator.rotation + Math.PI/2
 			}
 			
 			ourCtx.translate( neuronView.position.x, neuronView.position.y )
