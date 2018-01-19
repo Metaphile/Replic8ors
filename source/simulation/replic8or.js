@@ -224,6 +224,54 @@ Replic8or.prototype = {
 		this.off()
 	},
 	
+	copyWeights: function ( sourceNeurons, targetNeurons ) {
+		for ( let i = 0; i < sourceNeurons.length; i++ ) {
+			for ( let j = 0; j < sourceNeurons[ i ].weights.length; j++ ) {
+				targetNeurons[ i ].weights[ j ] = sourceNeurons[ i ].weights[ j ]
+			}
+		}
+	},
+	
+	mutateWeights: function ( neurons, mutationRate ) {
+		for ( const neuron of neurons ) {
+			neuron.weights = neuron.weights.map( weight => {
+				if ( mutationRate > Math.random() ) {
+					return weight + 1 * Math.pow( Math2.randRange( -0.5, 0.5 ), 3 )
+				} else {
+					return weight
+				}
+			} )
+		}
+	},
+	
+	fixSensoryWeights: function ( neurons ) {
+		for ( let i = 0; i < neurons.length; i++ ) {
+			neurons[ i ].weights[ i ] = 0.3
+		}
+	},
+	
+	normalizeWeights: function ( neurons ) {
+		let maxWeightAbs = 1
+		
+		for ( let i = 0; i < neurons.length; i++ ) {
+			const neuron = neurons[ i ]
+			
+			for ( let j = 0; j < neuron.weights.length; j++ ) {
+				const weight = neuron.weights[ j ]
+				const weightAbs = Math.abs( weight )
+				
+				// don't include sensory weights when calculating max
+				if ( weightAbs > maxWeightAbs && i !== j ) {
+					maxWeightAbs = Math.abs( weight )
+				}
+			}
+		}
+		
+		for ( const neuron of neurons ) {
+			neuron.weights = neuron.weights.map( weight => weight * 1/maxWeightAbs )
+		}
+	},
+	
 	// TODO quietly -> emitEvent
 	replicate: function ( quietly, mutationRate = 0.0036 ) {
 		const parent = this
@@ -240,31 +288,14 @@ Replic8or.prototype = {
 			flipperStrength: this.flipperStrength,
 		} )
 		
-		// TEMP mutations
-		parent.brain.neurons.forEach( ( parentNeuron, neuronIndex ) => {
-			// TODO use map
-			parentNeuron.weights.forEach( ( parentWeight, weightIndex ) => {
-				// TODO for clarity, mutation should be applied to child weight
-				
-				if ( mutationRate > Math.random() ) {
-					// distributed so most mutations are small, some are game-changers
-					let mutation = 2 * Math.pow( Math2.randRange( -1, 1 ), 3 )
-					parentWeight += mutation
-				}
-				
-				if ( weightIndex === neuronIndex ) {
-					// sensory weights are hard coded with excitatory values so networks are forced to incorporate sensory input
-					parentWeight = 0.3
-				} else {
-					parentWeight = Math2.clamp( parentWeight, -1, 1 )
-				}
-				
-				child.brain.neurons[ neuronIndex ].weights[ weightIndex ] = parentWeight
-			} )
-			
-			// child.brain.neurons[ neuronIndex ].potentialDecayRate = parentNeuron.potentialDecayRate + ( mutationRate > Math.random() ? Math.pow( Math2.randRange( -1.0, 1.0 ), 3 ) : 0 )
-			child.brain.neurons[ neuronIndex ].potentialDecayRate = parentNeuron.potentialDecayRate
-		} )
+		this.copyWeights( parent.brain.neurons, child.brain.neurons )
+		this.mutateWeights( child.brain.neurons, mutationRate )
+		this.normalizeWeights( child.brain.neurons )
+		this.fixSensoryWeights( child.brain.neurons )
+		
+		for ( let i = 0; i < parent.brain.neurons.length; i++ ) {
+			child.brain.neurons[ i ].potentialDecayRate = parent.brain.neurons[ i ].potentialDecayRate
+		}
 		
 		// TODO u wot m8?
 		const neuronsPerSegment = 4
