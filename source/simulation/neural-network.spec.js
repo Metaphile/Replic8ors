@@ -116,3 +116,80 @@ xdescribe( 'Hebbian learning', () => {
 		
 	} )
 } )
+
+// WIP
+describe( 'weight normalization', () => {
+	// returns the largest absolute value from a list of numbers
+	function maxAbs( ...numbers ) {
+		return Math.max( ...numbers.map( x => Math.abs( x ) ) )
+	}
+
+	let normalizeWeights = function ( weights ) {
+		// second argument ensures always >= 1
+		const maxWeightAbs = maxAbs( ...weights, 1 )
+		
+		return weights.map( w => w * 1/maxWeightAbs )
+	}
+
+	let normalizeWeightsAcrossNeurons = function ( neurons ) {
+		let maxWeightAbs = 1
+		
+		// ...
+		
+		for ( const neuron of neurons ) {
+			neuron.weights = normalizeWeights( neuron.weights, maxWeightAbs )
+		}
+	}
+	
+	// --------
+	
+	// weights within range
+	it( '[ -0.5, 0.5 ] -> [ -0.5, 0.5 ]', () => {
+		const weights = normalizeWeights( [ -0.5, 0.5 ] )
+		
+		expect( weights[ 0 ] ).toBeCloseTo( -0.5, precision, 'w0' )
+		expect( weights[ 1 ] ).toBeCloseTo(  0.5, precision, 'w1' )
+	} )
+	
+	// weights at boundaries of range
+	it( '[ -1, 1 ] -> [ -1, 1 ]', () => {
+		const weights = normalizeWeights( [ -1, 1 ] )
+		
+		expect( weights[ 0 ] ).toBeCloseTo( -1, precision, 'w0' )
+		expect( weights[ 1 ] ).toBeCloseTo(  1, precision, 'w1' )
+	} )
+	
+	// positive weight exceeds range
+	it( '[ 1, 2 ] -> [ 0.5, 1 ]', () => {
+		const weights = normalizeWeights( [ 1, 2 ] )
+		
+		expect( weights[ 0 ] ).toBeCloseTo( 0.5, precision, 'w0' )
+		expect( weights[ 1 ] ).toBeCloseTo( 1.0, precision, 'w1' )
+	} )
+	
+	// negative weight exceeds range
+	it( '[ -2, -1 ] -> [ -1, -0.5 ]', () => {
+		const weights = normalizeWeights( [ -2, -1 ] )
+		
+		expect( weights[ 0 ] ).toBeCloseTo( -1.0, precision, 'w0' )
+		expect( weights[ 1 ] ).toBeCloseTo( -0.5, precision, 'w1' )
+	} )
+	
+	// positive and negative weights exceed range
+	it( '[ -2, 4 ] -> [ -0.25, 1 ]', () => {
+		const weights = normalizeWeights( [ -2, 4 ] )
+		
+		console.log(weights)
+		
+		expect( weights[ 0 ] ).toBeCloseTo( -0.5, precision, 'w0' )
+		expect( weights[ 1 ] ).toBeCloseTo(  1.0, precision, 'w1' )
+	} )
+	
+	// make sure zeroes are handled
+	it( '[ 0, 2 ] -> [ 0, 2 ]', () => {
+		const weights = normalizeWeights( [ 0, 2 ] )
+		
+		expect( weights[ 0 ] ).toBeCloseTo( 0, precision, 'w0' )
+		expect( weights[ 1 ] ).toBeCloseTo( 1, precision, 'w1' )
+	} )
+} )
