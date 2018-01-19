@@ -159,7 +159,7 @@ ReplicatorView.prototype = {
 			}
 			
 			// TODO check for energy downs?
-			this.effects.energyUps.push( this.assets.EnergyUpEffect( 1, onDone ) )
+			this.effects.energyUps.push( this.assets.EnergyUpEffect( 0.8, onDone ) )
 		} )
 	},
 	
@@ -534,7 +534,7 @@ ReplicatorView.prototype = {
 			
 			// energyUp expects a pretransformed canvas
 			for ( const energyUp of this.effects.energyUps ) {
-				energyUp.draw( ctx, this._apparentEnergy )
+				energyUp.draw( ctx, energyOffsetY )
 			}
 			
 			// manually restore canvas state

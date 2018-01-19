@@ -76,7 +76,9 @@ EnergyUpEffect.prototype = {
 	draw( ctx, energy ) {
 		const globalCompositeOperation = ctx.globalCompositeOperation
 		const globalAlpha = ctx.globalAlpha
-		const gradientOffset = energy - energy * Math.pow( this.progress, 4 )
+		const gradientOffset = 1 - Math.pow( this.progress, 1/2 ) * 2
+		// undo energy translation so y=0 is at replicator center, y=1 is at bottom
+		ctx.translate( 0, -energy )
 		ctx.translate( 0, gradientOffset )
 		
 		ctx.globalCompositeOperation = 'screen'
@@ -85,6 +87,7 @@ EnergyUpEffect.prototype = {
 		ctx.fill()
 		
 		ctx.translate( 0, -gradientOffset )
+		ctx.translate( 0, energy )
 		ctx.globalAlpha = globalAlpha
 		ctx.globalCompositeOperation = globalCompositeOperation
 	},
