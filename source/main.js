@@ -23,6 +23,35 @@ import PlayControls from './play-controls'
 // REMEMBER TO INCREMENT AS NECESSARY
 $( () => $( '#version-number' ).html( '1.1' ) )
 
+// TODO moments after replicator replicates,
+// HUD puts replication icon over parent
+// pixel art showing mitosis with check mark
+// maybe icon flashes a couple of times
+// then thick orange line connects parent to back of queue
+// at top left/right corner of HUD
+// line quickly narrows and shortens toward queue
+// while pixel art replicator icon slides into queue
+// if parent dies immediately after replication,
+// animation uses parent's last position
+// 
+// alternative idea:
+// line sweeps over parent vertically,
+// following contours
+// like a sci fi laser scanner
+// laser originates from position just before the start of the queue
+// replicator icon is revealed from bottom to top, in sync with scan
+// (laser should follow contours of icon as well)
+// when scan is complete (less than a second),
+// replicator icon slides into queue,
+// pushing out oldest member in queue
+// oldest falls and fades away
+// if scanning multiple parents, queue them up behind the queue
+// it's OK if they go off screen
+// 
+// at start of simulation,
+// fresh replicators (HUD icons) slide into queues
+// icons are reverse scanned into the world, one at a time
+
 // TODO copy-webpack-plugin?
 // TODO add htaccess file to redirect to HTTPS
 // https://help.dreamhost.com/hc/en-us/articles/215747758-How-do-I-force-my-site-to-load-securely-with-an-htaccess-file-
@@ -76,7 +105,7 @@ $( () => {
 	
 	// drive scenario/world
 	// MAYBE time object
-	// e.g., time = { sim: 0.016, real: 0.017, simTotal: 123.456, realTotal: 124.567 }
+	// e.g., time = { sim: 0.016, real: 0.017, simTotal: 123.456, realTotal: 124.567, simAhead: 0.007 }
 	// only need one instance; update between frames
 	const scenarioLoop = GameLoop(
 		( dt, t ) => scenario.update( dt, t ),
