@@ -273,7 +273,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.0036 ) {
+	replicate: function ( quietly, mutationRate = 0.0072 ) {
 		const parent = this
 		const child = Replic8or( {
 			radius: this.radius,

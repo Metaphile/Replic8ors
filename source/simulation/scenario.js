@@ -8,8 +8,8 @@ import RingBuffer from '../engine/ring-buffer'
 const defaultOpts = {
 	designatedWidth:  580,
 	designatedHeight: 480,
-	numReplicators: 9,
-	numPredators: 5,
+	numReplicators: 7,
+	numPredators:   7,
 }
 
 export default function Scenario( world, opts = {} ) {
