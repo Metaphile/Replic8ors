@@ -188,13 +188,28 @@ export default function Scenario( world, opts = {} ) {
 		predatorCryo.push( parent )
 	} )
 	
-	// TODO this is causing a weird bug where more than the expected number of predatores spawn after the first round
-	// world.on( 'replicator-died', parent => {
-	// 	if ( world.replicators.length === 0 ) self.reset()
-	// } )
+	// predator-died/replicator-died handlers below _kinda_ work to keep simulation going
+	// but often result in huge, unmanageable predator populations
+	// going to try using food to maintain balance...
 	
-	world.on( 'predator-died', parent => {
-		if ( world.predators.length === 0 ) self.reset()
+	world.on( 'predator-died', () => {
+		// when population is <= half, force feed survivors to restore population
+		if ( world.predators.length <= self.numPredators / 2 ) {
+			for ( const predator of world.predators ) {
+				predator.energy = 1
+				world.emit( 'predator-eating-prey', predator, null ) // trigger eating animation
+			}
+		}
+	} )
+	
+	world.on( 'replicator-died', () => {
+		// when population is <= half, force feed survivors to restore population
+		if ( world.replicators.length <= self.numReplicators / 2 ) {
+			for ( const replicator of world.replicators ) {
+				replicator.energy = 1
+				world.emit( 'food-eaten', null, [ replicator ] ) // trigger eating animation
+			}
+		}
 	} )
 	
 	// TODO will we be needing t for anything?

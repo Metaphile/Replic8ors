@@ -92,7 +92,8 @@ export default function WorldView( world ) {
 			return view.food === food
 		} )
 		
-		foodView.doEatenEffect().then( () => {
+		// food view won't be found when food is null (as when force feeding)
+		foodView && foodView.doEatenEffect().then( () => {
 			const i = self.foodViews.indexOf( foodView )
 			self.foodViews.splice( i, 1 )
 		} )

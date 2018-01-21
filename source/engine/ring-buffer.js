@@ -9,5 +9,10 @@ export default function RingBuffer( length ) {
 		pointer = ( pointer + 1 ) % length
 	}
 	
+	buffer.current = function () {
+		// mod buffer length because buffer might not be full
+		return buffer[ Math.abs( pointer - 1 ) % buffer.length ]
+	}
+	
 	return buffer
 }
