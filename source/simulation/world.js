@@ -10,6 +10,7 @@ export default function World() {
 	self.foods = []
 	self.replicators = []
 	self.predators = []
+	self.radius = 768
 	
 	return self
 }

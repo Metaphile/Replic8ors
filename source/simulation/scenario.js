@@ -6,8 +6,6 @@ import Predator from './replic8or'
 import RingBuffer from '../engine/ring-buffer'
 
 const defaultOpts = {
-	designatedWidth:  580,
-	designatedHeight: 480,
 	numReplicators: 7,
 	numPredators:   7,
 }
@@ -169,8 +167,8 @@ export default function Scenario( world, opts = {} ) {
 			// random point along edge of world
 			const angle = Math.random() * Math.PI * 2
 			const position = {}
-			position.x = Math.cos( angle ) * ( self.designatedWidth / 2 )
-			position.y = Math.sin( angle ) * ( self.designatedWidth / 2 )
+			position.x = Math.cos( angle ) * world.radius
+			position.y = Math.sin( angle ) * world.radius
 			
 			self.doBloom( { x: 0, y: 0 }, 470, 11 )
 			
