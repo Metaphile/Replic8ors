@@ -2,7 +2,10 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-	entry: './source/main.js',
+	entry: './source/main.ts',
+	resolve: {
+		extensions: ['.ts', '.js', '.json']
+	},
 	output: {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'build')
@@ -41,6 +44,11 @@ module.exports = {
 						'es2015'
 					],
 				},
+			},
+			{
+				test: /\.tsx?$/,
+				include: path.resolve(__dirname, 'source'),
+				loader: 'ts-loader'
 			},
 			{
 				test: /\.html$/,
