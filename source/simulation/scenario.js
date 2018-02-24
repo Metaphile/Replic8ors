@@ -27,7 +27,7 @@ export default function Scenario( world, opts = {} ) {
 	self.doBloom = function ( position, radius, density ) {
 		for ( ; density > 0; density-- ) {
 			// spawn foods one after another
-			timer.setAlarm( density * 0.3, () => {
+			timer.setAlarm( density * 0.1, () => {
 				const food = Food()
 				
 				const angle = Math.random() * Math.PI * 2
@@ -163,19 +163,15 @@ export default function Scenario( world, opts = {} ) {
 		// TODO better way of removing foods than spoiling them?
 		world.foods.slice().forEach( food => food.spoil() )
 		
-		const alwaysBeBlooming = () => {
-			// random point along edge of world
-			const angle = Math.random() * Math.PI * 2
-			const position = {}
-			position.x = Math.cos( angle ) * world.radius
-			position.y = Math.sin( angle ) * world.radius
+		const balancePredatorPreyPopulationsWithFood = () => {
+			if ( world.foods.length < 100 || world.predators.length > world.replicators.length ) {
+				self.doBloom( { x: 0, y: 0 }, world.radius, 1 )
+			}
 			
-			self.doBloom( { x: 0, y: 0 }, 470, 11 )
-			
-			timer.setAlarm( 20, alwaysBeBlooming )
+			timer.setAlarm( 0.5, balancePredatorPreyPopulationsWithFood )
 		}
 		
-		timer.setAlarm( 0, alwaysBeBlooming )
+		timer.setAlarm( 3, balancePredatorPreyPopulationsWithFood )
 	}
 	
 	world.on( 'replicator-replicated', ( parent, child ) => {

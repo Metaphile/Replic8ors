@@ -139,7 +139,7 @@ export default function Replic8or( opts = {} ) {
 	createSymmetricSegments.call( self )
 	
 	// programBasicInstincts( self )
-	// programNonsense( self )
+	programNonsense( self )
 	
 	// make all sensory input excitatory to begin with
 	for ( const neuron of self.brain.neurons ) {
@@ -236,7 +236,7 @@ Replic8or.prototype = {
 		for ( const neuron of neurons ) {
 			neuron.weights = neuron.weights.map( weight => {
 				if ( mutationRate > Math.random() ) {
-					return weight + 1 * Math.pow( Math2.randRange( -0.5, 0.5 ), 3 )
+					return weight + 0.4 * Math.pow( Math2.randRange( -1, 1 ), 3 )
 				} else {
 					return weight
 				}
@@ -279,7 +279,7 @@ Replic8or.prototype = {
 			radius: this.radius,
 			mass: this.mass,
 			drag: this.drag,
-			rotation: this.rotation,
+			rotation: Math.random() * Math.PI * 2,
 			elasticity: this.elasticity,
 			numBodySegments: this.numBodySegments,
 			
