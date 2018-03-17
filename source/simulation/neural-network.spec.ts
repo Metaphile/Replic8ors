@@ -137,7 +137,7 @@ describe( 'weight normalization', () => {
 		// ...
 		
 		for ( const neuron of neurons ) {
-			neuron.weights = normalizeWeights( neuron.weights, maxWeightAbs )
+			// neuron.weights = normalizeWeights( neuron.weights, maxWeightAbs )
 		}
 	}
 	
