@@ -14,11 +14,14 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
+    mime: {
+      'text/x-typescript': ['ts','tsx']
+    },
 
     // list of files / patterns to load in the browser
     files: [
       {
-        pattern: 'source/**/*.spec.js',
+        pattern: 'source/**/*.spec.ts',
         // not sure what this does, honestly
         // watched: false,
       }
@@ -33,7 +36,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'source/**/*.spec.js': ['webpack']
+        'source/**/*.spec.ts': ['webpack']
     },
 
 
