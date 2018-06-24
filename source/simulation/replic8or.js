@@ -61,6 +61,7 @@ function createSymmetricSegments() {
 		{
 			const angle = this.receptorOffset + i * ( Math.PI / 2 )
 			const receptor = { angle }
+			receptor.fov = Math.PI
 			
 			const foodNeuron = Neuron()
 			this.brain.addNeuron( foodNeuron )
@@ -174,6 +175,14 @@ Replic8or.prototype = {
 	
 	senseFood: function ( food, dt ) {
 		for ( const receptor of this.receptors ) {
+			// angle from replicator center to food center
+			// so not exactly correct but maybe good enough
+			const angleToFood = Vector2.angle( Vector2.from( this.position, food.position ) )
+			
+			if ( !( angleToFood >= ( this.rotation + receptor.angle ) - ( receptor.fov / 2 ) && angleToFood <= ( this.rotation + receptor.angle ) + ( receptor.fov / 2 ) ) ) {
+				continue;
+			}
+			
 			const receptorPosition = Object.assign( {}, this.position )
 			receptorPosition.x += Math.cos( this.rotation + receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
@@ -188,6 +197,12 @@ Replic8or.prototype = {
 	
 	senseReplicator: function ( replicator, dt ) {
 		for ( const receptor of this.receptors ) {
+			const angleToReplicator = Vector2.angle( Vector2.from( this.position, replicator.position ) )
+			
+			if ( !( angleToReplicator >= ( this.rotation + receptor.angle ) - ( receptor.fov / 2 ) && angleToReplicator <= ( this.rotation + receptor.angle ) + ( receptor.fov / 2 ) ) ) {
+				continue;
+			}
+			
 			const receptorPosition = Object.assign( {}, this.position )
 			receptorPosition.x += Math.cos( this.rotation + receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
@@ -202,6 +217,12 @@ Replic8or.prototype = {
 	
 	sensePredator: function ( predator, dt ) {
 		for ( const receptor of this.receptors ) {
+			const angleToPredator = Vector2.angle( Vector2.from( this.position, predator.position ) )
+			
+			if ( !( angleToPredator >= ( this.rotation + receptor.angle ) - ( receptor.fov / 2 ) && angleToPredator <= ( this.rotation + receptor.angle ) + ( receptor.fov / 2 ) ) ) {
+				continue;
+			}
+			
 			const receptorPosition = Object.assign( {}, this.position )
 			receptorPosition.x += Math.cos( this.rotation + receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
