@@ -3,7 +3,7 @@
 import Vector2 from '../engine/vector-2'
 import Math2 from '../engine/math-2'
 
-const MIN_ZOOM = 0.6, MAX_ZOOM = 18
+const MIN_ZOOM = 0.4, MAX_ZOOM = 18
 
 export default function CameraOperator( camera, canvas ) {
 	const self = {}
