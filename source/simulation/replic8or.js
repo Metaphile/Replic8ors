@@ -109,7 +109,7 @@ function programBasicInstincts( replicator ) {
 		const oppositeSegmentIndex = ( segmentIndex + Math.floor( numSegments / 2 ) ) % numSegments
 		
 		const foodNeuron = receptors[ segmentIndex ].neurons.food
-		const oppositeFlipper = flippers[ oppositeSegmentIndex ]
+		const oppositeFlipper = flippers[ segmentIndex ]
 		
 		oppositeFlipper.neuron.weights[ foodNeuron.index ] = 0.2
 		
