@@ -55,8 +55,8 @@ describe( 'replicator', () => {
 		
 		it( 'syncs free neuron weights differently', () => {
 			const numSegments = 3
-			const neuronsPerSegment = 1
-			const numNeurons = numSegments * neuronsPerSegment
+			const numNeuronsPerSegment = 1
+			const numNeurons = numSegments * numNeuronsPerSegment
 			
 			const network = Network()
 			
@@ -70,7 +70,7 @@ describe( 'replicator', () => {
 			freeNeuron.weights[ 0 ] = 0.1
 			freeNeuron.weights[ freeNeuron.index ] = 0.2
 			
-			Replic8or.syncSymmetricWeights( network.neurons, numSegments, neuronsPerSegment )
+			Replic8or.syncSymmetricWeights( network.neurons, numSegments, numNeuronsPerSegment )
 			
 			expect( freeNeuron.weights ).toEqual( [ 0.1, 0.1, 0.1, 0.2 ] )
 		} )

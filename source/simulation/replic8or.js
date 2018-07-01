@@ -320,7 +320,7 @@ Replic8or.prototype = {
 		
 		// TODO u wot m8?
 		const neuronsPerSegment = 4
-		Replic8or.syncSymmetricWeights( child.brain.neurons, parent.numBodySegments, neuronsPerSegment )
+		// Replic8or.syncSymmetricWeights( child.brain.neurons, parent.numBodySegments, neuronsPerSegment )
 		
 		// TODO maybe divide parent's actual energy in half?
 		parent.energy = child.energy = 0.5
@@ -340,34 +340,36 @@ Replic8or.prototype = {
 	},
 }
 
-// temp? expose sync function for testing
-// maybe refactor into support module
-Replic8or.syncSymmetricWeights = ( neurons, numSegments, neuronsPerSegment ) => {
-	const numSymmetricNeurons = numSegments * neuronsPerSegment
+// copy weights from 0th segment to each subsequent segment to enforce symmetry.
+// mutations outside the 0th segment will be overwritten.
+Replic8or.syncSymmetricWeights = ( neurons, numSegments, numNeuronsPerSegment ) => {
+	const numSymmetricNeurons = numSegments * numNeuronsPerSegment
 	
-	for ( let segmentIndex = 1; segmentIndex < numSegments; segmentIndex++ ) {
-		let neuronIndex = segmentIndex * neuronsPerSegment
-		// within the current segment
-		const lastNeuronIndex = neuronIndex + neuronsPerSegment - 1
+	// start with second segment (index 1)
+	for ( let currSegmentIndex = 1; currSegmentIndex < numSegments; currSegmentIndex++ ) {
+		const firstNeuronIndexCurrSegment = currSegmentIndex * numNeuronsPerSegment
+		const lastNeuronIndexThisSegment = firstNeuronIndexCurrSegment + numNeuronsPerSegment - 1
 		
-		for ( ; neuronIndex <= lastNeuronIndex; neuronIndex++ ) {
-			const neuron = neurons[ neuronIndex ]
-			const equivalentNeuron = neurons[ neuronIndex % neuronsPerSegment ]
+		for ( let currNeuronIndex = firstNeuronIndexCurrSegment; currNeuronIndex <= lastNeuronIndexThisSegment; currNeuronIndex++ ) {
+			const targetNeuron = neurons[ currNeuronIndex ]
+			// find equivalent neuron in first segment
+			const sourceNeuronIndex = currNeuronIndex - firstNeuronIndexCurrSegment
+			const sourceNeuron = neurons[ sourceNeuronIndex ]
 			
-			neuron.potentialDecayRate = equivalentNeuron.potentialDecayRate
+			targetNeuron.potentialDecayRate = sourceNeuron.potentialDecayRate
 			
-			neuron.weights = equivalentNeuron.weights.map( ( weight, weightIndex ) => {
+			targetNeuron.weights = sourceNeuron.weights.map( ( weight, weightIndex ) => {
 				if ( weightIndex < numSymmetricNeurons ) {
-					let equivalentWeightIndex
+					let sourceWeightIndex
 					
-					equivalentWeightIndex  = weightIndex
-					equivalentWeightIndex -= segmentIndex * neuronsPerSegment
-					// equivalent indexes for low-index weights will be negative
+					sourceWeightIndex  = weightIndex
+					sourceWeightIndex -= currSegmentIndex * numNeuronsPerSegment
+					// source indexes for low-index weights will be negative
 					// wrap negative indexes
-					equivalentWeightIndex += numSymmetricNeurons
-					equivalentWeightIndex %= numSymmetricNeurons
+					sourceWeightIndex += numSymmetricNeurons
+					sourceWeightIndex %= numSymmetricNeurons
 					
-					return equivalentNeuron.weights[ equivalentWeightIndex ]
+					return sourceNeuron.weights[ sourceWeightIndex ]
 				} else {
 					return weight
 				}
@@ -382,7 +384,7 @@ Replic8or.syncSymmetricWeights = ( neurons, numSegments, neuronsPerSegment ) => 
 		neuron.weights = neuron.weights.map( ( weight, weightIndex, weights ) => {
 			if ( weightIndex < numSymmetricNeurons ) {
 				// equivalent weight from first segment
-				return weights[ weightIndex % neuronsPerSegment ]
+				return weights[ weightIndex % numNeuronsPerSegment ]
 			} else {
 				return weight
 			}
