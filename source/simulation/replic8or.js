@@ -61,7 +61,7 @@ function createSymmetricSegments() {
 		{
 			const angle = this.receptorOffset + i * ( Math.PI / 2 )
 			const receptor = { angle }
-			receptor.fov = Math.PI
+			receptor.fov = Math.PI / 2
 			
 			const foodNeuron = Neuron()
 			this.brain.addNeuron( foodNeuron )
@@ -86,7 +86,7 @@ function createSymmetricSegments() {
 	this.brain.addNeuron( this.hungerNeuron )
 	
 	this.thinkNeurons = []
-	for ( let n = 5; n > 0; n-- ) {
+	for ( let n = 1; n > 0; n-- ) {
 		const thinkNeuron = Neuron()
 		this.brain.addNeuron( thinkNeuron )
 		this.thinkNeurons.push( thinkNeuron )
@@ -111,7 +111,7 @@ function programBasicInstincts( replicator ) {
 		const foodNeuron = receptors[ segmentIndex ].neurons.food
 		const oppositeFlipper = flippers[ segmentIndex ]
 		
-		oppositeFlipper.neuron.weights[ foodNeuron.index ] = 0.2
+		oppositeFlipper.neuron.weights[ foodNeuron.index ] = 0.4
 		
 		const otherFoodNeurons = receptors
 			.filter( ( receptor, i ) => i !== segmentIndex ) // other receptors
@@ -323,7 +323,7 @@ Replic8or.prototype = {
 		// Replic8or.syncSymmetricWeights( child.brain.neurons, parent.numBodySegments, neuronsPerSegment )
 		
 		// TODO maybe divide parent's actual energy in half?
-		parent.energy = child.energy = 0.5
+		parent.energy = child.energy = 0.999
 		
 		Vector2.set( child.position, parent.position )
 		// Vector2.set( child.velocity, parent.velocity )

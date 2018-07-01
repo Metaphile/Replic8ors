@@ -7,7 +7,7 @@ import RingBuffer from '../engine/ring-buffer'
 
 const defaultOpts = {
 	numReplicators: 7,
-	numPredators:   7,
+	numPredators:   0,
 }
 
 export default function Scenario( world, opts = {} ) {
