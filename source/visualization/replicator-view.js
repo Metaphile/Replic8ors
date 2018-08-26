@@ -84,12 +84,13 @@ function anchorNeuronViews() {
 	// think neurons
 	{
 		const r1 = r0 * 0.3
-		let angle = a0
+		let angle = a0 - ( Math.PI * 1/6 )
 		for ( const thinkNeuron of this.replicator.thinkNeurons ) {
 			const thinkView = this.neuronViews[ thinkNeuron.index ]
 			thinkView.anchor.x = p0.x + Math.cos( angle ) * r1
 			thinkView.anchor.y = p0.y + Math.sin( angle ) * r1
-			angle += Math.PI * 2 / this.replicator.thinkNeurons.length
+			// angle += Math.PI * 2 / this.replicator.thinkNeurons.length
+			angle += ( Math.PI * 2/6 )
 		}
 	}
 }
