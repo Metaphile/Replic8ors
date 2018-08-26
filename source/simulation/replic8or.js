@@ -102,7 +102,6 @@ function programBasicInstincts( replicator ) {
 		} )
 	}
 	
-	// temporarily disabled while working on from-scratch evolution
 	for ( let segmentIndex = 0; segmentIndex < numSegments; segmentIndex++ ) {
 		// start at current segment, add half rotation, wrap overflow
 		const oppositeSegmentIndex = ( segmentIndex + Math.floor( numSegments / 2 ) ) % numSegments
@@ -138,8 +137,8 @@ export default function Replic8or( opts = {} ) {
 	self.brain = Network()
 	createSymmetricSegments.call( self )
 	
-	// programBasicInstincts( self )
-	programNonsense( self )
+	programBasicInstincts( self )
+	// programNonsense( self )
 	
 	// make all sensory input excitatory to begin with
 	for ( const neuron of self.brain.neurons ) {
