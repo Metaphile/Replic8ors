@@ -8,22 +8,21 @@ import Physics from '../engine/physics'
 import Math2   from '../engine/math-2'
 import Vector2 from '../engine/vector-2'
 
-// can't refer to other members with object literal syntax
-const defaultOpts = new function () {
-	this.radius = 32
-	this.mass = 10
-	this.drag = 60
-	this.elasticity = 1
+const defaultOpts = {
+	radius: 32,
+	mass: 10,
+	drag: 60,
+	elasticity: 1,
 	
-	this.energy = 0.5
-	this.metabolism = 1 / ( 2 * 60 )
+	energy: 0.5,
+	metabolism: 1 / ( 2 * 60 ),
 	
-	this.numBodySegments = 2
-	this.receptorOffset = -1/8 * ( Math.PI * 2 ),
-	this.flipperOffset  = -5/8 * ( Math.PI * 2 ),
+	numBodySegments: 2,
+	receptorOffset: -1/8 * ( Math.PI * 2 ),
+	flipperOffset: -5/8 * ( Math.PI * 2 ),
 	
-	this.takingDamage = false
-	this.flipperStrength = 4500
+	takingDamage: false,
+	flipperStrength: 4500,
 }
 
 function createSymmetricSegments() {
