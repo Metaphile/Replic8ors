@@ -164,8 +164,8 @@ export default function Scenario( world, opts = {} ) {
 		world.foods.slice().forEach( food => food.spoil() )
 		
 		const minNumFoods = 32
-		const foodSpawnDelay = 1 * 60
-		const numFoodsPerFeeding = 6
+		const foodSpawnDelay = 1
+		const numFoodsPerFeeding = 1
 		// food will be distributed within this radius,
 		// closer to the edges than the center
 		const foodSpawnRadius = 480

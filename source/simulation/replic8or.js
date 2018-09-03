@@ -292,7 +292,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.0072 ) {
+	replicate: function ( quietly, mutationRate = 0.01 ) {
 		const parent = this
 		const child = Replic8or( {
 			radius: this.radius,
@@ -321,7 +321,7 @@ Replic8or.prototype = {
 		// Replic8or.syncSymmetricWeights( child.brain.neurons, parent.numBodySegments, neuronsPerSegment )
 		
 		// TODO maybe divide parent's actual energy in half?
-		parent.energy = child.energy = 0.999
+		parent.energy = child.energy = 0.5
 		
 		Vector2.set( child.position, parent.position )
 		// Vector2.set( child.velocity, parent.velocity )
