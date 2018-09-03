@@ -255,7 +255,11 @@ Replic8or.prototype = {
 		for ( const neuron of neurons ) {
 			neuron.weights = neuron.weights.map( weight => {
 				if ( mutationRate > Math.random() ) {
-					return weight + 0.4 * Math.pow( Math2.randRange( -1, 1 ), 3 )
+					// mutation range is -2..2
+					// enough to turn 1 into -1 or vice versa
+					// small mutations are more likely than large mutations
+					const mutation = 2.0 * Math.pow( Math2.randRange( -1, 1 ), 3 )
+					return Math2.clamp( weight + mutation, -1, 1 )
 				} else {
 					return weight
 				}
