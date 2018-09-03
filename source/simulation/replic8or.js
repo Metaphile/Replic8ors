@@ -98,7 +98,7 @@ function programBasicInstincts( replicator ) {
 	// make all sensory input excitatory
 	for ( const neuron of replicator.brain.neurons ) {
 		neuron.weights = neuron.weights.map( ( weight, weightIndex ) => {
-			return weightIndex === neuron.index ? 0.1 : weight
+			return weightIndex === neuron.index ? 0.9 : weight
 		} )
 	}
 	
@@ -109,13 +109,13 @@ function programBasicInstincts( replicator ) {
 		const foodNeuron = receptors[ segmentIndex ].neurons.food
 		const oppositeFlipper = flippers[ segmentIndex ]
 		
-		oppositeFlipper.neuron.weights[ foodNeuron.index ] = 0.4
+		oppositeFlipper.neuron.weights[ foodNeuron.index ] = 0.9
 		
 		const otherFoodNeurons = receptors
 			.filter( ( receptor, i ) => i !== segmentIndex ) // other receptors
 			.map( receptor => receptor.neurons.food ) // other food neurons
 		
-		otherFoodNeurons.forEach( otherFoodNeuron => otherFoodNeuron.weights[ foodNeuron.index ] = -0.5 )
+		otherFoodNeurons.forEach( otherFoodNeuron => otherFoodNeuron.weights[ foodNeuron.index ] = -0.9 )
 	}
 }
 
@@ -186,8 +186,8 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( food.position, receptorPosition ) - food.radius
-			const strength = 50 * ( distance < 0 ? 1 :
-				1 / ( 1 + Math.pow( distance / 32, 2 ) ) )
+			const strength = 1000000 * ( distance <= 0 ? 1 :
+				1 / ( 1 + Math.pow( distance, 2 ) ) )
 			
 			receptor.neurons.food.stimulate( strength * dt )
 		}
@@ -206,8 +206,8 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( replicator.position, receptorPosition ) - replicator.radius
-			const strength = 50 * ( distance < 0 ? 1 :
-				1 / ( 1 + Math.pow( distance / 32, 2 ) ) )
+			const strength = 1000000 * ( distance <= 0 ? 1 :
+				1 / ( 1 + Math.pow( distance, 2 ) ) )
 			
 			receptor.neurons.replicator.stimulate( strength * dt )
 		}
@@ -226,8 +226,8 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( predator.position, receptorPosition ) - predator.radius
-			const strength = 50 * ( distance < 0 ? 1 :
-				1 / ( 1 + Math.pow( distance / 32, 2 ) ) )
+			const strength = 1000000 * ( distance <= 0 ? 1 :
+				1 / ( 1 + Math.pow( distance, 2 ) ) )
 			
 			receptor.neurons.predator.stimulate( strength * dt )
 		}
