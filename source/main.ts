@@ -21,7 +21,7 @@ import PlayControls from './play-controls'
 
 // display version number on document ready
 // REMEMBER TO INCREMENT AS NECESSARY
-$( () => $( '#version-number' ).html( '1.1' ) )
+$( () => $( '#version-number' ).html( '1.2-wip' ) )
 
 // TODO moments after replicator replicates,
 // HUD puts replication icon over parent
