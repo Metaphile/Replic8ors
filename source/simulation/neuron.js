@@ -54,9 +54,36 @@ export const scaleWeight = x => {
 	return x
 };
 
+// currently unused
+export const sigmoid = x => {
+	// 0..1
+	let y = 1 / ( 1 + Math.pow( Math.E, -x ) )
+	// 0..2
+	y = y * 2
+	// -1..1
+	y = 1 - y
+	
+	return y
+}
+
 Neuron.prototype = {
 	stimulate: function ( dt, sourceIndex = this.index ) {
-		const input = scaleWeight( this.weights[ sourceIndex ] ) * dt
+		const w = this.weights[ sourceIndex ]
+		
+		// scale input so that
+		// excitatory input is less effective when neuron potential is high
+		// inhibitory input is less effective when neuron potential is low
+		// thus enabling non-linear response
+		
+		let scaleFactor
+		
+		if ( w >= 0 ) {
+			scaleFactor = 1 - Math2.clamp( this.potential, 0, 1 )
+		} else {
+			scaleFactor = Math2.clamp( this.potential, 0, 1 )
+		}
+		
+		const input = w * scaleFactor * dt
 		
 		if ( !this.firing ) {
 			if ( input < 0 ) {
@@ -96,7 +123,7 @@ Neuron.prototype = {
 			if ( decayedPotential > 0 ) this.inhibitoryInput += decayedPotential
 		}
 		
-		if ( this.potential >= 1 ) this.fire()
+		if ( this.potential >= 0.95 ) this.fire()
 		
 		if ( this.firing ) {
 			// drain potential over refractory period
