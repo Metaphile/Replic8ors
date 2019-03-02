@@ -1,26 +1,26 @@
 export default function Timer() {
 	const self = {}
-	const alarms = []
+	const actions = []
 	
-	self.setAlarm = ( wait, callback ) => {
-		alarms.push( { wait, callback } )
+	self.scheduleAction = ( delay, callback ) => {
+		actions.push( { delay, callback } )
 	}
 	
-	self.cancelAlarms = () => {
-		alarms.length = 0
+	self.cancelAllActions = () => {
+		actions.length = 0
 	}
 	
 	self.update = ( dt ) => {
-		for ( let i = 0; i < alarms.length; i++ ) {
-			const alarm = alarms[ i ]
+		for ( let i = 0; i < actions.length; i++ ) {
+			const action = actions[ i ]
 			
-			alarm.wait -= dt
+			action.delay -= dt
 			
-			if ( alarm.wait <= 0 ) {
-				alarm.callback()
+			if ( action.delay <= 0 ) {
+				action.callback()
 				
-				// remove from alarms array and adjust loop index
-				alarms.splice( i, 1 )
+				// remove from actions array and adjust loop index
+				actions.splice( i, 1 )
 				i--
 			}
 		}

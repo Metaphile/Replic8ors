@@ -27,7 +27,7 @@ export default function Scenario( world, opts = {} ) {
 	self.doBloom = function ( position, radius, density ) {
 		for ( ; density > 0; density-- ) {
 			// spawn foods one after another
-			timer.setAlarm( density * 1, () => {
+			timer.scheduleAction( density * 1, () => {
 				const food = Food()
 				
 				const angle = Math.random() * Math.PI * 2
@@ -109,7 +109,7 @@ export default function Scenario( world, opts = {} ) {
 			stats.elapsedSimTime = 0
 		}
 		
-		timer.cancelAlarms()
+		timer.cancelAllActions()
 		
 		// remove any existing replicators, predators
 		// TODO better way of removing replicators than killing them?
@@ -125,7 +125,7 @@ export default function Scenario( world, opts = {} ) {
 		}
 		
 		replicatorCryo.forEach( ( specimen, specimenIndex ) => {
-			timer.setAlarm( 3 + specimenIndex * 0.3, () => {
+			timer.scheduleAction( 3 + specimenIndex * 0.3, () => {
 				const child = specimen.replicate( true )
 				
 				const angle = Math.random() * Math.PI * 2
@@ -145,7 +145,7 @@ export default function Scenario( world, opts = {} ) {
 		}
 		
 		predatorCryo.forEach( ( specimen, specimenIndex ) => {
-			timer.setAlarm( 3 + specimenIndex * 0.3, () => {
+			timer.scheduleAction( 3 + specimenIndex * 0.3, () => {
 				const child = specimen.replicate( true )
 				
 				const angle = Math.random() * Math.PI * 2
@@ -175,10 +175,10 @@ export default function Scenario( world, opts = {} ) {
 				self.doBloom( { x: 0, y: 0 }, foodSpawnRadius, numFoodsPerFeeding )
 			}
 			
-			timer.setAlarm( foodSpawnDelay, balancePredatorPreyPopulationsWithFood )
+			timer.scheduleAction( foodSpawnDelay, balancePredatorPreyPopulationsWithFood )
 		}
 		
-		timer.setAlarm( 0, balancePredatorPreyPopulationsWithFood )
+		timer.scheduleAction( 0, balancePredatorPreyPopulationsWithFood )
 	}
 	
 	world.on( 'replicator-replicated', ( parent, child ) => {
