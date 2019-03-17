@@ -196,20 +196,36 @@ export default function Scenario( world, opts = {} ) {
 	world.on( 'predator-died', () => {
 		// when population is <= half, force feed survivors to restore population
 		if ( world.predators.length <= self.numPredators / 2 ) {
-			for ( const predator of world.predators ) {
-				predator.energy = 1
-				world.emit( 'predator-eating-prey', predator, null ) // trigger eating animation
-			}
+			const randomCryo = predatorCryo[ Math.floor( Math.random() * predatorCryo.length ) ]
+			
+			timer.scheduleAction( 10, () => {
+				const child = randomCryo.replicate( true )
+				
+				const angle = Math.random() * Math.PI * 2
+				const radius2 = Math.pow( Math.random(), 2/3 ) * 500
+				child.position.x = Math.cos( angle ) * radius2
+				child.position.y = Math.sin( angle ) * radius2
+				
+				world.addPredator( child )
+			})
 		}
 	} )
 	
 	world.on( 'replicator-died', () => {
 		// when population is <= half, force feed survivors to restore population
 		if ( world.replicators.length <= self.numReplicators / 2 ) {
-			for ( const replicator of world.replicators ) {
-				replicator.energy = 1
-				world.emit( 'food-eaten', null, [ replicator ] ) // trigger eating animation
-			}
+			const randomCryo = replicatorCryo[ Math.floor( Math.random() * replicatorCryo.length ) ]
+			
+			timer.scheduleAction( 10, () => {
+				const child = randomCryo.replicate( true )
+				
+				const angle = Math.random() * Math.PI * 2
+				const radius2 = Math.pow( Math.random(), 2/3 ) * 500
+				child.position.x = Math.cos( angle ) * radius2
+				child.position.y = Math.sin( angle ) * radius2
+				
+				world.addReplicator( child )
+			})
 		}
 	} )
 	

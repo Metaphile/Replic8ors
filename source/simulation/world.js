@@ -147,27 +147,32 @@ World.prototype = {
 				const distance = Vector2.distance( predator.position, replicator.position )
 				
 				if ( distance < predator.radius + replicator.radius ) {
-					replicator.takingDamage = true
+					// replicator.takingDamage = true
 					
-					// transfer energy,
-					// don't transfer more than is available
+					// // transfer energy,
+					// // don't transfer more than is available
 					
-					const take = dt * 0.8
-					const mult = 1.2
+					// const take = dt * 0.8
+					// const mult = 1.2
 					
-					if ( replicator.energy <= 0 || replicator.dead ) {
-						// do nothing
-					} else if ( replicator.energy < take ) {
-						predator.energy += replicator.energy * mult
-						this.emit( 'predator-eating-prey', predator, replicator )
+					// if ( replicator.energy <= 0 || replicator.dead ) {
+					// 	// do nothing
+					// } else if ( replicator.energy < take ) {
+					// 	predator.energy += replicator.energy * mult
+					// 	this.emit( 'predator-eating-prey', predator, replicator )
+					// 	replicator.energy = 0
+					// } else {
+					// 	predator.energy += take * mult
+					// 	this.emit( 'predator-eating-prey', predator, replicator )
+					// 	replicator.energy -= take
+					// }
+					
+					// predator.collideWith( replicator, dt )
+					
+					if ( replicator.energy > 0 ) {
 						replicator.energy = 0
-					} else {
-						predator.energy += take * mult
-						this.emit( 'predator-eating-prey', predator, replicator )
-						replicator.energy -= take
+						predator.energy = 1
 					}
-					
-					predator.collideWith( replicator, dt )
 				}
 				
 				replicator.sensePredator( predator, dt )
