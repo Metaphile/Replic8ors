@@ -23,6 +23,10 @@ import PlayControls from './play-controls'
 // REMEMBER TO INCREMENT AS NECESSARY
 $( () => $( '#version-number' ).html( '1.2-wip' ) )
 
+// TODO maybe replicators (predators and prey) should be vulnerable from behind
+// armored from the front
+// but then replicators would need to sense threats from the rear
+
 // TODO moments after replicator replicates,
 // HUD puts replication icon over parent
 // pixel art showing mitosis with check mark

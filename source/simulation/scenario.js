@@ -194,7 +194,7 @@ export default function Scenario( world, opts = {} ) {
 	// going to try using food to maintain balance...
 	
 	world.on( 'predator-died', () => {
-		// when population is <= half, force feed survivors to restore population
+		// when population is low
 		if ( world.predators.length <= self.numPredators / 2 ) {
 			const randomCryo = predatorCryo[ Math.floor( Math.random() * predatorCryo.length ) ]
 			
