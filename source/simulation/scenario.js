@@ -7,7 +7,7 @@ import RingBuffer from '../engine/ring-buffer'
 
 const defaultOpts = {
 	numReplicators: 7,
-	numPredators:   0,
+	numPredators:   5,
 }
 
 export default function Scenario( world, opts = {} ) {
@@ -163,7 +163,7 @@ export default function Scenario( world, opts = {} ) {
 		// TODO better way of removing foods than spoiling them?
 		world.foods.slice().forEach( food => food.spoil() )
 		
-		const minNumFoods = 32
+		const minNumFoods = 20
 		const foodSpawnDelay = 1
 		const numFoodsPerFeeding = 1
 		// food will be distributed within this radius,
