@@ -159,9 +159,9 @@ $( () => {
 	}
 } )
 
-// prevent accidental navigation
+// prevent accidental navigation, except on localhost
 $( window ).on( 'beforeunload', () => {
-	return "Progress can't be saved. Are you sure?";
+	if ( location.host !== 'localhost:8080' ) return ''
 });
 
 // on when to use arrow functions vs regular:
