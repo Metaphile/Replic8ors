@@ -39,11 +39,6 @@ module.exports = {
 				test: /\.js$/,
 				include: path.resolve(__dirname, 'source'),
 				loader: 'babel-loader',
-				options: {
-					presets: [
-						'es2015'
-					],
-				},
 			},
 			{
 				test: /\.tsx?$/,

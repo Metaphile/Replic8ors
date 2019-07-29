@@ -10,7 +10,7 @@
 //                                                                            //
 // -------------------------------------------------------------------------- //
 
-import 'babel-polyfill'
+import '@babel/polyfill'
 import './main.scss'
 import $ from '../third-party/jquery'
 import World from './simulation/world'
