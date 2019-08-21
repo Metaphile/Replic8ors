@@ -35,7 +35,7 @@ export default function World() {
 	self.foods = []
 	self.replicators = []
 	self.predators = []
-	self.radius = 768
+	self.radius = 640
 	
 	return self
 }
@@ -209,23 +209,23 @@ World.prototype = {
 		
 		// TODO move up
 		for ( const predator of this.predators ) {
-			predator.takingDamage = false;
+			// predator.takingDamage = false;
 			
 			for ( const food of this.foods ) {
 				predator.senseFood( food, dt )
 				
 				if ( Vector2.distance( predator.position, food.position ) < predator.radius + food.radius ) {
-					predator.takingDamage = true
+					// predator.takingDamage = true
 					
-					const damage = 1.2 * dt
+					// const damage = 1.2 * dt
 					
-					if ( predator.energy <= 0) {
-						// do nothing
-					} else if ( predator.energy < damage ) {
-						predator.energy = 0
-					} else {
-						predator.energy -= damage
-					}
+					// if ( predator.energy <= 0) {
+					// 	// do nothing
+					// } else if ( predator.energy < damage ) {
+					// 	predator.energy = 0
+					// } else {
+					// 	predator.energy -= damage
+					// }
 					
 					predator.collideWith( food, dt )
 				}
@@ -260,7 +260,7 @@ World.prototype = {
 			predator.update( dt )
 		}
 		
-		// constrain replicator to 600 unit radius
+		// constrain replicator to radius
 		for ( const replicator of [ ...predators, ...replicators ] ) {
 			const p = replicator.position
 			const dist = Vector2.getLength( p )
