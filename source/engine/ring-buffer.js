@@ -1,4 +1,6 @@
-// TODO Stack Overflow credit
+// TODO I'm not sure I like the way this works
+// client might expect `buffer.length` to equal `length`,
+// but that won't be true if the buffer is partially empty
 
 export default function RingBuffer( length ) {
 	const buffer = []

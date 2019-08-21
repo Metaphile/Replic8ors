@@ -25,6 +25,7 @@ describe( 'replicator', () => {
 	} )
 	
 	// turns out the radial symmetry logic also correctly handles bilateral symmetry
+	// TODO should really test with 2 segments :/
 	describe( 'radial/lateral symmetry', () => {
 		it( 'maintains symmetric neuron weights', () => {
 			const numSegments = 3

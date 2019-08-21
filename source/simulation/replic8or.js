@@ -342,6 +342,9 @@ Replic8or.prototype = {
 	},
 }
 
+// TODO maybe can implement rear receptor neurons as free neurons
+// weights to/from each segment will be the same
+
 // copy weights from 0th segment to each subsequent segment to enforce symmetry.
 // mutations outside the 0th segment will be overwritten.
 Replic8or.syncSymmetricWeights = ( neurons, numSegments, numNeuronsPerSegment ) => {

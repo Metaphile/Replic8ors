@@ -1,3 +1,28 @@
+// this module implements a World factory
+// a world is a container for predators, prey, etc.
+// typically there will only be one world (defacto singleton)
+
+// replicators shouldn't replicate themselves
+// controller should determine when replication is appropriate (could be food-based, time-based, whatever)
+// replicator provides replicate method
+// maybe should provide clone method instead
+// then controller does mutations, whatever other adjustments
+
+// simulation controller notes:
+// controller drives world and visualization
+// controller subscribes to world events and updates world; on world events, controller calls visualization methods
+// visualization.playPreySpawnAnimation( ... ).then( () => visualization.addPrey( prey ) )
+// spawn animation could be tiny dot that quickly grows to full-size replicator, with bouncy finish
+
+// animation methods should return promises
+// is there a way to cancel a promise from the outside?
+
+// to support multiple visualizations,
+// main controller should have methods like
+// addOrganicVisualization()
+// addGraphVisualization()
+// addTerminalVisualization()
+
 // TODO ditch prototype
 
 import Events from '../engine/events'
