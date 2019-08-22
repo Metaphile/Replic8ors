@@ -1,8 +1,6 @@
 import Food from './food'
 import Timer from '../engine/timer'
 import Replic8or from './replic8or'
-// import Predator from './predator'
-import Predator from './replic8or'
 import RingBuffer from '../engine/ring-buffer'
 
 const defaultOpts = {
@@ -20,7 +18,7 @@ export default function Scenario( world, opts = {} ) {
 	// const seed = Replic8or()
 	// for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( seed.replicate() )
 	for ( let n = self.numReplicators; n > 0; n-- ) replicatorCryo.push( Replic8or() )
-	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Predator( { flipperStrength: 5000 } ) )
+	for ( let n = self.numPredators; n > 0; n-- ) predatorCryo.push( Replic8or( { flipperStrength: 5000 } ) )
 	
 	const timer = Timer()
 	
