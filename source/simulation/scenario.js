@@ -210,3 +210,5 @@ export default function Scenario( world, opts = {} ) {
 	
 	return self
 }
+
+// TODO implement learning next

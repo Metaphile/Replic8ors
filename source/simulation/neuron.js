@@ -32,6 +32,7 @@ export default function Neuron( opts = {} ) {
 	self.inhibitoryInput = 0
 	
 	self.firing = false
+	self.simTimeSinceLastFired = 0
 	self.index = -1
 	
 	Object.assign( self, defaultOpts, opts )
@@ -107,11 +108,14 @@ Neuron.prototype = {
 			this.potential = 1
 			this.inhibitoryInput = 0
 			this.firing = true
+			this.simTimeSinceLastFired = 0
 			this.emit( 'fire' )
 		}
 	},
 	
 	update: function ( dt ) {
+		this.simTimeSinceLastFired += dt
+		
 		if ( !this.gotSensoryInput ) {
 			this.sensoryPotential = 0
 		}
