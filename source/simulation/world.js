@@ -260,9 +260,9 @@ World.prototype = {
 			predator.update( dt )
 		}
 		
-		// constrain replicator to radius
-		for ( const replicator of [ ...predators, ...replicators ] ) {
-			const p = replicator.position
+		// constrain entities to radius
+		for ( const entity of [ ...predators, ...replicators, ...foods ] ) {
+			const p = entity.position
 			const dist = Vector2.getLength( p )
 			if ( dist > this.radius ) {
 				Vector2.setLength( p, this.radius )
