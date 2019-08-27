@@ -370,6 +370,8 @@ Replic8or.prototype = {
 // copy weights from 0th segment to each subsequent segment to enforce symmetry.
 // mutations outside the 0th segment will be overwritten.
 Replic8or.syncSymmetricWeights = ( neurons, numSegments, numNeuronsPerSegment ) => {
+	return
+	
 	const numSymmetricNeurons = numSegments * numNeuronsPerSegment
 	
 	// start with second segment (index 1)
