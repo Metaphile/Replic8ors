@@ -56,7 +56,7 @@ function createSymmetricSegments() {
 			this.flippers.push( flipper )
 		}
 		
-		// receptor
+		// forward receptor
 		{
 			const angle = this.receptorOffset + i * ( Math.PI / 2 )
 			const receptor = { angle }
@@ -79,6 +79,28 @@ function createSymmetricSegments() {
 			
 			this.receptors.push( receptor )
 		}
+	}
+	
+	// rear receptor
+	{
+		const angle = Math.PI // forward is 0
+		const receptor = { angle }
+		
+		const foodNeuron = Neuron()
+		this.brain.addNeuron( foodNeuron )
+		
+		const predatorNeuron = Neuron()
+		this.brain.addNeuron( predatorNeuron )
+		
+		const replicatorNeuron = Neuron()
+		this.brain.addNeuron( replicatorNeuron )
+		
+		receptor.neurons = [ foodNeuron, predatorNeuron, replicatorNeuron ]
+		receptor.neurons.food = foodNeuron
+		receptor.neurons.replicator = replicatorNeuron
+		receptor.neurons.predator = predatorNeuron
+		
+		this.receptors.push( receptor )
 	}
 	
 	this.hungerNeuron = Neuron()

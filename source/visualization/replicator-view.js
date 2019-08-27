@@ -51,6 +51,10 @@ function anchorNeuronViews() {
 			case 1:
 				startAngle = a0 + receptor.angle + ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
 				break;
+			
+			case 2:
+				startAngle = a0 + receptor.angle + ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
+				break
 		}
 		
 		for ( let i = 0, n = receptor.neurons.length; i < n; i++ ) {
@@ -67,6 +71,11 @@ function anchorNeuronViews() {
 					neuronView.anchor.x = p0.x + Math.cos( startAngle - ( i * deltaAngle ) ) * radius
 					neuronView.anchor.y = p0.y + Math.sin( startAngle - ( i * deltaAngle ) ) * radius
 					break;
+					
+				case 2:
+					neuronView.anchor.x = p0.x + Math.cos( startAngle - ( i * deltaAngle ) ) * radius
+					neuronView.anchor.y = p0.y + Math.sin( startAngle - ( i * deltaAngle ) ) * radius
+					break
 			}
 		}
 	}
