@@ -228,8 +228,8 @@ export default function Visualization( world ) {
 	} )
 	
 	$canvas.on( 'mouseout', () => {
-		mousePos_screen.x = Number.MAX_SAFE_INTEGER;
-		mousePos_screen.y = Number.MAX_SAFE_INTEGER;
+		mousePos_screen.x = Number.MAX_SAFE_INTEGER
+		mousePos_screen.y = Number.MAX_SAFE_INTEGER
 	} )
 	
 	return self

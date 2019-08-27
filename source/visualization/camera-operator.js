@@ -85,7 +85,7 @@ export default function CameraOperator( camera, canvas ) {
 			var py = targetY + offset.y
 			
 			// adjust position more aggressively while zooming
-			// var speed = 5.1 * ( 1 + Math.abs( this._zoomBuffer * 1.1 ) );
+			// var speed = 5.1 * ( 1 + Math.abs( this._zoomBuffer * 1.1 ) )
 			var speed = 5.6
 			
 			camera.pan(

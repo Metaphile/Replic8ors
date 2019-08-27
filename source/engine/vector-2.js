@@ -44,7 +44,7 @@ Object.assign( Vector2, {
 	
 	// 'length' is taken
 	getLength( v ) {
-		return Math.sqrt( ( v.x * v.x ) + ( v.y * v.y ) );
+		return Math.sqrt( ( v.x * v.x ) + ( v.y * v.y ) )
 	},
 	
 	lengthSquared( v ) {

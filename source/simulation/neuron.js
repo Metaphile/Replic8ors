@@ -53,7 +53,7 @@ export const scaleWeight = x => {
 	// }
 	
 	return x
-};
+}
 
 // currently unused
 export const sigmoid = x => {

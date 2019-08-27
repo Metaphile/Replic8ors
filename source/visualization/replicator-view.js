@@ -46,11 +46,11 @@ function anchorNeuronViews() {
 		switch ( j ) {
 			case 0:
 				startAngle = a0 + receptor.angle - ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
-				break;
+				break
 			
 			case 1:
 				startAngle = a0 + receptor.angle + ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
-				break;
+				break
 			
 			case 2:
 				startAngle = a0 + receptor.angle + ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
@@ -65,12 +65,12 @@ function anchorNeuronViews() {
 				case 0:
 					neuronView.anchor.x = p0.x + Math.cos( startAngle + ( i * deltaAngle ) ) * radius
 					neuronView.anchor.y = p0.y + Math.sin( startAngle + ( i * deltaAngle ) ) * radius
-					break;
+					break
 				
 				case 1:
 					neuronView.anchor.x = p0.x + Math.cos( startAngle - ( i * deltaAngle ) ) * radius
 					neuronView.anchor.y = p0.y + Math.sin( startAngle - ( i * deltaAngle ) ) * radius
-					break;
+					break
 					
 				case 2:
 					neuronView.anchor.x = p0.x + Math.cos( startAngle - ( i * deltaAngle ) ) * radius
@@ -449,7 +449,7 @@ ReplicatorView.prototype = {
 			const weight = neuron.weights[ neuron.index ]
 			const progress = neuron.sensoryPotential / weight % 1
 			
-			const r = this.replicator;
+			const r = this.replicator
 			
 			const sourcePos = { x: r.position.x, y: 0 } // y set below
 			sourcePos.y = r.position.y + r.radius - r.energy * r.radius * 2

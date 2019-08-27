@@ -120,7 +120,7 @@ $( () => {
 	// initialize dimensions
 	visualization.$element.trigger( 'appended' )
 	
-	let yesDraw = true;
+	let yesDraw = true
 	
 	// drive visualization
 	const visualizationLoop = GameLoop(
@@ -142,8 +142,8 @@ $( () => {
 	
 	// show info box on first load
 	{
-		const cookieName = 'hideInfo';
-		const cookieValue = '1';
+		const cookieName = 'hideInfo'
+		const cookieValue = '1'
 		
 		// adapted from https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
 		const magic = new RegExp( '(?:(?:^|.*;\s*)' + cookieName + '\s*\=\s*([^;]*).*$)|^.*$' )
@@ -162,7 +162,7 @@ $( () => {
 // prevent accidental navigation, except on localhost
 $( window ).on( 'beforeunload', () => {
 	if ( location.host !== 'localhost:8080' ) return ''
-});
+})
 
 // on when to use arrow functions vs regular:
 // http://stackoverflow.com/a/23045200/40356

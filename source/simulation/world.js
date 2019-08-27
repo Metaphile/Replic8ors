@@ -166,7 +166,7 @@ World.prototype = {
 		
 		// replicators-predators
 		for ( const replicator of replicators ) {
-			replicator.takingDamage = false;
+			replicator.takingDamage = false
 			
 			for ( const predator of predators ) {
 				const distance = Vector2.distance( predator.position, replicator.position )
@@ -209,7 +209,7 @@ World.prototype = {
 		
 		// TODO move up
 		for ( const predator of this.predators ) {
-			// predator.takingDamage = false;
+			// predator.takingDamage = false
 			
 			for ( const food of this.foods ) {
 				predator.senseFood( food, dt )
