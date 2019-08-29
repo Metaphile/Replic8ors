@@ -652,34 +652,6 @@ ReplicatorView.prototype = {
 			ourCtx.stroke()
 	},
 	
-	drawSensoryFov( ctx ) {
-		const receptors = this.replicator.receptors
-		const p = this.replicator.position
-		const r = this.replicator.radius
-		
-		for ( let i = 0; i < receptors.length; i++ ) {
-			const receptor = receptors[ i ]
-			
-			ctx.beginPath()
-				const startAngle = receptor.angle - ( receptor.fov / 2 )
-				const endAngle   = receptor.angle + ( receptor.fov / 2 )
-				
-				// ctx.moveTo( p.x + Math.cos( startAngle )*r, p.y + Math.sin( startAngle )*r )
-				// ctx.lineTo( p.x + Math.cos( startAngle )*(r + 10), p.y + Math.sin( startAngle )*(r + 10) )
-				
-				ctx.arc( p.x, p.y, r + 16, startAngle, endAngle )
-				
-				ctx.lineTo( p.x + Math.cos( endAngle )*(r), p.y + Math.sin( endAngle )*(r) )
-				
-				ctx.arc( p.x, p.y, r, endAngle, startAngle, true )
-				
-				ctx.fillStyle = 'rgba( 255, 255, 255, 0.05 )'
-				
-				// ctx.stroke()
-				ctx.fill()
-		}
-	},
-	
 	draw( theirCtx, camera, detail, keepHoverOverride ) {
 		if ( !keepHoverOverride ) {
 			for ( const view of this.neuronViews ) {
@@ -766,8 +738,6 @@ ReplicatorView.prototype = {
 		ourCtx.translate( -p0.x, -p0.y )
 		
 		this.drawFlippers( ourCtx )
-		
-		this.drawSensoryFov( ourCtx )
 		
 		this.drawEdge( ourCtx )
 		
