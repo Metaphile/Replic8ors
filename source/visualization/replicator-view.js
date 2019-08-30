@@ -468,7 +468,7 @@ ReplicatorView.prototype = {
 		// MAYBE signal should never start at 0; scale progress to 0.1..1.0
 		const signalStartDist = Math.pow( progress, 1/4 ) * edge2EdgeDist
 		
-		const signalWidth = Math.abs( weight ) * 0.8
+		const signalWidth = Math.abs( weight ) * 1.0
 		const guideWidth = signalWidth * 0.2
 		
 		// 2D

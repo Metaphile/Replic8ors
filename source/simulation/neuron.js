@@ -84,6 +84,8 @@ Neuron.prototype = {
 			scaleFactor = Math2.clamp( this.potential, 0, 1 )
 		}
 		
+		scaleFactor = 1
+		
 		const input = w * scaleFactor * dt
 		
 		if ( !this.firing ) {

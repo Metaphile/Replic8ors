@@ -107,7 +107,7 @@ function createSymmetricSegments() {
 	this.brain.addNeuron( this.hungerNeuron )
 	
 	this.thinkNeurons = []
-	for ( let n = 2; n > 0; n-- ) {
+	for ( let n = 6; n > 0; n-- ) {
 		const thinkNeuron = Neuron()
 		this.brain.addNeuron( thinkNeuron )
 		this.thinkNeurons.push( thinkNeuron )
@@ -160,7 +160,7 @@ export default function Replic8or( opts = {} ) {
 	createSymmetricSegments.call( self )
 	
 	// programBasicInstincts( self )
-	programNonsense( self )
+	// programNonsense( self )
 	
 	// make all sensory input excitatory to begin with
 	for ( const neuron of self.brain.neurons ) {
@@ -208,7 +208,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( food.position, receptorPosition ) - food.radius
-			const strength = 1000000 * ( distance <= 0 ? 1 :
+			const strength = 10000 * ( distance <= 0 ? 1 :
 				1 / ( 1 + Math.pow( distance, 2 ) ) )
 			
 			receptor.neurons.food.stimulate( strength * dt )
@@ -228,7 +228,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( replicator.position, receptorPosition ) - replicator.radius
-			const strength = 1000000 * ( distance <= 0 ? 1 :
+			const strength = 10000 * ( distance <= 0 ? 1 :
 				1 / ( 1 + Math.pow( distance, 2 ) ) )
 			
 			receptor.neurons.replicator.stimulate( strength * dt )
@@ -248,7 +248,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( predator.position, receptorPosition ) - predator.radius
-			const strength = 1000000 * ( distance <= 0 ? 1 :
+			const strength = 10000 * ( distance <= 0 ? 1 :
 				1 / ( 1 + Math.pow( distance, 2 ) ) )
 			
 			receptor.neurons.predator.stimulate( strength * dt )
@@ -318,7 +318,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.008 ) {
+	replicate: function ( quietly, mutationRate = 0.009 ) {
 		const parent = this
 		const child = Replic8or( {
 			radius: this.radius,
