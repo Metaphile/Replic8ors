@@ -1,7 +1,6 @@
 export default function Events( self = {} ) {
 	let subscriptions = {}
 	
-	// TODO multiple events
 	self.on = ( events, callback ) => {
 		for ( const event of events.split( ' ' ) ) {
 			if ( !subscriptions[ event ] ) subscriptions[ event ] = []
