@@ -52,22 +52,7 @@ Neuron.prototype = {
 	stimulate: function ( dt, sourceIndex = this.index ) {
 		const w = this.weights[ sourceIndex ]
 		
-		// scale input so that
-		// excitatory input is less effective when neuron potential is high
-		// inhibitory input is less effective when neuron potential is low
-		// thus enabling non-linear response
-		
-		let scaleFactor
-		
-		if ( w >= 0 ) {
-			scaleFactor = 1 - Math2.clamp( this.potential, 0, 1 )
-		} else {
-			scaleFactor = Math2.clamp( this.potential, 0, 1 )
-		}
-		
-		scaleFactor = 1
-		
-		const input = w * scaleFactor * dt
+		const input = w * dt
 		
 		if ( !this.firing ) {
 			if ( input < 0 ) {
@@ -110,7 +95,7 @@ Neuron.prototype = {
 			if ( decayedPotential > 0 ) this.inhibitoryInput += decayedPotential
 		}
 		
-		if ( this.potential >= 0.95 ) this.fire()
+		if ( this.potential >= 1 ) this.fire()
 		
 		if ( this.firing ) {
 			// drain potential over refractory period
