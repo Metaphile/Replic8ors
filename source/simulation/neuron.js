@@ -48,33 +48,6 @@ export default function Neuron( opts = {} ) {
 	return self
 }
 
-// WIP nonlinear activation function
-// breaks several unit tests
-export const scaleWeight = x => {
-	// const y = -1 * Math.pow( x, 3 ) / ( Math.pow( x, 2 ) - 1 )
-	
-	// // scaleWeight(0.99)
-	// if ( y === Infinity || y === -Infinity ) {
-	// 	return -y
-	// } else {
-	// 	return y
-	// }
-	
-	return x
-}
-
-// currently unused
-export const sigmoid = x => {
-	// 0..1
-	let y = 1 / ( 1 + Math.pow( Math.E, -x ) )
-	// 0..2
-	y = y * 2
-	// -1..1
-	y = 1 - y
-	
-	return y
-}
-
 Neuron.prototype = {
 	stimulate: function ( dt, sourceIndex = this.index ) {
 		const w = this.weights[ sourceIndex ]
