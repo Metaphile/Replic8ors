@@ -159,7 +159,7 @@ export default function Replic8or( opts = {} ) {
 	createSymmetricSegments.call( self )
 	
 	// programBasicInstincts( self )
-	// programNonsense( self )
+	programNonsense( self )
 	
 	// make all sensory input excitatory to begin with
 	for ( const neuron of self.brain.neurons ) {
