@@ -15,11 +15,13 @@ describe( 'neuron', () => {
 		neuron.weights[ inhibitoryIndex ] = -1.0
 		
 		neuron.stimulate( 1/60, excitatoryIndex )
-		expect( neuron.potential > error ).toBe( true )
+		neuron.update( 0 )
+		expect( neuron.potential > error ).toBe( true, 'excitatory' )
 		
 		neuron.potential = 0.9
 		neuron.stimulate( 1/60, inhibitoryIndex )
-		expect( neuron.potential < 0.9 - error ).toBe( true )
+		neuron.update( 0 )
+		expect( neuron.potential < 0.9 - error ).toBe( true, 'inhibitory' )
 	} )
 	
 	it( 'threshold potential activates neuron', () => {

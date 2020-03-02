@@ -35,6 +35,14 @@ export default function Neuron( opts = {} ) {
 	self.simTimeSinceLastFired = 0
 	self.index = -1
 	
+	// neuron input (calls to `stimulate()`) isn't applied immediately.
+	// it's buffered until the next update,
+	// at which point the sum of all input is applied simultaneously.
+	// this gives all upstream neurons equal footing
+	// and avoids intermediate state issues which were
+	// previously worked around by calling `update( 0 )` inside `stimulate()`
+	self.inputBuffer = []
+	
 	Object.assign( self, defaultOpts, opts )
 	
 	return self
@@ -93,16 +101,13 @@ Neuron.prototype = {
 				this.inhibitoryInput -= input
 			}
 			
-			this.potential += input
+			this.inputBuffer.push( input )
 		}
 		
 		if ( sourceIndex === this.index ) {
 			this.sensoryPotential += input
 			this.gotSensoryInput = true
 		}
-		
-		// call to update() ensures neuron is in good state
-		this.update( 0 )
 	},
 	
 	fire: function () {
@@ -116,6 +121,9 @@ Neuron.prototype = {
 	},
 	
 	update: function ( dt ) {
+		this.potential += this.inputBuffer.reduce( ( runningTotal, currentValue ) => runningTotal + currentValue, 0 )
+		this.inputBuffer.length = 0
+		
 		this.simTimeSinceLastFired += dt
 		
 		if ( !this.gotSensoryInput ) {
