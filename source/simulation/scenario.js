@@ -195,11 +195,29 @@ export default function Scenario( world, opts = {} ) {
 			self.repopulatePredators()
 		}
 		
-		if ( world.foods.length > 90 ) {
+		const areTooManyFoods = world.foods.length > 90
+		const areAnyPreys = world.replicators.length > 0
+		const areTooManyPreys = world.replicators.length > self.maxReplicators
+		const areAnyPredators = world.predators.length > 0
+		const areTooManyPredators = world.predators.length > self.maxPredators
+		
+		if ( areTooManyFoods ) {
+			// simplest case: if there's too much food in the environment, don't add more
 			self.feeding = false
-		} else if ( self.feeding && ( world.replicators.length > self.maxReplicators || world.predators.length > self.maxPredators ) ) {
+		} else if ( !areTooManyPreys && !areTooManyPredators ) {
+			// if there aren't too many preys AND there aren't too many predators, add more food
+			self.feeding = true
+		} else if ( areTooManyPreys ) {
+			// if there are too many preys, reduce the prey population by withholding food
 			self.feeding = false
-		} else if ( !self.feeding && ( world.replicators.length <= self.numReplicators && world.predators.length <= self.numPredators ) ) {
+		} else if ( areTooManyPredators && areAnyPreys ) {
+			// if there are too many predators, reduce the predator population by reducing the prey population
+			// (by withholding food)
+			self.feeding = false
+		} else if ( areAnyPredators && !areAnyPreys ) {
+			// if there are predators but no prey, resume feeding for two reasons:
+			// - food is harmful to predators and will help reduce their population
+			// - when fresh prey are added, they'll have something to eat
 			self.feeding = true
 		}
 		
