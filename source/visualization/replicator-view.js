@@ -70,8 +70,7 @@ function anchorNeuronViews() {
 			const thinkView = this.neuronViews[ thinkNeuron.index ]
 			thinkView.anchor.x = p0.x + Math.cos( angle ) * r1
 			thinkView.anchor.y = p0.y + Math.sin( angle ) * r1
-			// angle += Math.PI * 2 / this.replicator.thinkNeurons.length
-			angle += ( Math.PI * 2/6 )
+			angle += Math.PI * 2 / this.replicator.thinkNeurons.length
 		}
 	}
 }
