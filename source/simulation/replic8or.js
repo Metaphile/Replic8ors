@@ -17,9 +17,9 @@ const defaultOpts = {
 	energy: 0.5,
 	metabolism: 1 / ( 2 * 60 ),
 	
-	numBodySegments: 2,
-	receptorOffset: -1/8 * ( Math.PI * 2 ),
-	flipperOffset: -5/8 * ( Math.PI * 2 ),
+	numBodySegments: 3,
+	receptorOffset: -Math.PI / 2, // up,
+	flipperOffset: -Math.PI / 2 + ( Math.PI / 3 ),
 	
 	takingDamage: false,
 	flipperStrength: 4500,
@@ -32,7 +32,7 @@ function createSymmetricSegments() {
 	for ( let i = 0; i < this.numBodySegments; i++ ) {
 		// flipper
 		{
-			const angle = this.flipperOffset + i * ( Math.PI / 2 )
+			const angle = this.flipperOffset + ( i / this.numBodySegments * Math.PI * 2 )
 			const flipper = Flipper( angle, { strength: this.flipperStrength } )
 			
 			const motorNeuron = Neuron()
@@ -46,19 +46,19 @@ function createSymmetricSegments() {
 			flipper.on( 'flipping', ( force, dt, torque ) => {
 				this.applyForce( Vector2.rotate( force, this.rotation ), dt )
 				
-				if ( this.flippers.indexOf( flipper ) === 0 ) {
-					this.applyTorque( -torque, dt )
-				} else {
-					this.applyTorque( torque, dt )
-				}
+				// if ( this.flippers.indexOf( flipper ) === 0 ) {
+				// 	this.applyTorque( -torque, dt )
+				// } else {
+				// 	this.applyTorque( torque, dt )
+				// }
 			} )
 			
 			this.flippers.push( flipper )
 		}
 		
-		// forward receptor
+		// receptor
 		{
-			const angle = this.receptorOffset + i * ( Math.PI / 2 )
+			const angle = this.receptorOffset + ( i / this.numBodySegments * Math.PI * 2 )
 			const receptor = { angle }
 			
 			const foodNeuron = Neuron()
@@ -78,28 +78,6 @@ function createSymmetricSegments() {
 			
 			this.receptors.push( receptor )
 		}
-	}
-	
-	// rear receptor
-	{
-		const angle = Math.PI // forward is 0
-		const receptor = { angle }
-		
-		const foodNeuron = Neuron()
-		this.brain.addNeuron( foodNeuron )
-		
-		const predatorNeuron = Neuron()
-		this.brain.addNeuron( predatorNeuron )
-		
-		const replicatorNeuron = Neuron()
-		this.brain.addNeuron( replicatorNeuron )
-		
-		receptor.neurons = [ foodNeuron, predatorNeuron, replicatorNeuron ]
-		receptor.neurons.food = foodNeuron
-		receptor.neurons.replicator = replicatorNeuron
-		receptor.neurons.predator = predatorNeuron
-		
-		this.receptors.push( receptor )
 	}
 	
 	this.hungerNeuron = Neuron()
@@ -303,7 +281,7 @@ Replic8or.prototype = {
 			radius: this.radius,
 			mass: this.mass,
 			drag: this.drag,
-			rotation: Math.random() * Math.PI * 2,
+			// rotation: Math.random() * Math.PI * 2,
 			elasticity: this.elasticity,
 			numBodySegments: this.numBodySegments,
 			
@@ -323,7 +301,7 @@ Replic8or.prototype = {
 		
 		// TODO u wot m8?
 		const neuronsPerSegment = 4
-		// Replic8or.syncSymmetricWeights( child.brain.neurons, parent.numBodySegments, neuronsPerSegment )
+		Replic8or.syncSymmetricWeights( child.brain.neurons, parent.numBodySegments, neuronsPerSegment )
 		
 		// TODO maybe divide parent's actual energy in half?
 		parent.energy = child.energy = 0.5
@@ -349,8 +327,6 @@ Replic8or.prototype = {
 // copy weights from 0th segment to each subsequent segment to enforce symmetry.
 // mutations outside the 0th segment will be overwritten.
 Replic8or.syncSymmetricWeights = ( neurons, numSegments, numNeuronsPerSegment ) => {
-	return
-	
 	const numSymmetricNeurons = numSegments * numNeuronsPerSegment
 	
 	// start with second segment (index 1)

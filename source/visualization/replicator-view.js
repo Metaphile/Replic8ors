@@ -41,42 +41,14 @@ function anchorNeuronViews() {
 		const deltaAngle = 0.37
 		const radius = r0 * 0.73
 		
-		let startAngle
-		
-		switch ( j ) {
-			case 0:
-				startAngle = a0 + receptor.angle - ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
-				break
-			
-			case 1:
-				startAngle = a0 + receptor.angle + ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
-				break
-			
-			case 2:
-				startAngle = a0 + receptor.angle + ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
-				break
-		}
+		const startAngle = a0 + receptor.angle + ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
 		
 		for ( let i = 0, n = receptor.neurons.length; i < n; i++ ) {
 			const neuron = receptor.neurons[ i ]
 			const neuronView = this.neuronViews[ neuron.index ]
 			
-			switch ( j ) {
-				case 0:
-					neuronView.anchor.x = p0.x + Math.cos( startAngle + ( i * deltaAngle ) ) * radius
-					neuronView.anchor.y = p0.y + Math.sin( startAngle + ( i * deltaAngle ) ) * radius
-					break
-				
-				case 1:
-					neuronView.anchor.x = p0.x + Math.cos( startAngle - ( i * deltaAngle ) ) * radius
-					neuronView.anchor.y = p0.y + Math.sin( startAngle - ( i * deltaAngle ) ) * radius
-					break
-					
-				case 2:
-					neuronView.anchor.x = p0.x + Math.cos( startAngle - ( i * deltaAngle ) ) * radius
-					neuronView.anchor.y = p0.y + Math.sin( startAngle - ( i * deltaAngle ) ) * radius
-					break
-			}
+			neuronView.anchor.x = p0.x + Math.cos( startAngle - ( i * deltaAngle ) ) * radius
+			neuronView.anchor.y = p0.y + Math.sin( startAngle - ( i * deltaAngle ) ) * radius
 		}
 	}
 	
@@ -562,7 +534,7 @@ ReplicatorView.prototype = {
 		const length    =   0.48
 		const lengthMid =   8.4
 		const baseAngle =   0.26 * Math.PI
-		const tilt      =  -0.25 * Math.PI
+		const tilt      =   0.0
 		
 		const replicator = this.replicator
 		
@@ -572,13 +544,9 @@ ReplicatorView.prototype = {
 			for ( let i = 0; i < replicator.flippers.length; i++ ) {
 				const flipper = replicator.flippers[ i ]
 				
-				const flipperBase = Vector2( Math.cos( flipper.angle + ( i === 0 ? -0.19 : 0.19 ) ) * ( replicator.radius - 1.3 ), Math.sin( flipper.angle + ( i === 0 ? -0.19 : 0.19 )  ) * ( replicator.radius - 1.3 ) )
+				const flipperBase = Vector2( Math.cos( flipper.angle ) * ( replicator.radius - 1.3 ), Math.sin( flipper.angle ) * ( replicator.radius - 1.3 ) )
 				
 				ctx.translate( flipperBase.x, flipperBase.y )
-				
-				if ( i === 0 ) {
-					ctx.rotate( Math.PI / 2 )
-				}
 				
 				const q = 1 - flipper.flipProgress
 				const flipAngle = Math.sin( Math.pow( q, 3 ) * Math.PI * 2 * speed ) * amplitude * q
@@ -598,15 +566,7 @@ ReplicatorView.prototype = {
 				// ctx.closePath()
 				
 				// manually undo transforms
-				ctx.rotate( -flipper.angle - tilt )
-				
-				ctx.rotate( -flipAngle * 0.5 )
-				ctx.rotate( -flipAngle * 0.5 )
-				
-				if ( i === 0 ) {
-					ctx.rotate( -Math.PI / 2 )
-				}
-				
+				ctx.rotate( -( flipper.angle + tilt + flipAngle ) )
 				ctx.translate( -flipperBase.x, -flipperBase.y )
 			}
 			
@@ -690,27 +650,7 @@ ReplicatorView.prototype = {
 		
 		// draw neurons
 		for ( const neuronView of this.neuronViews ) {
-			let downAngle
-			
-			if ( neuronView.neuron !== this.replicator.hungerNeuron ) {
-				// rotate neurons (except hunger neuron) so their "down" angle points toward the replicator center of mass
-				// it looks nice
-				downAngle = Vector2.angle( Vector2.subtract( this.replicator.position, neuronView.position, {} ) ) - Math.PI/2
-			} else {
-				// the hunger neuron is different because it's _at_ the center
-				// use the replicator down angle instead
-				downAngle = this.replicator.rotation + Math.PI/2
-			}
-			
-			ourCtx.translate( neuronView.position.x, neuronView.position.y )
-			ourCtx.rotate( downAngle )
-			ourCtx.translate( -neuronView.position.x, -neuronView.position.y )
-			
 			neuronView.draw( ourCtx, detail )
-			
-			ourCtx.translate( neuronView.position.x, neuronView.position.y )
-			ourCtx.rotate( -downAngle )
-			ourCtx.translate( -neuronView.position.x, -neuronView.position.y )
 		}
 		
 		// fade energy on hover

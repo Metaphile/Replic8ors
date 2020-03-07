@@ -81,7 +81,7 @@ export default function Scenario( world, opts = {} ) {
 			replicator.position.x = Math.cos( angle ) * radius2
 			replicator.position.y = Math.sin( angle ) * radius2
 			
-			replicator.rotation = Math.random() * Math.PI * 2
+			// replicator.rotation = Math.random() * Math.PI * 2
 			
 			world.addReplicator( replicator )
 		} )
@@ -96,7 +96,7 @@ export default function Scenario( world, opts = {} ) {
 			predator.position.x = Math.cos( angle ) * radius2
 			predator.position.y = Math.sin( angle ) * radius2
 			
-			predator.rotation = Math.random() * Math.PI * 2
+			// predator.rotation = Math.random() * Math.PI * 2
 			
 			world.addPredator( predator )
 		} )
