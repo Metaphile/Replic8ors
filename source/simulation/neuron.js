@@ -90,9 +90,7 @@ Neuron.prototype = {
 		
 		if ( !this.firing ) {
 			// decay
-			const decayedPotential = this.potentialDecayRate * dt
-			this.potential -= decayedPotential
-			if ( decayedPotential > 0 ) this.inhibitoryInput += decayedPotential
+			this.potential -= this.potentialDecayRate * dt
 		}
 		
 		if ( this.potential >= 1 ) this.fire()
