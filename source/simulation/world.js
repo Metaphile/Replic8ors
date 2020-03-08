@@ -161,6 +161,25 @@ World.prototype = {
 				
 				replicatorA.senseReplicator( replicatorB, dt )
 				replicatorB.senseReplicator( replicatorA, dt )
+				
+				// when replicators are touching, equalize their energy levels
+				{
+					const dx = replicatorB.position.x - replicatorA.position.x
+					const dy = replicatorB.position.y - replicatorA.position.y
+					
+					const r1 = replicatorA.radius
+					const r2 = replicatorB.radius
+					
+					const actual  = dx*dx + dy*dy // center to center
+					const minimum = Math.pow( r1 + r2, 2 )
+					
+					if ( actual <= minimum ) {
+						const diff = replicatorB.energy - replicatorA.energy
+						const transferRate = 0.5 // 1 == 1 unit of energy per second
+						replicatorA.energy += diff * dt * transferRate
+						replicatorB.energy -= diff * dt * transferRate
+					}
+				}
 			}
 		}
 		
