@@ -303,8 +303,8 @@ Replic8or.prototype = {
 		const neuronsPerSegment = 4
 		Replic8or.syncSymmetricWeights( child.brain.neurons, parent.numBodySegments, neuronsPerSegment )
 		
-		// TODO maybe divide parent's actual energy in half?
-		parent.energy = child.energy = 0.5
+		// divide parent energy between parent and child (parent energy might be > 1)
+		parent.energy = child.energy = ( parent.energy / 2 )
 		
 		Vector2.set( child.position, parent.position )
 		// Vector2.set( child.velocity, parent.velocity )

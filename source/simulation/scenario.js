@@ -75,7 +75,7 @@ export default function Scenario( world, opts = {} ) {
 	}
 	
 	self.repopulatePrey = function () {
-		createPopulation( self.numReplicators - 1, replicatorCryo, replicator => replicator.replicate( true ), Replic8or ).forEach( ( replicator ) => {
+		createPopulation( self.numReplicators - 1, replicatorCryo, replicator => { replicator.energy = 1; return replicator.replicate( true ) }, Replic8or ).forEach( ( replicator ) => {
 			const angle = Math.random() * Math.PI * 2
 			const radius2 = 0 + Math.random() * ( 640 - 0 )
 			replicator.position.x = Math.cos( angle ) * radius2
@@ -90,7 +90,7 @@ export default function Scenario( world, opts = {} ) {
 	self.repopulatePrey()
 	
 	self.repopulatePredators = function () {
-		createPopulation( self.numPredators, predatorCryo, predator => predator.replicate( true ), Replic8or ).forEach( ( predator ) => {
+		createPopulation( self.numPredators, predatorCryo, predator => { predator.energy = 1; return predator.replicate( true ) }, Replic8or ).forEach( ( predator ) => {
 			const angle = Math.random() * Math.PI * 2
 			const radius2 = 0 + Math.random() * ( 640 - 0 )
 			predator.position.x = Math.cos( angle ) * radius2
