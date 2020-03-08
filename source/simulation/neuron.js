@@ -12,7 +12,7 @@ import Events from '../engine/events'
 import Math2 from '../engine/math-2'
 
 const defaultOpts = {
-	potentialDecayRate: 0.0,
+	potentialDecayRate: 0.4,
 	refractoryPeriod: 0.3,
 }
 
@@ -88,12 +88,12 @@ Neuron.prototype = {
 			this.sensoryPotential = 0
 		}
 		
+		if ( this.potential >= 1 ) this.fire()
+		
 		if ( !this.firing ) {
 			// decay
 			this.potential -= this.potentialDecayRate * dt
 		}
-		
-		if ( this.potential >= 1 ) this.fire()
 		
 		if ( this.firing ) {
 			// drain potential over refractory period
