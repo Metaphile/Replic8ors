@@ -7,8 +7,6 @@ import * as predatorAssets from './predator-assets'
 import NeuronView from './neuron-view'
 import Vector2 from '../engine/vector-2'
 
-const ourCtx = document.createElement( 'canvas' ).getContext( '2d' )
-
 function confineNeuronView( neuronView, replicatorPosition, adjustedConfinementRadius ) {
 	const deltaP = Vector2.subtract( neuronView.position, replicatorPosition, {} )
 	const distance = Vector2.getLength( deltaP )
@@ -212,7 +210,7 @@ ReplicatorView.prototype = {
 		}
 	},
 	
-	drawWithFisheye( theirCtx, camera, mousePos_world, detail ) {
+	drawWithFisheye( ctx, camera, mousePos_world, detail ) {
 		const hoverTargets = []
 		
 		for ( const view of this.neuronViews ) {
@@ -261,7 +259,7 @@ ReplicatorView.prototype = {
 			}
 		}
 		
-		this.draw( theirCtx, camera, detail, true )
+		this.draw( ctx, camera, detail, true )
 		
 		for ( const hoverTarget of hoverTargets ) {
 			Vector2.set( hoverTarget.position, hoverTarget.originalPosition )
@@ -340,7 +338,7 @@ ReplicatorView.prototype = {
 						neuronViewJ.radius,
 						neuronViewJ.neuron.weights[ neuronViewI.neuron.index ],
 						1 - neuronViewI.neuron.potential,
-						Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ),
+						ctx.globalAlpha * Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ),
 						neuronViewI.overrideSignalOpacity || neuronViewJ.overrideSignalOpacity )
 				}
 				
@@ -354,7 +352,7 @@ ReplicatorView.prototype = {
 						neuronViewI.radius,
 						neuronViewI.neuron.weights[ neuronViewJ.neuron.index ],
 						1 - neuronViewJ.neuron.potential,
-						Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ),
+						ctx.globalAlpha * Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity ),
 						neuronViewI.overrideSignalOpacity || neuronViewJ.overrideSignalOpacity )
 				}
 			}
@@ -371,7 +369,7 @@ ReplicatorView.prototype = {
 					y: this.replicator.position.y + Math.sin( a1 ) * r1,
 				}
 				
-				this.drawSignal( ctx, neuronView.position, neuronView.radius, flipperPosition, 3, 1, 1 - flipper.neuron.potential, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
+				this.drawSignal( ctx, neuronView.position, neuronView.radius, flipperPosition, 3, 1, 1 - flipper.neuron.potential, ctx.globalAlpha * neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
 			}
 		}
 		
@@ -389,7 +387,7 @@ ReplicatorView.prototype = {
 				// TODO this is very misleading
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
+				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, ctx.globalAlpha * neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
 			}
 			
 			// other replicators
@@ -399,7 +397,7 @@ ReplicatorView.prototype = {
 				const weight = neuron.weights[ neuron.index ]
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
+				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, ctx.globalAlpha * neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
 			}
 			
 			// predators
@@ -409,7 +407,7 @@ ReplicatorView.prototype = {
 				const weight = neuron.weights[ neuron.index ]
 				const progress = neuron.sensoryPotential / weight % 1
 				
-				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
+				this.drawSignal( ctx, receptorPosition, 3, neuronView.position, neuronView.radius, weight, progress, ctx.globalAlpha * neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
 			}
 		}
 		
@@ -425,7 +423,7 @@ ReplicatorView.prototype = {
 			const sourcePos = { x: r.position.x, y: 0 } // y set below
 			sourcePos.y = r.position.y + r.radius - r.energy * r.radius * 2
 			
-			this.drawSignal( ctx, sourcePos, 0, neuronView.position, neuronView.radius, weight, progress, neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
+			this.drawSignal( ctx, sourcePos, 0, neuronView.position, neuronView.radius, weight, progress, ctx.globalAlpha * neuronView.connectionOpacity, neuronView.overrideSignalOpacity )
 		}
 	},
 	
@@ -610,7 +608,15 @@ ReplicatorView.prototype = {
 			ctx.stroke()
 	},
 	
-	draw( theirCtx, camera, detail, keepHoverOverride ) {
+	draw( ctx, camera, detail, keepHoverOverride ) {
+		const ctx_globalCompositeOperation = ctx.globalCompositeOperation
+		const ctx_globalAlpha = ctx.globalAlpha
+		
+		if ( this.effects.death ) {
+			ctx.globalCompositeOperation = 'screen'
+			ctx.globalAlpha = 1 - this.effects.death.progress
+		}
+		
 		if ( !keepHoverOverride ) {
 			for ( const view of this.neuronViews ) {
 				view.overrideSignalOpacity = false
@@ -621,34 +627,28 @@ ReplicatorView.prototype = {
 		const p0 = replicator.position
 		const r0 = replicator.radius
 		
-		const zoomLevel = camera.zoomLevel() * 1.1
-		ourCtx.canvas.width = ourCtx.canvas.height = ( this.replicator.radius + 16 ) * 2 * zoomLevel
-		ourCtx.translate( ourCtx.canvas.width / 2, ourCtx.canvas.width / 2 )
-		ourCtx.scale( zoomLevel, zoomLevel )
-		ourCtx.translate( -p0.x, -p0.y )
-		
-		this.drawBackside( ourCtx )
+		this.drawBackside( ctx )
 		
 		// rotate (some parts) with replicator
-		ourCtx.translate( p0.x, p0.y )
-		ourCtx.rotate( this.replicator.rotation )
-		ourCtx.translate( -p0.x, -p0.y )
+		ctx.translate( p0.x, p0.y )
+		ctx.rotate( this.replicator.rotation )
+		ctx.translate( -p0.x, -p0.y )
 		
-		// this.drawSeparators( ourCtx )
+		// this.drawSeparators( ctx )
 		
 		if ( this.effects.damage ) {
-			this.effects.damage.draw( ourCtx, this.replicator.position, this.replicator.radius )
+			this.effects.damage.draw( ctx, this.replicator.position, this.replicator.radius )
 		}
 		
-		ourCtx.translate( p0.x, p0.y )
-		ourCtx.rotate( -this.replicator.rotation )
-		ourCtx.translate( -p0.x, -p0.y )
+		ctx.translate( p0.x, p0.y )
+		ctx.rotate( -this.replicator.rotation )
+		ctx.translate( -p0.x, -p0.y )
 		
-		this.drawSignals( ourCtx )
+		this.drawSignals( ctx )
 		
 		// draw neurons
 		for ( const neuronView of this.neuronViews ) {
-			neuronView.draw( ourCtx, detail )
+			neuronView.draw( ctx, detail )
 		}
 		
 		// fade energy on hover
@@ -657,42 +657,36 @@ ReplicatorView.prototype = {
 			let oldGlobalAlpha
 			
 			if ( keepHoverOverride ) {
-				oldGlobalAlpha = ourCtx.globalAlpha
-				ourCtx.globalAlpha = 0.3
+				oldGlobalAlpha = ctx.globalAlpha
+				ctx.globalAlpha *= 0.3
 			}
 			
-			this.drawEnergy( ourCtx )
+			this.drawEnergy( ctx )
 			
 			// draw glossy face
-			ourCtx.drawImage( this.assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
+			ctx.drawImage( this.assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
 			
 			if ( keepHoverOverride ) {
-				ourCtx.globalAlpha = oldGlobalAlpha
+				ctx.globalAlpha = oldGlobalAlpha
 			}
 		}
 		
-		ourCtx.translate( p0.x, p0.y )
-		ourCtx.rotate( this.replicator.rotation )
-		ourCtx.translate( -p0.x, -p0.y )
+		ctx.translate( p0.x, p0.y )
+		ctx.rotate( this.replicator.rotation )
+		ctx.translate( -p0.x, -p0.y )
 		
-		this.drawFlippers( ourCtx )
+		this.drawFlippers( ctx )
 		
-		this.drawEdge( ourCtx )
+		this.drawEdge( ctx )
 		
-		const theirCtx_globalAlpha = theirCtx.globalAlpha
 		if ( this.effects.death ) {
-			ourCtx.beginPath()
-				ourCtx.arc( this.replicator.position.x, this.replicator.position.y, this.replicator.radius - 2.9/2, 0, Math.PI * 2 )
-				ourCtx.fillStyle = 'orange'
-				ourCtx.globalCompositeOperation = 'screen'
-				ourCtx.fill()
-			
-			theirCtx.globalAlpha = 1 - this.effects.death.progress
+			ctx.beginPath()
+				ctx.arc( this.replicator.position.x, this.replicator.position.y, this.replicator.radius - 2.9/2, 0, Math.PI * 2 )
+				ctx.fillStyle = 'orange'
+				ctx.fill()
 		}
 		
-		const halfWidth = ourCtx.canvas.width / zoomLevel / 2
-		theirCtx.drawImage( ourCtx.canvas, p0.x - halfWidth, p0.y - halfWidth, halfWidth * 2, halfWidth * 2 )
-		
-		theirCtx.globalAlpha = theirCtx_globalAlpha
+		ctx.globalCompositeOperation = ctx_globalCompositeOperation
+		ctx.globalAlpha = ctx_globalAlpha
 	},
 }
