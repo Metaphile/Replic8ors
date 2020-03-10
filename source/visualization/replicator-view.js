@@ -644,7 +644,10 @@ ReplicatorView.prototype = {
 		ctx.rotate( -this.replicator.rotation )
 		ctx.translate( -p0.x, -p0.y )
 		
-		this.drawSignals( ctx )
+		// for performance, only draw signals while mouseover
+		if ( keepHoverOverride ) {
+			this.drawSignals( ctx )
+		}
 		
 		// draw neurons
 		for ( const neuronView of this.neuronViews ) {
