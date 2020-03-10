@@ -586,29 +586,28 @@ ReplicatorView.prototype = {
 		const cx = this.replicator.position.x
 		const cy = this.replicator.position.y
 		
-		ourCtx.strokeStyle = this.assets.skinColor
-		// ctx.strokeStyle = 'rgba( 255, 255, 255, 0.5 )'
-		ourCtx.lineWidth = 2.9
-		ourCtx.lineCap = 'butt' // heh
+		ctx.strokeStyle = this.assets.skinColor
+		ctx.lineWidth = 2.9
+		ctx.lineCap = 'butt' // heh
 		
 		{
 			const receptors = this.replicator.receptors
 			
 			for ( let i = 0; i < receptors.length; i++ ) {
-				ourCtx.beginPath()
+				ctx.beginPath()
 					const startAngle = receptors[ i ].angle + ( gap / 2 )
 					const endAngle   = receptors[ ( i + 1 ) % receptors.length ].angle - ( gap / 2 )
 					
-					ourCtx.arc( cx, cy, this.replicator.radius, startAngle, endAngle )
-					ourCtx.stroke()
+					ctx.arc( cx, cy, this.replicator.radius, startAngle, endAngle )
+					ctx.stroke()
 			}
 		}
 		
 		// TODO shallower notches
-		ourCtx.beginPath()
-			ourCtx.arc( cx, cy, this.replicator.radius - ourCtx.lineWidth/4, 0, Math.PI * 2 )
-			ourCtx.lineWidth /= 2
-			ourCtx.stroke()
+		ctx.beginPath()
+			ctx.arc( cx, cy, this.replicator.radius - ctx.lineWidth/4, 0, Math.PI * 2 )
+			ctx.lineWidth /= 2
+			ctx.stroke()
 	},
 	
 	draw( theirCtx, camera, detail, keepHoverOverride ) {
