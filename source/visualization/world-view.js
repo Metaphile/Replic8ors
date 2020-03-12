@@ -167,6 +167,16 @@ export default function WorldView( world ) {
 	}
 	
 	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {
+		// show world radius
+		ctx.beginPath()
+			// slightly larger than world radius for aesthetics
+			ctx.arc( 0, 0, world.radius * 1.1, 0, Math.PI * 2 )
+			ctx.strokeStyle = 'silver'
+			ctx.lineWidth = 3
+			ctx.setLineDash( [ 10, 10 ] )
+			ctx.stroke()
+			ctx.setLineDash( [] )
+		
 		const viewBounds = camera.viewBounds( ctx.canvas )
 		
 		for ( const view of self.foodViews ) view.draw( ctx )
