@@ -7,6 +7,7 @@ import Events  from '../engine/events'
 import Physics from '../engine/physics'
 import Math2   from '../engine/math-2'
 import Vector2 from '../engine/vector-2'
+// import { formatWeight } from '../helpers'
 
 const defaultOpts = {
 	radius: 32,
@@ -236,7 +237,9 @@ Replic8or.prototype = {
 				if ( mutationRate > Math.random() ) {
 					// -1..1, biased toward 0
 					const mutation = Math.pow( Math2.randRange( -1, 1 ), 5 )
-					return Math.sin( Math.asin( weight ) + Math.asin( mutation ) )
+					const mutatedWeight = Math.sin( Math.asin( weight ) + Math.asin( mutation ) )
+					// console.log( `${ formatWeight( weight ) } => ${ formatWeight( mutatedWeight ) } (${ formatWeight( mutatedWeight - weight ) })` )
+					return mutatedWeight
 				} else {
 					return weight
 				}
