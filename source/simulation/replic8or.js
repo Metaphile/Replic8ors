@@ -140,11 +140,6 @@ export default function Replic8or( opts = {} ) {
 	// programBasicInstincts( self )
 	programNonsense( self )
 	
-	// make all sensory input excitatory to begin with
-	for ( const neuron of self.brain.neurons ) {
-		neuron.weights[ neuron.index ] = 0.1
-	}
-	
 	return self
 }
 
@@ -247,12 +242,6 @@ Replic8or.prototype = {
 		}
 	},
 	
-	fixSensoryWeights: function ( neurons ) {
-		for ( let i = 0; i < neurons.length; i++ ) {
-			neurons[ i ].weights[ i ] = 0.3
-		}
-	},
-	
 	normalizeWeights: function ( neurons ) {
 		let maxWeightAbs = 1
 		
@@ -294,7 +283,6 @@ Replic8or.prototype = {
 		this.copyWeights( parent.brain.neurons, child.brain.neurons )
 		this.mutateWeights( child.brain.neurons, mutationRate )
 		this.normalizeWeights( child.brain.neurons )
-		this.fixSensoryWeights( child.brain.neurons )
 		
 		for ( let i = 0; i < parent.brain.neurons.length; i++ ) {
 			child.brain.neurons[ i ].potentialDecayRate = parent.brain.neurons[ i ].potentialDecayRate
