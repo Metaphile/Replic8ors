@@ -280,12 +280,12 @@ World.prototype = {
 		}
 		
 		// constrain entities to radius
-		for ( const entity of [ ...predators, ...replicators, ...foods ] ) {
-			const p = entity.position
-			const dist = Vector2.getLength( p )
-			if ( dist > this.radius ) {
-				Vector2.setLength( p, this.radius )
-			}
-		}
+		// for ( const entity of [ ...predators, ...replicators, ...foods ] ) {
+		// 	const p = entity.position
+		// 	const dist = Vector2.getLength( p )
+		// 	if ( dist > this.radius ) {
+		// 		Vector2.setLength( p, this.radius )
+		// 	}
+		// }
 	},
 }
