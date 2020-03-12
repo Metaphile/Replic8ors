@@ -242,28 +242,6 @@ Replic8or.prototype = {
 		}
 	},
 	
-	normalizeWeights: function ( neurons ) {
-		let maxWeightAbs = 1
-		
-		for ( let i = 0; i < neurons.length; i++ ) {
-			const neuron = neurons[ i ]
-			
-			for ( let j = 0; j < neuron.weights.length; j++ ) {
-				const weight = neuron.weights[ j ]
-				const weightAbs = Math.abs( weight )
-				
-				// don't include sensory weights when calculating max
-				if ( weightAbs > maxWeightAbs && i !== j ) {
-					maxWeightAbs = Math.abs( weight )
-				}
-			}
-		}
-		
-		for ( const neuron of neurons ) {
-			neuron.weights = neuron.weights.map( weight => weight * 1/maxWeightAbs )
-		}
-	},
-	
 	// TODO quietly -> emitEvent
 	replicate: function ( quietly, mutationRate = 0.008 ) {
 		const parent = this
@@ -282,7 +260,6 @@ Replic8or.prototype = {
 		
 		this.copyWeights( parent.brain.neurons, child.brain.neurons )
 		this.mutateWeights( child.brain.neurons, mutationRate )
-		this.normalizeWeights( child.brain.neurons )
 		
 		for ( let i = 0; i < parent.brain.neurons.length; i++ ) {
 			child.brain.neurons[ i ].potentialDecayRate = parent.brain.neurons[ i ].potentialDecayRate
