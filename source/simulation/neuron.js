@@ -12,7 +12,7 @@ import Events from '../engine/events'
 import Math2 from '../engine/math-2'
 
 const defaultOpts = {
-	potentialDecayRate: 0.4,
+	potentialDecayRate: 0.6,
 	refractoryPeriod: 0.3,
 }
 

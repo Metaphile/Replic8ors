@@ -4,8 +4,8 @@ import Replic8or from './replic8or'
 import RingBuffer from '../engine/ring-buffer'
 
 const defaultOpts = {
-	numReplicators: 16,
-	maxReplicators: 24,
+	numReplicators:  8,
+	maxReplicators: 16,
 	numPredators:    8,
 	maxPredators:   16,
 }
@@ -195,7 +195,7 @@ export default function Scenario( world, opts = {} ) {
 			self.repopulatePredators()
 		}
 		
-		const areTooManyFoods = world.foods.length > 90
+		const areTooManyFoods = world.foods.length > 40
 		const areAnyPreys = world.replicators.length > 0
 		const areTooManyPreys = world.replicators.length > self.maxReplicators
 		const areAnyPredators = world.predators.length > 0
