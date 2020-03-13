@@ -272,7 +272,7 @@ Replic8or.prototype = {
 		parent.energy = child.energy = ( parent.energy / 2 )
 		
 		Vector2.set( child.position, parent.position )
-		// Vector2.set( child.velocity, parent.velocity )
+		Vector2.set( child.velocity, parent.velocity )
 		
 		// TEMP just looks cool
 		// child.flippers.forEach( flipper => flipper.flip() )
