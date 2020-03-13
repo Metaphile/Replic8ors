@@ -148,7 +148,7 @@ Replic8or.prototype = {
 		// stimulate hunger neuron _before_ updating brain
 		// may fix rare issue where neuron has potential == 1 on activation frame
 		// instead of 1 - delta
-		this.hungerNeuron.stimulate( Math.pow( 1 - this.energy, 2 ) * 30 * dt )
+		this.hungerNeuron.stimulate( Math.pow( 1 - Math2.clamp( this.energy, 0, 1 ), 2 ) * 30 * dt )
 		
 		this.brain.update( dt )
 		
@@ -157,7 +157,6 @@ Replic8or.prototype = {
 		this.updatePhysics( dt )
 		
 		if ( this.energy >= 1 ) {
-			this.energy = 1
 			this.replicate()
 		}
 		
