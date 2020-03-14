@@ -35,3 +35,43 @@ describe( 'formatWeight()', () => {
 		expect( formatWeight( -0.01 ) ).toBe( '-0.010' )
 	} )
 } )
+
+describe( 'formatElapsedTime()', () => {
+	const { formatElapsedTime } = helpers
+	
+	it( '0', () => {
+		expect( formatElapsedTime( 0 ) ).toBe( '0:00:00:00.000' )
+	} )
+	
+	it( '1ms', () => {
+		expect( formatElapsedTime( 0.001 ) ).toBe( '0:00:00:00.001' )
+	} )
+	
+	it( '100ms', () => {
+		expect( formatElapsedTime( 0.100 ) ).toBe( '0:00:00:00.100' )
+	} )
+	
+	it( '999.5ms', () => {
+		expect( formatElapsedTime( 0.9995 ) ).toBe( '0:00:00:01.000' )
+	} )
+	
+	it( '1s', () => {
+		expect( formatElapsedTime( 1 ) ).toBe( '0:00:00:01.000' )
+	} )
+	
+	it( '1m', () => {
+		expect( formatElapsedTime( 60 ) ).toBe( '0:00:01:00.000' )
+	} )
+	
+	it( '1h', () => {
+		expect( formatElapsedTime( 60 * 60 ) ).toBe( '0:01:00:00.000' )
+	} )
+	
+	it( '1d', () => {
+		expect( formatElapsedTime( 24 * 60 * 60 ) ).toBe( '1:00:00:00.000' )
+	} )
+	
+	it( '99d', () => {
+		expect( formatElapsedTime( 99 * 24 * 60 * 60 ) ).toBe( '99:00:00:00.000' )
+	} )
+} )

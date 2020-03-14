@@ -2,6 +2,8 @@
 
 import $ from '../third-party/jquery'
 import html from './play-controls.html'
+import GameLoop from './engine/game-loop'
+import { formatElapsedTime } from './helpers'
 
 export default function PlayControls( gameLoop, onToggleOffline ) {
 	const $form = $( html )
@@ -99,6 +101,13 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 			$background.click()
 		}
 	} )
+	
+	const elapsedSimTime = $( '[name=elapsed-sim-time]', $form )[ 0 ]
+	GameLoop( () => {
+		elapsedSimTime.value = formatElapsedTime( gameLoop.elapsed )
+	},
+	() => {},
+	{ timestep: 1/60 } )
 	
 	return $form[ 0 ]
 }

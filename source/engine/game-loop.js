@@ -21,7 +21,7 @@ export default function GameLoop( update, draw, opts = {} ) {
 	
 	let then = 0 // time of last frame
 	let pending = 0
-	let elapsed = 0 // total elapsed time (virtual)
+	self.elapsed = 0 // total elapsed time (virtual)
 	
 	self.advance = function ( now ) {
 		if ( !self.paused ) {
@@ -31,9 +31,9 @@ export default function GameLoop( update, draw, opts = {} ) {
 			
 			while ( pending >= self.timestep ) {
 				pending -= self.timestep
-				elapsed += self.timestep
+				self.elapsed += self.timestep
 				
-				update( self.timestep, elapsed )
+				update( self.timestep, self.elapsed )
 			}
 		}
 		
@@ -45,9 +45,9 @@ export default function GameLoop( update, draw, opts = {} ) {
 	
 	// TODO honor timescale?
 	self.step = function () {
-		elapsed += self.timestep
-		self.emit( 'step', self.timestep, elapsed )
-		update( self.timestep, elapsed )
+		self.elapsed += self.timestep
+		self.emit( 'step', self.timestep, self.elapsed )
+		update( self.timestep, self.elapsed )
 	}
 	
 	Object.assign( self, defaultOpts, opts )
