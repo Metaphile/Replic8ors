@@ -1,15 +1,29 @@
 <form>
-	<button name='pause-resume' title='[space bar]'>Pause / Resume</button>
-	<button name='step' title='[right arrow key]'>Step</button>
-	|
-	<button name='speed-slow'>Slow</button>
-	<button name='speed-normal'>Normal</button>
-	<button name='speed-fast'>Fast</button>
-	|
-	<button name='info'>Info</button>
-	|
-	<label title='Disable rendering and run simulation as fast as possible'>
-		<input name='offline' type='checkbox'>
-		Turbo
-	</label>
+	<button name='pause-resume' title='play / pause [space bar]'>
+		<i class='fas fa-play'></i>
+		<i class='fas fa-pause'></i>
+	</button>
+	
+	<button name='step' title='step forward [right arrow key]'>
+		<i class='fas fa-step-forward'></i>
+	</button>
+	
+	<button name='speed-normal' title='normal speed'>
+		<i class='fas fa-forward'></i>
+	</button>
+	
+	<button name='speed-fast' title='fast'>
+		<i class='fas fa-fast-forward'></i>
+	</button>
+	
+	<button name='offline2' title='super fast (rendering disabled)'>
+		<i class='fas fa-bolt'></i>
+	</button>
+	
+	<!-- hidden -->
+	<input name='offline' type='checkbox'>
+	
+	<button name='info' title='show info [escape key]'>
+		<i class='fas fa-info'></i>
+	</button>
 </form>

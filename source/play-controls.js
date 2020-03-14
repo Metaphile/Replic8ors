@@ -34,11 +34,6 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 		}
 	} )
 	
-	$( '[name=speed-slow]', $form ).click( () => {
-		gameLoop.timescale = 0.1
-		gameLoop.paused = false
-	} )
-	
 	$( '[name=speed-normal]', $form ).click( () => {
 		gameLoop.timescale = 1
 		gameLoop.paused = false
@@ -68,7 +63,10 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 	} )
 	
 	const $background = $( '[name=offline]', $form )
-	$background.click( () => {
+	const $background2 = $( '[name=offline2]', $form )
+	$background2.click( () => {
+		$background.click()
+		
 		if ( $background.is( ':checked' ) ) {
 			// run simulation at "max" speed when going offline
 			gameLoop.timescale = 30 // simulation ticks per requestAnimationFrame
