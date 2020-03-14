@@ -15,9 +15,7 @@ export function formatWeight( w: number ): string {
 	// 666.6 => 667
 	w = Math.round( w )
 	
-	let str = String( w )
-	// left-pad with zeroes
-	str = '0'.repeat( digits - str.length ) + str
+	const str = leftPadInt( w, digits )
 	
 	// prepend sign; insert separator after leftmost digit
 	return sign + str.slice( 0, 1 ) + separator + str.slice( 1 )
