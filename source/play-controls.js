@@ -13,6 +13,7 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 	
 	const $pauseResume = $( '[name=pause-resume]', $form )
 	$pauseResume.click( () => {
+		// TODO toggle play/pause icon
 		gameLoop.paused = !gameLoop.paused
 	} )
 	$( document ).keydown( event => {
@@ -94,6 +95,8 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 			onToggleOffline( true )
 		}
 	} )
+	
+	// TODO I forgot about this...it doesn't seem to work?
 	$( document ).keydown( event => {
 		// B key
 		if ( event.which === 66 ) {
