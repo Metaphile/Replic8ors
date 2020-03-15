@@ -15,7 +15,7 @@ const defaultOpts = {
 	drag: 60,
 	elasticity: 1,
 	
-	energy: 0.5,
+	energy: 0.666,
 	metabolism: 1 / ( 2 * 60 ),
 	
 	numBodySegments: 3,

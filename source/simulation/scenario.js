@@ -77,7 +77,7 @@ export default function Scenario( world, opts = {} ) {
 	self.repopulatePrey = function () {
 		createPopulation( self.numReplicators - 1, replicatorCryo, replicator => { replicator.energy = 1; return replicator.replicate( true ) }, Replic8or ).forEach( ( replicator ) => {
 			const angle = Math.random() * Math.PI * 2
-			const radius2 = 0 + Math.random() * ( 640 - 0 )
+			const radius2 = Math.pow( Math.random(), 0.8 ) * world.radius
 			replicator.position.x = Math.cos( angle ) * radius2
 			replicator.position.y = Math.sin( angle ) * radius2
 			
@@ -92,7 +92,7 @@ export default function Scenario( world, opts = {} ) {
 	self.repopulatePredators = function () {
 		createPopulation( self.numPredators, predatorCryo, predator => { predator.energy = 1; return predator.replicate( true ) }, Replic8or ).forEach( ( predator ) => {
 			const angle = Math.random() * Math.PI * 2
-			const radius2 = 0 + Math.random() * ( 640 - 0 )
+			const radius2 = Math.pow( Math.random(), 0.8 ) * world.radius
 			predator.position.x = Math.cos( angle ) * radius2
 			predator.position.y = Math.sin( angle ) * radius2
 			
@@ -159,10 +159,10 @@ export default function Scenario( world, opts = {} ) {
 			const foodSpawnRadius = 640
 			
 			if ( self.feeding && world.foods.length < 100 ) {
-				self.doBloom( { x: 0, y: 0 }, foodSpawnRadius, 24 )
+				self.doBloom( { x: 0, y: 0 }, foodSpawnRadius, 1 )
 			}
 			
-			timer.scheduleAction( 10, feedPrey )
+			timer.scheduleAction( 1, feedPrey )
 		}
 		
 		self.feeding = true
@@ -195,7 +195,7 @@ export default function Scenario( world, opts = {} ) {
 			self.repopulatePredators()
 		}
 		
-		const areTooManyFoods = world.foods.length > 40
+		const areTooManyFoods = world.foods.length > 50
 		const areAnyPreys = world.replicators.length > 0
 		const areTooManyPreys = world.replicators.length > self.maxReplicators
 		const areAnyPredators = world.predators.length > 0
