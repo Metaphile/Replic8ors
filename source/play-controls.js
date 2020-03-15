@@ -5,7 +5,7 @@ import html from './play-controls.html'
 import GameLoop from './engine/game-loop'
 import { formatElapsedTime } from './helpers'
 
-export default function PlayControls( gameLoop, onToggleOffline ) {
+export default function PlayControls( gameLoop, onToggleSuperFast ) {
 	const $form = $( html )
 	
 	// prevent submit
@@ -72,7 +72,7 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 		
 		if ( $background.is( ':checked' ) ) {
 			// run simulation at "max" speed when going offline
-			gameLoop.timescale = 30 // simulation ticks per requestAnimationFrame
+			gameLoop.timescale = 60 // simulation ticks per requestAnimationFrame
 			gameLoop.paused = false
 			
 			// disable playback controls when simulating offline
@@ -82,7 +82,7 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 			$( '[name^=speed-]' ).prop( 'disabled', true ) // name begins with "speed-"
 			
 			// notify
-			onToggleOffline( false )
+			onToggleSuperFast( false )
 		} else {
 			// run simulation at normal speed when going online
 			$( '[name=speed-normal]', $form ).click()
@@ -92,7 +92,7 @@ export default function PlayControls( gameLoop, onToggleOffline ) {
 			$( '[name=pause-resume]' ).prop( 'disabled', false )
 			$( '[name^=speed-]' ).prop( 'disabled', false )
 			
-			onToggleOffline( true )
+			onToggleSuperFast( true )
 		}
 	} )
 	

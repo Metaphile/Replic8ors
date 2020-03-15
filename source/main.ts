@@ -120,12 +120,10 @@ $( () => {
 	// initialize dimensions
 	visualization.$element.trigger( 'appended' )
 	
-	let yesDraw = true
-	
 	// drive visualization
 	const visualizationLoop = GameLoop(
 		dt => visualization.update( dt, dt * ( scenarioLoop.paused ? 0 : scenarioLoop.timescale ) ),
-		() => yesDraw && visualization.draw( 0 ) )
+		() => visualization.draw( 0 ) )
 	
 	// MAYBE 'updated' event from world?
 	scenarioLoop.on( 'step', dt => {
@@ -133,10 +131,14 @@ $( () => {
 		visualization.update( dt, dt )
 	} )
 	
-	function onToggleOffline( toggleState ) {
-		yesDraw = toggleState
+	function onToggleSuperFast( doVisualization ) {
+		if ( doVisualization ) {
+			visualization.attach()
+		} else {
+			visualization.detach()
+		}
 	}
-	const controls = PlayControls( scenarioLoop, onToggleOffline )
+	const controls = PlayControls( scenarioLoop, onToggleSuperFast )
 	
 	$( '#play-controls' ).append( controls )
 	

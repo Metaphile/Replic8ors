@@ -27,11 +27,34 @@ export default function Visualization( world ) {
 	camera.pan( Vector2.invert( camera.viewCenter( canvas ) ) )
 	camera.zoom( 0.8, camera.viewCenter( canvas ) )
 	
-	const cameraOp = CameraOperator( camera, canvas )
+	const dummyCameraOp = {
+		smoothPan() {},
+		smoothZoom() {},
+		smoothZoomTo() {},
+		follow() {},
+		unfollow() {},
+		update() {},
+		offset: { x: 0, y: 0 },
+	}
+	let cameraOp = dummyCameraOp
 	
-	const worldView = WorldView( world )
+	const dummyWorldView = {
+		update() {},
+		draw() {},
+		getPredatorAt() {},
+		getReplicatorAt() {},
+	}
+	let worldView = dummyWorldView
 	
-	const hud = Hud( camera )
+	const dummyHud = {
+		track() {},
+		untrack() {},
+		select() {},
+		deselect() {},
+		update() {},
+		draw() {},
+	}
+	let hud = dummyHud
 	
 	// panning
 	{
@@ -183,23 +206,43 @@ export default function Visualization( world ) {
 		} )
 	}
 	
-	{
-		const trackReplicator = ( replicator ) => {
-			hud.track( replicator, HudMarker() )
-		}
-		
-		for ( const replicator of world.replicators ) trackReplicator( replicator )
-		world.on( 'replicator-added', trackReplicator )
+	const trackReplicator = ( replicator ) => {
+		hud.track( replicator, HudMarker() )
 	}
 	
-	{
-		const trackPredator = ( predator ) => {
-			hud.track( predator, HudMarker() )
-		}
-		
-		for ( const predator of world.predators ) trackPredator( predator )
-		world.on( 'predator-added', trackPredator )
+	world.on( 'replicator-added', trackReplicator )
+	
+	const trackPredator = ( predator ) => {
+		hud.track( predator, HudMarker() )
 	}
+	
+	world.on( 'predator-added', trackPredator )
+	
+	self.attach = () => {
+		worldView = WorldView( world )
+		
+		cameraOp = CameraOperator( camera, canvas )
+		// restore previous x/y position when reattaching
+		Object.assign( cameraOp.offset, dummyCameraOp.offset )
+		
+		hud = Hud( camera )
+		for ( const replicator of world.replicators ) trackReplicator( replicator )
+		for ( const predator of world.predators ) trackPredator( predator )
+	},
+	
+	self.detach = () => {
+		worldView.destroy()
+		worldView = dummyWorldView
+		
+		// capture camera x/y position before destroying
+		// to restore when reattaching
+		// TODO camera object itself knows offset but doesn't expose it
+		cameraOp.unfollow()
+		Object.assign( dummyCameraOp.offset, cameraOp.offset )
+		cameraOp = dummyCameraOp
+		
+		hud = dummyHud
+	},
 	
 	self.update = ( dt, dt2 ) => {
 		cameraOp.update( dt, dt2 )
@@ -231,6 +274,8 @@ export default function Visualization( world ) {
 		mousePos_screen.x = Number.MAX_SAFE_INTEGER
 		mousePos_screen.y = Number.MAX_SAFE_INTEGER
 	} )
+	
+	self.attach()
 	
 	return self
 }

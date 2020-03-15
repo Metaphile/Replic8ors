@@ -16,13 +16,13 @@ export default function CameraOperator( camera, canvas ) {
 	let bobAngle = 0
 	
 	// let target = null
-	let offset = { x: 0, y: 0 }
+	self.offset = { x: 0, y: 0 }
 	
 	self.smoothPan = ( dx, dy ) => {
 		if ( dx instanceof Object ) { dy = dx.y; dx = dx.x }
 		
-		offset.x += dx
-		offset.y += dy
+		self.offset.x += dx
+		self.offset.y += dy
 	}
 	
 	// TODO implement smoothness; consolidate with smoothZoomTo
@@ -36,7 +36,7 @@ export default function CameraOperator( camera, canvas ) {
 		var oldCenter = camera.viewCenter( canvas )
 		camera.zoomTo( newZoom, zoomX, zoomY )
 		var newCenter = camera.viewCenter( canvas )
-		Vector2.subtract( offset, Vector2.subtract( oldCenter, newCenter ) )
+		Vector2.subtract( self.offset, Vector2.subtract( oldCenter, newCenter ) )
 	}
 	
 	self.smoothZoomTo = ( zoomLevel, zoomX, zoomY ) => {
@@ -47,16 +47,16 @@ export default function CameraOperator( camera, canvas ) {
 		self.target = target
 		
 		const viewCenter = camera.viewCenter( canvas )
-		offset.x = viewCenter.x - target.position.x
-		offset.y = viewCenter.y - target.position.y
+		self.offset.x = viewCenter.x - target.position.x
+		self.offset.y = viewCenter.y - target.position.y
 	}
 	
 	self.unfollow = () => {
 		self.target = null
 		
 		const viewCenter = camera.viewCenter( canvas )
-		offset.x = viewCenter.x
-		offset.y = viewCenter.y
+		self.offset.x = viewCenter.x
+		self.offset.y = viewCenter.y
 	}
 	
 	self.update = ( dt, dt2 ) => {
@@ -68,8 +68,8 @@ export default function CameraOperator( camera, canvas ) {
 			bobAngle = ( bobAngle + 0.21 * dt2 ) % ( Math.PI * 2 )
 			
 			var m = 1.875 * dt2
-			offset.x += Math.cos( bobAngle *  7 ) * m
-			offset.y += Math.sin( bobAngle * 13 ) * m
+			self.offset.x += Math.cos( bobAngle *  7 ) * m
+			self.offset.y += Math.sin( bobAngle * 13 ) * m
 		}
 		
 		// move camera toward target + offset
@@ -81,8 +81,8 @@ export default function CameraOperator( camera, canvas ) {
 				targetY = self.target.position.y
 			}
 			
-			var px = targetX + offset.x
-			var py = targetY + offset.y
+			var px = targetX + self.offset.x
+			var py = targetY + self.offset.y
 			
 			// adjust position more aggressively while zooming
 			// var speed = 5.1 * ( 1 + Math.abs( this._zoomBuffer * 1.1 ) )

@@ -16,18 +16,21 @@ export default function WorldView( world ) {
 	self.predatorViews = []
 	self.foodViews = []
 	
+	// world event subscriptions
+	const worldSubs = {}
+	
 	// const foreground = assets.Foreground()
 	
 	// replicators
 	
-	world.on( 'replicator-replicated', ( parent, child ) => {
+	worldSubs[ 'replicator-replicated' ] = world.on( 'replicator-replicated', ( parent, child ) => {
 		const parentViewIndex = self.replicatorViews.findIndex( view => view.replicator === parent )
 		const childView = ReplicatorView( child )
 		// put child behind parent
 		self.replicatorViews.splice( parentViewIndex, 0, childView )
 	} )
 	
-	world.on( 'replicator-died', replicator => {
+	worldSubs[ 'replicator-died' ] = world.on( 'replicator-died', replicator => {
 		const view = self.replicatorViews.find( view => {
 			return view.replicator === replicator
 		} )
@@ -46,11 +49,11 @@ export default function WorldView( world ) {
 	}
 	
 	world.replicators.forEach( addReplicatorView )
-	world.on( 'replicator-added', addReplicatorView )
+	worldSubs[ 'replicator-added' ] = world.on( 'replicator-added', addReplicatorView )
 	
 	// predators
 	
-	world.on( 'predator-replicated', ( parent, child ) => {
+	worldSubs[ 'predator-replicated' ] = world.on( 'predator-replicated', ( parent, child ) => {
 		const parentViewIndex = self.predatorViews.findIndex( view => view.replicator === parent )
 		const childView = PredatorView( child, {}, 'predator' )
 		// put child behind parent
@@ -65,9 +68,9 @@ export default function WorldView( world ) {
 	}
 	
 	world.predators.forEach( addPredatorView )
-	world.on( 'predator-added', addPredatorView )
+	worldSubs[ 'predator-added' ] = world.on( 'predator-added', addPredatorView )
 	
-	world.on( 'predator-died', predator => {
+	worldSubs[ 'predator-died' ] = world.on( 'predator-died', predator => {
 		const view = self.predatorViews.find( view => {
 			return view.replicator === predator
 		} )
@@ -85,9 +88,9 @@ export default function WorldView( world ) {
 	}
 	
 	world.foods.forEach( addFoodView )
-	world.on( 'food-added', addFoodView )
+	worldSubs[ 'food-added' ] = world.on( 'food-added', addFoodView )
 	
-	world.on( 'food-eaten', ( food, replicators ) => {
+	worldSubs[ 'food-eaten' ] = world.on( 'food-eaten', ( food, replicators ) => {
 		const foodView = self.foodViews.find( view => {
 			return view.food === food
 		} )
@@ -107,7 +110,7 @@ export default function WorldView( world ) {
 		}
 	} )
 	
-	world.on( 'predator-eating-prey', ( predator ) => {
+	worldSubs[ 'predator-eating-prey' ] = world.on( 'predator-eating-prey', ( predator ) => {
 		const predatorView = self.predatorViews.find( view => view.replicator === predator )
 		
 		// loop energy up effect while predator is eating
@@ -117,7 +120,7 @@ export default function WorldView( world ) {
 		}
 	} )
 	
-	world.on( 'food-spoiled', food => {
+	worldSubs[ 'food-spoiled' ] = world.on( 'food-spoiled', food => {
 		const view = self.foodViews.find( view => {
 			return view.food === food
 		} )
@@ -230,6 +233,12 @@ export default function WorldView( world ) {
 		return world.predators.slice().reverse().find( predator => {
 			return pointInCircle( point_world, predator.position, predator.radius )
 		} )
+	}
+	
+	self.destroy = () => {
+		for ( const sub of Object.values( worldSubs ) ) {
+			sub.unsubscribe()
+		}
 	}
 	
 	return self
