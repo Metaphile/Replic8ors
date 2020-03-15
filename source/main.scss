@@ -34,7 +34,7 @@ html, body {
 	font-size: 12pt;
 	position: absolute;
 	width: 100%;
-	min-height: 100%;
+	height: 100%;
 	left:   0;
 	right:  0;
 	z-index: 999;
@@ -66,9 +66,11 @@ html, body {
 		width: 1.6em;
 		text-align: center;
 		font-size: x-large;
-		position: absolute;
+		
+		// keep close button in top right corner when scrolling
+		position: sticky;
 		top: 0;
-		right: 0;
+		float: right;
 		
 		&:hover, &:focus {
 			outline: none;
