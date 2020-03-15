@@ -53,6 +53,11 @@ export default function PlayControls( gameLoop, onToggleSuperFast ) {
 		$( '#info' ).fadeToggle()
 	} )
 	
+	// prevent link clicks from dismissing info box
+	$( '#info a' ).click( ( event ) => {
+		event.stopPropagation();
+	});
+	
 	$( '#info' ).click( () => {
 		$( '#info' ).fadeOut()
 	} )

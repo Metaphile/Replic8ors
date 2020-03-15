@@ -23,6 +23,7 @@ h2, h3 {
 	color: $blue;
 	font-weight: normal;
 	border-bottom: 1px solid $blue;
+	margin-top: 2em;
 }
 
 html, body {
@@ -38,9 +39,14 @@ html, body {
 	left:   0;
 	right:  0;
 	z-index: 999;
+	line-height: 1.5em;
 	
 	color: white;
 	overflow-y: scroll;
+	
+	a {
+		color: white;
+	}
 	
 	strong {
 		color: $blue;
@@ -53,16 +59,11 @@ html, body {
 		cursor: pointer;
 	}
 	
-	li {
-		height: 1.5rem;
-	}
-	
 	button[name=close] {
 		background: none;
 		border: none;
 		color: white;
 		padding: 0;
-		line-height: 1.5em;
 		width: 1.6em;
 		text-align: center;
 		font-size: x-large;
