@@ -97,4 +97,6 @@ html, body {
 	position: absolute;
 	right: 0;
 	bottom: 0;
+	// display over top of info box
+	z-index: 9999;
 }
