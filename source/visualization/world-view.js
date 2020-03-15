@@ -184,7 +184,7 @@ export default function WorldView( world ) {
 		
 		for ( const view of self.foodViews ) view.draw( ctx )
 		
-		const fisheyeZoomThreshold = 2.1
+		const fisheyeZoomThreshold = 0
 		
 		for ( const view of self.replicatorViews ) {
 			// don't draw offscreen replicators
