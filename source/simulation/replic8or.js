@@ -274,8 +274,9 @@ Replic8or.prototype = {
 		Vector2.set( child.position, parent.position )
 		Vector2.set( child.velocity, parent.velocity )
 		
-		// TEMP just looks cool
-		// child.flippers.forEach( flipper => flipper.flip() )
+		// activate all flippers simultaneously when a replicator is born
+		// because it looks cool
+		child.flippers.forEach( flipper => flipper.flip() )
 		
 		// HACK replicated event causes test 'adds more replicators' to fail
 		// last replicator dying triggers reset before replicator's
