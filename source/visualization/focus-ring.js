@@ -84,13 +84,18 @@ export default function FocusRing() {
 			const bias = ( angle / ( Math.PI * 2 ) * 8 ) % 1 // 0..1
 			const color = interpolateRgba( [ 255, 127, 0, 0.85 ], [ 255, 69, 0, 0.85 ], bias )
 			
-			// solid arcs
+			// bottom arc
 			ctx.beginPath()
-				// bottom arc
 				ctx.arc( 0, 0, innerRadius, 0 + gap, Math.PI - gap )
 				ctx.arc( 0, 0, outerRadius, Math.PI - gap, 0 + gap, true )
 				
-				// top arc
+				ctx.globalAlpha *= 0.4
+				ctx.fillStyle = color
+				ctx.fill()
+				ctx.globalAlpha /= 0.4
+				
+			// top arc
+			ctx.beginPath()
 				ctx.arc( 0, 0, innerRadius, Math.PI + gap, Math.PI * 2 - gap )
 				ctx.arc( 0, 0, outerRadius, Math.PI * 2 - gap, Math.PI + gap, true )
 				
