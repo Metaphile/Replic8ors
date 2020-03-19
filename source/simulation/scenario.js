@@ -32,16 +32,15 @@ export default function Scenario( world, opts = {} ) {
 	
 	const timer = Timer()
 	
-	self.doBloom = function ( position, radius, density ) {
-		for ( ; density > 0; density-- ) {
-			// spawn foods one after another
+	function addFoods( howMany, center, minRadius, maxRadius ) {
+		for ( ; howMany > 0; howMany-- ) {
 			const food = Food()
 			
 			const angle = Math.random() * Math.PI * 2
-			// const radius2 = ( radius * 0.8 ) + Math.random() * radius * 0.4
-			const radius2 = Math.pow( Math.random(), 0.8) * radius
-			food.position.x = position.x + Math.cos( angle ) * radius2
-			food.position.y = position.y + Math.sin( angle ) * radius2
+			const radius = minRadius + ( Math.random() * ( maxRadius - minRadius ) )
+			
+			food.position.x = center.x + Math.cos( angle ) * radius
+			food.position.y = center.y + Math.sin( angle ) * radius
 			
 			world.addFood( food )
 		}
@@ -76,10 +75,13 @@ export default function Scenario( world, opts = {} ) {
 	
 	self.repopulatePrey = function () {
 		createPopulation( self.numReplicators - 1, replicatorCryo, replicator => { replicator.energy = 1; return replicator.replicate( true ) }, Replic8or ).forEach( ( replicator ) => {
+			const minRadius = world.radius * 1/3
+			const maxRadius = world.radius * 2/3
+			
 			const angle = Math.random() * Math.PI * 2
-			const radius2 = Math.pow( Math.random(), 0.8 ) * world.radius
-			replicator.position.x = Math.cos( angle ) * radius2
-			replicator.position.y = Math.sin( angle ) * radius2
+			const radius = minRadius + ( Math.random() * ( maxRadius - minRadius ) )
+			replicator.position.x = Math.cos( angle ) * radius
+			replicator.position.y = Math.sin( angle ) * radius
 			
 			// replicator.rotation = Math.random() * Math.PI * 2
 			
@@ -91,10 +93,13 @@ export default function Scenario( world, opts = {} ) {
 	
 	self.repopulatePredators = function () {
 		createPopulation( self.numPredators, predatorCryo, predator => { predator.energy = 1; return predator.replicate( true ) }, Replic8or ).forEach( ( predator ) => {
+			const minRadius = world.radius * 0/3
+			const maxRadius = world.radius * 2/3
+			
 			const angle = Math.random() * Math.PI * 2
-			const radius2 = Math.pow( Math.random(), 0.8 ) * world.radius
-			predator.position.x = Math.cos( angle ) * radius2
-			predator.position.y = Math.sin( angle ) * radius2
+			const radius = minRadius + ( Math.random() * ( maxRadius - minRadius ) )
+			predator.position.x = Math.cos( angle ) * radius
+			predator.position.y = Math.sin( angle ) * radius
 			
 			// predator.rotation = Math.random() * Math.PI * 2
 			
@@ -156,10 +161,8 @@ export default function Scenario( world, opts = {} ) {
 		// shortly after first bloom
 		
 		function feedPrey() {
-			const foodSpawnRadius = 640
-			
 			if ( self.feeding ) {
-				self.doBloom( { x: 0, y: 0 }, foodSpawnRadius, 1 )
+				addFoods( 10, { x: 0, y: 0 }, world.radius * 2/3, world.radius * 3/3 )
 			}
 			
 			timer.scheduleAction( 1, feedPrey )
