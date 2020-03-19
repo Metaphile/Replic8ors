@@ -158,7 +158,7 @@ export default function Scenario( world, opts = {} ) {
 		function feedPrey() {
 			const foodSpawnRadius = 640
 			
-			if ( self.feeding && world.foods.length < 100 ) {
+			if ( self.feeding ) {
 				self.doBloom( { x: 0, y: 0 }, foodSpawnRadius, 1 )
 			}
 			
