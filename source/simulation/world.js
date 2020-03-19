@@ -103,10 +103,7 @@ World.prototype = {
 		
 		// collisions
 		
-		// foods-foods would go here
-		// ...
-		
-		// foods-replicators
+		// foods-replicators / replicators-foods
 		for ( let foodIndex = 0; foodIndex < foods.length; foodIndex++ ) {
 			const food = foods[ foodIndex ]
 			const recipients = []
@@ -145,11 +142,6 @@ World.prototype = {
 			}
 		}
 		
-		// foods-predators would go here
-		// ...
-		
-		// replicators-foods is covered above
-		
 		// replicators-replicators
 		for ( let i = 0, n = replicators.length; i < n; i++ ) {
 			const replicatorA = replicators[ i ]
@@ -164,7 +156,7 @@ World.prototype = {
 			}
 		}
 		
-		// replicators-predators
+		// replicators-predators / predators-replicators
 		for ( const replicator of replicators ) {
 			replicator.takingDamage = false
 			
@@ -205,8 +197,7 @@ World.prototype = {
 			}
 		}
 		
-		// predators-replicators are covered above
-		
+		// foods-predators / predators-foods
 		for ( const predator of this.predators ) {
 			predator.takingDamage = false
 			
