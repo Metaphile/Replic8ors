@@ -128,6 +128,12 @@ function programNonsense( replicator ) {
 	Replic8or.syncSymmetricWeights( replicator.brain.neurons, replicator.numBodySegments, neuronsPerSegment )
 }
 
+function programExcitatorySenses( replicator ) {
+	for ( const neuron of replicator.brain.neurons ) {
+		neuron.weights[ neuron.index ] = 0.2
+	}
+}
+
 export default function Replic8or( opts = {} ) {
 	const self = Object.create( Replic8or.prototype )
 	Events( self )
@@ -139,6 +145,7 @@ export default function Replic8or( opts = {} ) {
 	
 	// programBasicInstincts( self )
 	programNonsense( self )
+	// programExcitatorySenses( self )
 	
 	return self
 }
