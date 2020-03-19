@@ -161,25 +161,6 @@ World.prototype = {
 				
 				replicatorA.senseReplicator( replicatorB, dt )
 				replicatorB.senseReplicator( replicatorA, dt )
-				
-				// when replicators are touching, equalize their energy levels
-				{
-					const dx = replicatorB.position.x - replicatorA.position.x
-					const dy = replicatorB.position.y - replicatorA.position.y
-					
-					const r1 = replicatorA.radius
-					const r2 = replicatorB.radius
-					
-					const actual  = dx*dx + dy*dy // center to center
-					const minimum = Math.pow( r1 + r2, 2 )
-					
-					if ( actual <= minimum ) {
-						const diff = replicatorB.energy - replicatorA.energy
-						const transferRate = 0.25 // 1 == 1 unit of energy per second
-						replicatorA.energy += diff * dt * transferRate
-						replicatorB.energy -= diff * dt * transferRate
-					}
-				}
 			}
 		}
 		
@@ -261,6 +242,25 @@ World.prototype = {
 				
 				predatorA.sensePredator( predatorB, dt )
 				predatorB.sensePredator( predatorA, dt )
+				
+				// when predators are touching, equalize their energy levels
+				{
+					const dx = predatorB.position.x - predatorA.position.x
+					const dy = predatorB.position.y - predatorA.position.y
+					
+					const r1 = predatorA.radius
+					const r2 = predatorB.radius
+					
+					const actual  = dx*dx + dy*dy // center to center
+					const minimum = Math.pow( r1 + r2, 2 )
+					
+					if ( actual <= minimum ) {
+						const diff = predatorB.energy - predatorA.energy
+						const transferRate = 1 // 1 == 1 unit of energy per second
+						predatorA.energy += diff * dt * transferRate
+						predatorB.energy -= diff * dt * transferRate
+					}
+				}
 			}
 		}
 		
