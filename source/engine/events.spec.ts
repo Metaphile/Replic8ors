@@ -32,4 +32,24 @@ describe( 'events mixin', () => {
 		
 		expect( spy ).toHaveBeenCalledWith( arg1, arg2 )
 	} )
+	
+	it( 'on() returns subscription object', () => {
+		const events = Events()
+		
+		const subscription = events.on( 'event', () => {} )
+		
+		expect( subscription ).toBeTruthy()
+	} )
+	
+	it( 'subscription.unsubscribe() stops event notifications', () => {
+		const events = Events()
+		
+		const spy = jasmine.createSpy()
+		const subscription = events.on( 'event', spy )
+		
+		subscription.unsubscribe()
+		events.emit( 'event' )
+		
+		expect( spy ).not.toHaveBeenCalled()
+	} )
 } )
