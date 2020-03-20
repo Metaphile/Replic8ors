@@ -151,7 +151,8 @@ $( () => {
 		const magic = new RegExp( '(?:(?:^|.*;\s*)' + cookieName + '\s*\=\s*([^;]*).*$)|^.*$' )
 		const cookieIsSet = ( document.cookie.replace( magic, '$1' ) === cookieValue )
 		
-		if ( !cookieIsSet ) {
+		// except on localhost
+		if ( !cookieIsSet && location.host !== 'localhost:8080' ) {
 			// no cookie? show info box
 			$( '#info' ).fadeIn()
 			
