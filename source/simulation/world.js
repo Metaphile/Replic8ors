@@ -235,23 +235,23 @@ World.prototype = {
 				predatorB.sensePredator( predatorA, dt )
 				
 				// when predators are touching, equalize their energy levels
-				{
-					const dx = predatorB.position.x - predatorA.position.x
-					const dy = predatorB.position.y - predatorA.position.y
+				// {
+				// 	const dx = predatorB.position.x - predatorA.position.x
+				// 	const dy = predatorB.position.y - predatorA.position.y
 					
-					const r1 = predatorA.radius
-					const r2 = predatorB.radius
+				// 	const r1 = predatorA.radius
+				// 	const r2 = predatorB.radius
 					
-					const actual  = dx*dx + dy*dy // center to center
-					const minimum = Math.pow( r1 + r2, 2 )
+				// 	const actual  = dx*dx + dy*dy // center to center
+				// 	const minimum = Math.pow( r1 + r2, 2 )
 					
-					if ( actual <= minimum ) {
-						const diff = predatorB.energy - predatorA.energy
-						const transferRate = 1 // 1 == 1 unit of energy per second
-						predatorA.energy += diff * dt * transferRate
-						predatorB.energy -= diff * dt * transferRate
-					}
-				}
+				// 	if ( actual <= minimum ) {
+				// 		const diff = predatorB.energy - predatorA.energy
+				// 		const transferRate = 1 // 1 == 1 unit of energy per second
+				// 		predatorA.energy += diff * dt * transferRate
+				// 		predatorB.energy -= diff * dt * transferRate
+				// 	}
+				// }
 			}
 		}
 		
