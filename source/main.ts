@@ -53,14 +53,14 @@ $( () => {
 		visualization.update( dt, dt )
 	} )
 	
-	function onToggleSuperFast( doVisualization ) {
-		if ( doVisualization ) {
-			visualization.attach()
-		} else {
+	function onToggleTurbo( turboEnabled ) {
+		if ( turboEnabled ) {
 			visualization.detach()
+		} else {
+			visualization.attach()
 		}
 	}
-	const controls = PlayControls( scenarioLoop, onToggleSuperFast )
+	const controls = PlayControls( scenarioLoop, onToggleTurbo )
 	
 	$( '#play-controls' ).append( controls )
 	

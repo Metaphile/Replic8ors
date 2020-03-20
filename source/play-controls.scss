@@ -12,10 +12,6 @@
 		margin: 0.25rem 0;
 	}
 	
-	[name=offline] {
-		display: none;
-	}
-	
 	[name=elapsed-sim-time] {
 		background: none;
 		border: none;
@@ -23,7 +19,6 @@
 		font-family: monospace;
 		text-align: center;
 		cursor: default;
-		font-size: inherit;
 		
 		&:focus {
 			outline: none;

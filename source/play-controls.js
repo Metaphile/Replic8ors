@@ -1,112 +1,129 @@
-// TODO hot key for normal speed (1?)
-
 import $ from '../third-party/jquery'
 import html from './play-controls.html'
 import GameLoop from './engine/game-loop'
 import { formatElapsedTime } from './helpers'
 
-export default function PlayControls( gameLoop, onToggleSuperFast ) {
+export default function PlayControls( gameLoop, onToggleTurbo ) {
 	const $form = $( html )
+	
+	let turboEnabled = false
 	
 	// prevent submit
 	$form.submit( event => event.preventDefault() )
 	
 	const $pauseResume = $( '[name=pause-resume]', $form )
-	$pauseResume.click( () => {
+	$pauseResume.click( function () {
+		// jQuery processes events on disabled elements
+		// https://stackoverflow.com/a/47801250/40356
+		if ( this.disabled ) return
+		
 		// TODO toggle play/pause icon
 		gameLoop.paused = !gameLoop.paused
 	} )
-	$( document ).keydown( event => {
-		// spacebar
-		if ( event.which === 32 ) {
-			event.preventDefault()
-			$pauseResume.click()
-		}
-	} )
 	
 	const $step = $( '[name=step]', $form )
-	$step.click( () => {
+	$step.click( function () {
+		if ( this.disabled ) return
+		
 		gameLoop.paused = true
 		gameLoop.step()
 	} )
-	$( document ).keydown( event => {
-		// right arrow key
-		if ( event.which === 39 ) {
-			event.preventDefault() // necessary?
-			$step.click()
-		}
-	} )
 	
-	$( '[name=speed-normal]', $form ).click( () => {
+	const $speedNormal = $( '[name=speed-normal]', $form )
+	$speedNormal.click( function () {
+		if ( this.disabled ) return
+		
 		gameLoop.timescale = 1
 		gameLoop.paused = false
 	} )
 	
-	// TODO measure time and squeeze as many simulation ticks as possible into 1/60 sec
-	// don't go too much over because it affects UI responsiveness
-	$( '[name=speed-fast]', $form ).click( () => {
+	const $speedFast = $( '[name=speed-fast]', $form )
+	$speedFast.click( function () {
+		if ( this.disabled ) return
+		
 		gameLoop.timescale = 10
 		gameLoop.paused = false
 	} )
 	
-	$( '[name=info]', $form ).click( () => {
+	$( '[name=info]', $form ).click( function () {
 		$( '#info' ).fadeToggle()
 	} )
 	
 	// prevent link clicks from dismissing info box
-	$( '#info a' ).click( ( event ) => {
+	$( '#info a' ).click( function ( event ) {
 		event.stopPropagation();
 	});
 	
-	$( '#info' ).click( () => {
+	$( '#info' ).click( function () {
 		$( '#info' ).fadeOut()
 	} )
 	
-	$( document ).keydown( event => {
-		// 27 == escape
-		if ( event.which === 27 ) {
-			// toggle because it's convenient for development
-			$( '#info' ).fadeToggle()
-		}
-	} )
+	// controls that aren't compatible with turbo mode
+	const $turboExcludes = $( [
+		'[name=pause-resume]',
+		'[name=step]',
+		'[name=speed-normal]',
+		'[name=speed-fast]',
+	].join( ',' ), $form )
 	
-	const $background = $( '[name=offline]', $form )
-	const $background2 = $( '[name=offline2]', $form )
-	$background2.click( () => {
-		$background.click()
+	const $speedTurbo = $( '[name=speed-turbo]', $form )
+	$speedTurbo.click( function () {
+		turboEnabled = !turboEnabled
 		
-		if ( $background.is( ':checked' ) ) {
-			// run simulation at "max" speed when going offline
-			gameLoop.timescale = 60 // simulation ticks per requestAnimationFrame
+		if ( turboEnabled ) {
+			$turboExcludes.prop( 'disabled', true )
+			gameLoop.timescale = 60
 			gameLoop.paused = false
-			
-			// disable playback controls when simulating offline
-			// they work fine, but it's not clear when you're paused/etc.
-			$( '[name=step]' ).prop( 'disabled', true )
-			$( '[name=pause-resume]' ).prop( 'disabled', true )
-			$( '[name^=speed-]' ).prop( 'disabled', true ) // name begins with "speed-"
-			
-			// notify
-			onToggleSuperFast( false )
+			onToggleTurbo( turboEnabled )
 		} else {
-			// run simulation at normal speed when going online
+			$turboExcludes.prop( 'disabled', false )
 			$( '[name=speed-normal]', $form ).click()
-			
-			// re-enable playback controls
-			$( '[name=step]' ).prop( 'disabled', false )
-			$( '[name=pause-resume]' ).prop( 'disabled', false )
-			$( '[name^=speed-]' ).prop( 'disabled', false )
-			
-			onToggleSuperFast( true )
+			onToggleTurbo( turboEnabled )
 		}
 	} )
 	
-	// TODO I forgot about this...it doesn't seem to work?
-	$( document ).keydown( event => {
-		// B key
-		if ( event.which === 66 ) {
-			event.preventDefault()
-			$background.click()
+	// keyboard shortcuts
+	
+	const keys = {
+		ESCAPE:       27,
+		SPACEBAR:     32,
+		RIGHT_ARROW:  39,
+		NUM_1:        49,
+		NUM_2:        50,
+		NUM_9:        57,
+	}
+	
+	$( document ).keydown( function ( event ) {
+		switch ( event.which ) {
+			case keys.ESCAPE:
+				event.preventDefault()
+				$( '#info' ).fadeToggle()
+				break
+			
+			case keys.SPACEBAR:
+				event.preventDefault()
+				$pauseResume.click()
+				break
+			
+			case keys.RIGHT_ARROW:
+				event.preventDefault()
+				$step.click()
+				break
+			
+			case keys.NUM_1:
+				event.preventDefault()
+				$speedNormal.click()
+				break
+			
+			case keys.NUM_2:
+				event.preventDefault()
+				$speedFast.click()
+				break
+			
+			case keys.NUM_9:
+				event.preventDefault()
+				$speedTurbo.click()
+				break
 		}
 	} )
 	
