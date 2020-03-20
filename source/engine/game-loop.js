@@ -7,6 +7,10 @@ import Events from './events'
 // only for the visualization
 // and very little of GameLoop's logic concerns draw()
 
+// TODO time object
+// e.g., time = { sim: 0.016, real: 0.017, simTotal: 123.456, realTotal: 124.567, drawAhead: 0.007 }
+// only need one instance; update between frames
+
 const defaultOpts = {
 	timestep: 1/60,
 	timescale: 1,
@@ -43,7 +47,6 @@ export default function GameLoop( update, draw, opts = {} ) {
 		then = now // we're at now, now
 	}
 	
-	// TODO honor timescale?
 	self.step = function () {
 		self.elapsed += self.timestep
 		self.emit( 'step', self.timestep, self.elapsed )

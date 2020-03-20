@@ -1,6 +1,3 @@
-// TODO initial position for neuron views
-// apply constant repulsive force; let springiness and collisions do their thing
-
 import config from '../config'
 import * as replicatorAssets from './replicator-assets'
 import * as predatorAssets from './predator-assets'

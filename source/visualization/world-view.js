@@ -1,7 +1,3 @@
-// not that kind of world view
-// TODO pointIntersectsReplicator( point_world )
-// returns topmost replicator so needs to be aware of draw order
-
 import ReplicatorView from './replicator-view'
 // import PredatorView from './predator-view'
 import PredatorView from './replicator-view'

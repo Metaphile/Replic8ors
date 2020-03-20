@@ -46,33 +46,6 @@ export default function Scenario( world, opts = {} ) {
 		}
 	}
 	
-	const stats = {
-		firstTime:          true,
-		
-		predatorsWon:       false,
-		preyWon:            false,
-		
-		predatorScore:      0,
-		preyScore:          0,
-		
-		elapsedRealTime:    0,
-		elapsedSimTime:     0,
-		elapsedSimTimeMax:  0,
-		
-		// currently unused
-		timeRatio:          1, // sim to elapsed
-	}
-	
-	const statsStrings = {
-		winner:             '-', // 'Red' / 'Green'
-		
-		// TODO elapsedRealTime
-		elapsedSimTime:     '',
-		elapsedSimTimeMax:  '',
-		
-		// TODO timeRatio
-	}
-	
 	self.repopulatePrey = function () {
 		createPopulation( self.numReplicators - 1, replicatorCryo, replicator => { replicator.energy = 1; return replicator.replicate( true ) }, Replic8or ).forEach( ( replicator ) => {
 			const minRadius = world.radius * 1/3
@@ -109,56 +82,13 @@ export default function Scenario( world, opts = {} ) {
 	
 	self.repopulatePredators()
 	
-	// TODO instead of resetting scenario, incrementally replenish predators/prey to keep simulation going
 	self.reset = function ( hard ) {
-		// stats
-		{
-			// scenario resets when the last predator dies
-			// if there are no prey when the last predator dies, predators outlasted prey and "won" the round
-			if ( !stats.firstTime && world.replicators.length === 0 ) {
-				stats.predatorsWon = true
-				stats.preyWon = false
-				
-				stats.predatorScore++
-				
-				statsStrings.winner = 'Reds  ' // extra spaces for alignment
-			// if there are prey when the last predator dies, prey won
-			} else if ( !stats.firstTime && world.replicators.length > 0 ) {
-				stats.predatorsWon = false
-				stats.preyWon = true
-				
-				stats.preyScore++
-				
-				statsStrings.winner = 'Greens'
-			}
-			
-			statsStrings.predatorScore = stats.predatorScore
-			statsStrings.preyScore     = stats.preyScore
-			
-			// new time record?
-			stats.elapsedSimTimeMax = Math.max( stats.elapsedSimTimeMax, stats.elapsedSimTime )
-			
-			statsStrings.elapsedSimTime    = Math.round( stats.elapsedSimTime )    + 's'
-			statsStrings.elapsedSimTimeMax = Math.round( stats.elapsedSimTimeMax ) + 's'
-			
-			const s = statsStrings
-			console.log( `${s.winner} | ${s.predatorScore}-${s.preyScore} | ${s.elapsedSimTime} (${s.elapsedSimTimeMax})` )
-			
-			// reset some stats
-			stats.firstTime = false
-			// TODO elapsedRealTime
-			stats.elapsedSimTime = 0
-		}
-		
 		timer.cancelAllActions()
 		
 		// remove any existing replicators, predators
 		// TODO better way of removing replicators than killing them?
 		world.replicators.slice().forEach( replicator => replicator.die() )
 		world.predators.slice().forEach( replicator => replicator.die() )
-		
-		// repopulate world from frozen specimens
-		// shortly after first bloom
 		
 		function feedPrey() {
 			if ( self.feeding ) {
@@ -185,8 +115,7 @@ export default function Scenario( world, opts = {} ) {
 		predatorCryo.push( parent )
 	} )
 	
-	// TODO will we be needing t for anything?
-	self.update = function ( dt, t ) {
+	self.update = function ( dt ) {
 		timer.update( dt )
 		world.update( dt )
 		
@@ -223,13 +152,9 @@ export default function Scenario( world, opts = {} ) {
 			// - when fresh prey are added, they'll have something to eat
 			self.feeding = true
 		}
-		
-		stats.elapsedSimTime += dt
 	}
 	
 	self.reset()
 	
 	return self
 }
-
-// TODO implement learning next

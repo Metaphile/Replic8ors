@@ -24,9 +24,7 @@ describe( 'replicator', () => {
 		} )
 	} )
 	
-	// turns out the radial symmetry logic also correctly handles bilateral symmetry
-	// TODO should really test with 2 segments :/
-	describe( 'radial/lateral symmetry', () => {
+	describe( 'radial symmetry', () => {
 		it( 'maintains symmetric neuron weights', () => {
 			const numSegments = 3
 			const neuronsPerSegment = 2
@@ -43,7 +41,7 @@ describe( 'replicator', () => {
 			
 			// expected weights for segment 1
 			const weights_s1n2 = [ 0.04, 0.05,  0.00, 0.01,  0.02, 0.03 ]
-			const weights_s1n3 = [ 0.10, 0.11,  0.12, 0.13,  0.14, 0.15 ]
+			const weights_s1n3 = [ 0.14, 0.15,  0.10, 0.11,  0.12, 0.13 ]
 			
 			neurons[0].weights = weights_s0n0
 			neurons[1].weights = weights_s0n1
@@ -51,7 +49,7 @@ describe( 'replicator', () => {
 			Replic8or.syncSymmetricWeights( neurons, numSegments, neuronsPerSegment )
 			
 			expect( neurons[2].weights ).toEqual( weights_s1n2 )
-			// expect( neurons[3].weights ).toEqual( weights_s1n3 )
+			expect( neurons[3].weights ).toEqual( weights_s1n3 )
 		} )
 		
 		it( 'syncs free neuron weights differently', () => {

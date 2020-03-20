@@ -1,5 +1,3 @@
-// TODO dead property
-
 import Flipper from './flipper'
 import Network from './neural-network'
 import Neuron  from './neuron'
@@ -72,7 +70,6 @@ function createSymmetricSegments() {
 			this.brain.addNeuron( replicatorNeuron )
 			
 			receptor.neurons = [ foodNeuron, predatorNeuron, replicatorNeuron ]
-			// receptor.neurons = [ foodNeuron ]
 			receptor.neurons.food = foodNeuron
 			receptor.neurons.replicator = replicatorNeuron
 			receptor.neurons.predator = predatorNeuron
@@ -293,9 +290,6 @@ Replic8or.prototype = {
 		return child
 	},
 }
-
-// TODO maybe can implement rear receptor neurons as free neurons
-// weights to/from each segment will be the same
 
 // copy weights from 0th segment to each subsequent segment to enforce symmetry.
 // mutations outside the 0th segment will be overwritten.
