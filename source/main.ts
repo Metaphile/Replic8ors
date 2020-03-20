@@ -19,9 +19,7 @@ import Visualization from './visualization/visualization'
 import GameLoop from './engine/game-loop'
 import PlayControls from './play-controls'
 
-// display version number on document ready
-// REMEMBER TO INCREMENT AS NECESSARY
-$( () => $( '#version-number' ).html( '1.2-wip' ) )
+const CURRENT_VERSION = '1.2-wip'
 
 // TODO maybe replicators (predators and prey) should be vulnerable from behind
 // armored from the front
@@ -99,6 +97,8 @@ $( () => $( '#version-number' ).html( '1.2-wip' ) )
 
 // on DOM ready
 $( () => {
+	$( '#version-number' ).html( CURRENT_VERSION )
+	
 	// create empty world for replicators and other entities to inhabit
 	// world updates entities, mediates interactions, emits events
 	const world = World()
