@@ -82,7 +82,7 @@ function createSymmetricSegments() {
 	this.brain.addNeuron( this.hungerNeuron )
 	
 	this.thinkNeurons = []
-	for ( let n = 6; n > 0; n-- ) {
+	for ( let n = 0; n > 0; n-- ) {
 		const thinkNeuron = Neuron()
 		this.brain.addNeuron( thinkNeuron )
 		this.thinkNeurons.push( thinkNeuron )
@@ -118,7 +118,7 @@ function programBasicInstincts( replicator ) {
 
 function programNonsense( replicator ) {
 	for ( const neuron of replicator.brain.neurons ) {
-		neuron.weights = neuron.weights.map( weight => Math2.randRange( -0.5, 0.5 ) )
+		neuron.weights = neuron.weights.map( weight => Math2.randRange( -1.0, 1.0 ) )
 	}
 	
 	const neuronsPerSegment = 4
@@ -246,7 +246,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.008 ) {
+	replicate: function ( quietly, mutationRate = 0.08 ) {
 		const parent = this
 		const child = Replic8or( {
 			radius: this.radius,

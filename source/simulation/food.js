@@ -4,7 +4,7 @@ import Events from '../engine/events'
 const defaultOpts = {
 	age: 0,
 	calories: 0.4,
-	shelfLife: Infinity,
+	shelfLife: 5 * 60,
 	eaten: false,
 	spoiled: false,
 	radius: 2.7,
