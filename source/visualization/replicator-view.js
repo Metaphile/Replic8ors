@@ -110,6 +110,10 @@ export default function ReplicatorView( replicator, opts = {}, theme = 'prey' ) 
 		self.neuronViews[ thinkNeuron.index ] = NeuronView( thinkNeuron, 'think' )
 	}
 	
+	// initialize neuron view positions to their anchor points
+	anchorNeuronViews.call( self )
+	self.neuronViews.forEach( view => Vector2.set( view.position, view.anchor ) )
+	
 	// for drawing energy level
 	self._apparentEnergy = replicator.energy
 	self._slosh = Math.random() * Math.PI * 2
