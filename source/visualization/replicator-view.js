@@ -1,5 +1,5 @@
 import config from '../config'
-import * as replicatorAssets from './replicator-assets'
+import * as preyAssets from './prey-assets'
 import * as predatorAssets from './predator-assets'
 import NeuronView from './neuron-view'
 import Vector2 from '../engine/vector-2'
@@ -80,7 +80,7 @@ export default function ReplicatorView( replicator, opts = {}, theme = 'prey' ) 
 			break
 		
 		default:
-			self.assets = replicatorAssets
+			self.assets = preyAssets
 			break
 	}
 	
@@ -95,8 +95,8 @@ export default function ReplicatorView( replicator, opts = {}, theme = 'prey' ) 
 	for ( const receptor of replicator.receptors ) {
 		let neuron
 		
-		neuron = receptor.neurons.replicator
-		self.neuronViews[ neuron.index ] = NeuronView( neuron, 'replicator' )
+		neuron = receptor.neurons.prey
+		self.neuronViews[ neuron.index ] = NeuronView( neuron, 'prey' )
 		
 		neuron = receptor.neurons.predator
 		self.neuronViews[ neuron.index ] = NeuronView( neuron, 'predator' )
@@ -389,7 +389,7 @@ ReplicatorView.prototype = {
 			
 			// other replicators
 			{
-				const neuron = receptor.neurons.replicator
+				const neuron = receptor.neurons.prey
 				const neuronView = this.neuronViews[ neuron.index ]
 				const weight = neuron.weights[ neuron.index ]
 				const progress = neuron.sensoryPotential / weight % 1

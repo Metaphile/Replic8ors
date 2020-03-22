@@ -70,7 +70,7 @@ xdescribe( 'scenario', () => {
 	it( 'adds replicators to the world', () => {
 		const world = World()
 		const scenario = Scenario( world, { numReplicators: 3 } )
-		expect( world.replicators.length ).toBe( 3 )
+		expect( world.preys.length ).toBe( 3 )
 	} )
 	
 	describe( 'when the last replicator dies', () => {
@@ -82,7 +82,7 @@ xdescribe( 'scenario', () => {
 			world.addFood( Food() )
 			expect( world.foods.length ).toBe( 2 )
 			
-			world.replicators[ 0 ].die()
+			world.preys[ 0 ].die()
 			expect( world.foods.length ).toBe( 0 )
 		} )
 		
@@ -90,12 +90,12 @@ xdescribe( 'scenario', () => {
 			const world = World()
 			const scenario = Scenario( world, { numReplicators: 3 } )
 			
-			world.replicators[ 0 ].die()
-			expect( world.replicators.length ).toBe( 2 )
+			world.preys[ 0 ].die()
+			expect( world.preys.length ).toBe( 2 )
 			
-			world.replicators[ 0 ].die() // 1 left
-			world.replicators[ 0 ].die() // 0 left
-			expect( world.replicators.length ).toBe( 3 )
+			world.preys[ 0 ].die() // 1 left
+			world.preys[ 0 ].die() // 0 left
+			expect( world.preys.length ).toBe( 3 )
 		} )
 	} )
 } )

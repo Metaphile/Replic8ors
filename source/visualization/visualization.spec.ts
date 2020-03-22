@@ -7,14 +7,14 @@ import $ from '../../third-party/jquery'
 xdescribe( 'visualization', () => {
 	it( 'creates views for new/existing replicators', () => {
 		const world = World()
-		world.addReplicator( Replic8or() )
-		world.addReplicator( Replic8or() )
+		world.addPrey( Replic8or() )
+		world.addPrey( Replic8or() )
 		
 		const visualization = Visualization( world )
-		expect( visualization.replicatorViews.length ).toBe( 2 )
+		expect( visualization.preyViews.length ).toBe( 2 )
 		
-		world.addReplicator( Replic8or() )
-		expect( visualization.replicatorViews.length ).toBe( 3 )
+		world.addPrey( Replic8or() )
+		expect( visualization.preyViews.length ).toBe( 3 )
 	} )
 	
 	it( 'creates views for new/existing foods', () => {

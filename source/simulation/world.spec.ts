@@ -2,20 +2,20 @@
 // maybe write a test that fails if this.foods.length isn't checked per iteration
 
 import World from './world'
-import Replic8or from './replic8or'
+import Prey from './prey'
 import Food from './food'
 import Vector2 from '../engine/vector-2'
 
 const precision = 9
 
 describe( 'world', () => {
-	it( 'replicators can be added', () => {
+	it( 'preys can be added', () => {
 		const world = World()
 		
-		const replicator = Replic8or()
-		world.addReplicator( replicator )
+		const prey = Prey()
+		world.addPrey( prey )
 		
-		expect( world.replicators.includes( replicator ) ).toBe( true )
+		expect( world.preys.includes( prey ) ).toBe( true )
 	} )
 	
 	it( 'removes expired food', () => {
@@ -28,28 +28,28 @@ describe( 'world', () => {
 		expect( world.foods.includes( food ) ).toBe( false )
 	} )
 	
-	it( 'feeds replicators that touch food', () => {
+	it( 'feeds preys that touch food', () => {
 		const world = World()
 		
-		const replicatorA = Replic8or( { radius: 50, energy: 0.5, metabolism: 0 } )
-		const replicatorB = Replic8or( { radius: 50, energy: 0.5, metabolism: 0 } )
+		const preyA = Prey( { radius: 50, energy: 0.5, metabolism: 0 } )
+		const preyB = Prey( { radius: 50, energy: 0.5, metabolism: 0 } )
 		const food = Food( { radius: 10, calories: 0.1 } )
 		
-		world.addReplicator( replicatorA )
-		world.addReplicator( replicatorB )
+		world.addPrey( preyA )
+		world.addPrey( preyB )
 		world.addFood( food )
 		
 		food.position = { x: 0, y: 0 }
 		
-		replicatorA.position = { x: 1000, y: 0 } // far away
-		replicatorB.position = { x: 10 + 50 - 1, y: 0 } // barely touching food
+		preyA.position = { x: 1000, y: 0 } // far away
+		preyB.position = { x: 10 + 50 - 1, y: 0 } // barely touching food
 		
 		world.update( 0, 0 )
 		
 		// should be the same
-		expect( replicatorA.energy ).toBeCloseTo( 0.5, precision )
+		expect( preyA.energy ).toBeCloseTo( 0.5, precision )
 		// should be more
-		expect( replicatorB.energy ).toBeCloseTo( 0.5 + 0.1, precision )
+		expect( preyB.energy ).toBeCloseTo( 0.5 + 0.1, precision )
 		// should be gone
 		expect( world.foods.includes( food ) ).toBe( false )
 	} )
@@ -57,40 +57,38 @@ describe( 'world', () => {
 	it( 'divvies up food in the case of a tie', () => {
 		const world = World()
 		
-		const replicatorA = Replic8or( { energy: 0.3, metabolism: 0 } )
-		const replicatorB = Replic8or( { energy: 0.5, metabolism: 0 } )
+		const preyA = Prey( { energy: 0.3, metabolism: 0 } )
+		const preyB = Prey( { energy: 0.5, metabolism: 0 } )
 		const food = Food( { calories: 0.2 } )
 		
-		world.addReplicator( replicatorA )
-		world.addReplicator( replicatorB )
+		world.addPrey( preyA )
+		world.addPrey( preyB )
 		world.addFood( food )
 		
-		replicatorA.position = { x: 0, y: 0 }
-		replicatorB.position = { x: 0, y: 0 }
+		preyA.position = { x: 0, y: 0 }
+		preyB.position = { x: 0, y: 0 }
 		food.position        = { x: 0, y: 0 }
 		
 		world.update( 0, 0 )
 		
-		expect( replicatorA.energy ).toBeCloseTo( 0.3 + 0.1, precision )
-		expect( replicatorB.energy ).toBeCloseTo( 0.5 + 0.1, precision )
+		expect( preyA.energy ).toBeCloseTo( 0.3 + 0.1, precision )
+		expect( preyB.energy ).toBeCloseTo( 0.5 + 0.1, precision )
 	} )
 	
-	it( 'removes dead replicators', () => {
+	it( 'removes dead preys', () => {
 		const world = World()
 		
-		const replicator = Replic8or()
-		world.addReplicator( replicator )
-		replicator.die()
+		const prey = Prey()
+		world.addPrey( prey )
+		prey.die()
 		
-		expect( world.replicators.length ).toBe( 0 )
+		expect( world.preys.length ).toBe( 0 )
 	} )
 	
-	it( 'moves partially overlapping replicators apart', () => {
+	it( 'moves partially overlapping preys apart', () => {
 		const world = World()
 		
-		// TODO it sucks to have to specify all this here
-		// but it would also suck to have a bunch of tests that assume certain defaults
-		const replConfig = {
+		const preyOpts = {
 			radius:     64,
 			energy:     0.5,
 			metabolism: 0,
@@ -98,16 +96,16 @@ describe( 'world', () => {
 			drag:       1,
 		}
 		
-		// position two replicators so that they're overlapping horizontally
+		// position two preys so that they're overlapping horizontally
 		
-		const lefty = Replic8or( replConfig )
+		const lefty = Prey( preyOpts )
 		lefty.position.x = -10
 		
-		const righty = Replic8or( replConfig )
+		const righty = Prey( preyOpts )
 		righty.position.x = 10
 		
-		world.addReplicator( lefty )
-		world.addReplicator( righty )
+		world.addPrey( lefty )
+		world.addPrey( righty )
 		
 		world.update( 1/60, 1/60 )
 		
@@ -116,10 +114,10 @@ describe( 'world', () => {
 		expect( righty.position.x >  10 ).toBe( true )
 	} )
 	
-	it( 'moves completely overlapping replicators apart', () => {
+	it( 'moves completely overlapping preys apart', () => {
 		const world = World()
 		
-		const replConfig = {
+		const preyOpts = {
 			radius:     64,
 			energy:     0.5,
 			metabolism: 0,
@@ -127,13 +125,13 @@ describe( 'world', () => {
 			drag:       1,
 		}
 		
-		// position two replicators so that they're directly on top of each other
+		// position two preys so that they're directly on top of each other
 		
-		const bottom = Replic8or( replConfig )
-		const top    = Replic8or( replConfig )
+		const bottom = Prey( preyOpts )
+		const top    = Prey( preyOpts )
 		
-		world.addReplicator( bottom )
-		world.addReplicator( top )
+		world.addPrey( bottom )
+		world.addPrey( top )
 		
 		world.update( 1/60, 1/60 )
 		
@@ -141,33 +139,33 @@ describe( 'world', () => {
 		
 		expect( Vector2.getLength( top.position ) > error ).toBe( true )
 		expect( Vector2.getLength( bottom.position ) > error ).toBe( true )
-		// TODO make sure replicators moved in opposite directions
+		// TODO make sure preys moved in opposite directions
 	} )
 	
 	describe( 'emits events', () => {
-		it( 'replicator added', () => {
+		it( 'prey added', () => {
 			const world = World()
 			
 			const spy = jasmine.createSpy()
-			world.on( 'replicator-added', spy )
+			world.on( 'prey-added', spy )
 			
-			const replicator = Replic8or()
-			world.addReplicator( replicator )
+			const prey = Prey()
+			world.addPrey( prey )
 			
-			expect( spy ).toHaveBeenCalledWith( replicator )
+			expect( spy ).toHaveBeenCalledWith( prey )
 		} )
 		
-		it( 'replicator died', () => {
+		it( 'prey died', () => {
 			const world = World()
 			
 			const spy = jasmine.createSpy()
-			world.on( 'replicator-died', spy )
+			world.on( 'prey-died', spy )
 			
-			const doomedReplicator = Replic8or()
-			world.addReplicator( doomedReplicator )
-			doomedReplicator.die()
+			const doomedPrey = Prey()
+			world.addPrey( doomedPrey )
+			doomedPrey.die()
 			
-			expect( spy ).toHaveBeenCalledWith( doomedReplicator )
+			expect( spy ).toHaveBeenCalledWith( doomedPrey )
 		} )
 		
 		it( 'food added', () => {

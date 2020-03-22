@@ -1,6 +1,6 @@
 import foodImageSrc       from './icons/food.png'
 import predatorImageSrc   from './icons/predator.png'
-import replicatorImageSrc from './icons/replicator.png'
+import preyImageSrc       from './icons/prey.png'
 import thinkImageSrc      from './icons/think.png'
 import moveImageSrc       from './icons/move.png'
 import energyImageSrc     from './icons/energy.png'
@@ -20,9 +20,9 @@ export const icons = {
 		return image
 	} )(),
 	
-	replicator: ( () => {
+	prey: ( () => {
 		const image = document.createElement( 'img' )
-		image.src = replicatorImageSrc
+		image.src = preyImageSrc
 		
 		return image
 	} )(),

@@ -1,11 +1,12 @@
 import Food from './food'
 import Timer from '../engine/timer'
-import Replic8or from './replic8or'
+import Predator from './predator'
+import Prey from './prey'
 import RingBuffer from '../engine/ring-buffer'
 
 const defaultOpts = {
-	numReplicators:  8,
-	maxReplicators: 16,
+	numPreys:        8,
+	maxPreys:       16,
 	numPredators:    8,
 	maxPredators:   16,
 }
@@ -27,7 +28,7 @@ export default function Scenario( world, opts = {} ) {
 	Object.assign( self, defaultOpts, opts )
 	
 	// archive
-	const replicatorCryo = RingBuffer( self.numReplicators )
+	const preyCryo = RingBuffer( self.numPreys )
 	const predatorCryo = RingBuffer( self.numPredators )
 	
 	const timer = Timer()
@@ -47,25 +48,25 @@ export default function Scenario( world, opts = {} ) {
 	}
 	
 	self.repopulatePrey = function () {
-		createPopulation( self.numReplicators - 1, replicatorCryo, replicator => { replicator.energy = 1; return replicator.replicate( true ) }, Replic8or ).forEach( ( replicator ) => {
+		createPopulation( self.numPreys - 1, preyCryo, prey => { prey.energy = 1; return prey.replicate( true ) }, Prey ).forEach( ( prey ) => {
 			const minRadius = world.radius * 1/3
 			const maxRadius = world.radius * 2/3
 			
 			const angle = Math.random() * Math.PI * 2
 			const radius = minRadius + ( Math.random() * ( maxRadius - minRadius ) )
-			replicator.position.x = Math.cos( angle ) * radius
-			replicator.position.y = Math.sin( angle ) * radius
+			prey.position.x = Math.cos( angle ) * radius
+			prey.position.y = Math.sin( angle ) * radius
 			
-			// replicator.rotation = Math.random() * Math.PI * 2
+			// prey.rotation = Math.random() * Math.PI * 2
 			
-			world.addReplicator( replicator )
+			world.addPrey( prey )
 		} )
 	},
 	
 	self.repopulatePrey()
 	
 	self.repopulatePredators = function () {
-		createPopulation( self.numPredators, predatorCryo, predator => { predator.energy = 1; return predator.replicate( true ) }, Replic8or ).forEach( ( predator ) => {
+		createPopulation( self.numPredators, predatorCryo, predator => { predator.energy = 1; return predator.replicate( true ) }, Predator ).forEach( ( predator ) => {
 			const minRadius = world.radius * 0/3
 			const maxRadius = world.radius * 2/3
 			
@@ -85,10 +86,10 @@ export default function Scenario( world, opts = {} ) {
 	self.reset = function ( hard ) {
 		timer.cancelAllActions()
 		
-		// remove any existing replicators, predators
+		// remove any existing preys, predators
 		// TODO better way of removing replicators than killing them?
-		world.replicators.slice().forEach( replicator => replicator.die() )
-		world.predators.slice().forEach( replicator => replicator.die() )
+		world.preys.slice().forEach( prey => prey.die() )
+		world.predators.slice().forEach( predator => predator.die() )
 		
 		function feedPrey() {
 			if ( self.feeding ) {
@@ -107,8 +108,8 @@ export default function Scenario( world, opts = {} ) {
 		world.foods.slice().forEach( food => food.spoil() )
 	}
 	
-	world.on( 'replicator-replicated', ( parent, child ) => {
-		replicatorCryo.push( parent )
+	world.on( 'prey-replicated', ( parent, child ) => {
+		preyCryo.push( parent )
 	} )
 	
 	world.on( 'predator-replicated', ( parent, child ) => {
@@ -119,7 +120,7 @@ export default function Scenario( world, opts = {} ) {
 		timer.update( dt )
 		world.update( dt )
 		
-		if ( world.replicators.length === 0 && world.predators.length <= self.maxPredators ) {
+		if ( world.preys.length === 0 && world.predators.length <= self.maxPredators ) {
 			self.repopulatePrey()
 		}
 		
@@ -128,8 +129,8 @@ export default function Scenario( world, opts = {} ) {
 		}
 		
 		const areTooManyFoods = world.foods.length > 50
-		const areAnyPreys = world.replicators.length > 0
-		const areTooManyPreys = world.replicators.length > self.maxReplicators
+		const areAnyPreys = world.preys.length > 0
+		const areTooManyPreys = world.preys.length > self.maxPreys
 		const areAnyPredators = world.predators.length > 0
 		const areTooManyPredators = world.predators.length > self.maxPredators
 		

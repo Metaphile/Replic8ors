@@ -42,7 +42,7 @@ export default function Visualization( world ) {
 		update() {},
 		draw() {},
 		getPredatorAt() {},
-		getReplicatorAt() {},
+		getPreyAt() {},
 	}
 	let worldView = dummyWorldView
 	
@@ -159,14 +159,14 @@ export default function Visualization( world ) {
 	
 	// selection
 	{
-		// selected replicator or predator
+		// selected prey or predator
 		let selection
 		
 		$canvas.on( 'click', ( event ) => {
 			const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
 			
 			selection = worldView.getPredatorAt( clickPos_world )
-			selection = selection || worldView.getReplicatorAt( clickPos_world )
+			selection = selection || worldView.getPreyAt( clickPos_world )
 			
 			if ( selection ) {
 				cameraOp.follow( selection )
@@ -184,7 +184,7 @@ export default function Visualization( world ) {
 			const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
 			
 			selection = worldView.getPredatorAt( clickPos_world )
-			selection = selection || worldView.getReplicatorAt( clickPos_world )
+			selection = selection || worldView.getPreyAt( clickPos_world )
 			
 			if ( selection ) {
 				cameraOp.smoothZoomTo( 7.5, clickPos_world )
@@ -195,8 +195,8 @@ export default function Visualization( world ) {
 			}
 		} )
 		
-		// TODO -> replicator-removed
-		world.on( 'replicator-died predator-died', entity => {
+		// TODO -> prey-removed
+		world.on( 'prey-died predator-died', entity => {
 			if ( selection === entity ) {
 				cameraOp.unfollow()
 				hud.deselect()
@@ -210,7 +210,7 @@ export default function Visualization( world ) {
 		hud.track( replicator, HudMarker() )
 	}
 	
-	world.on( 'replicator-added', trackReplicator )
+	world.on( 'prey-added', trackReplicator )
 	
 	const trackPredator = ( predator ) => {
 		hud.track( predator, HudMarker() )
@@ -226,7 +226,7 @@ export default function Visualization( world ) {
 		Object.assign( cameraOp.offset, dummyCameraOp.offset )
 		
 		hud = Hud( camera )
-		for ( const replicator of world.replicators ) trackReplicator( replicator )
+		for ( const prey of world.preys ) trackReplicator( prey )
 		for ( const predator of world.predators ) trackPredator( predator )
 	},
 	

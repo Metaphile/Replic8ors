@@ -66,12 +66,12 @@ function createSymmetricSegments() {
 			const predatorNeuron = Neuron()
 			this.brain.addNeuron( predatorNeuron )
 			
-			const replicatorNeuron = Neuron()
-			this.brain.addNeuron( replicatorNeuron )
+			const preyNeuron = Neuron()
+			this.brain.addNeuron( preyNeuron )
 			
-			receptor.neurons = [ foodNeuron, predatorNeuron, replicatorNeuron ]
+			receptor.neurons = [ foodNeuron, predatorNeuron, preyNeuron ]
 			receptor.neurons.food = foodNeuron
-			receptor.neurons.replicator = replicatorNeuron
+			receptor.neurons.prey = preyNeuron
 			receptor.neurons.predator = predatorNeuron
 			
 			this.receptors.push( receptor )
@@ -183,17 +183,17 @@ Replic8or.prototype = {
 		}
 	},
 	
-	senseReplicator: function ( replicator, dt ) {
+	sensePrey: function ( prey, dt ) {
 		for ( const receptor of this.receptors ) {
 			const receptorPosition = Object.assign( {}, this.position )
 			receptorPosition.x += Math.cos( this.rotation + receptor.angle ) * this.radius
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
-			const distance = Vector2.distance( replicator.position, receptorPosition ) - replicator.radius
+			const distance = Vector2.distance( prey.position, receptorPosition ) - prey.radius
 			const strength = 10000 * ( distance <= 0 ? 1 :
 				1 / ( 1 + Math.pow( distance, 2 ) ) )
 			
-			receptor.neurons.replicator.stimulate( strength * dt )
+			receptor.neurons.prey.stimulate( strength * dt )
 		}
 	},
 	

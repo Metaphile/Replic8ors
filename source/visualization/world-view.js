@@ -1,6 +1,4 @@
 import ReplicatorView from './replicator-view'
-// import PredatorView from './predator-view'
-import PredatorView from './replicator-view'
 import FoodView from './food-view'
 import * as assets from './world-assets'
 import Vector2 from '../engine/vector-2'
@@ -8,7 +6,7 @@ import Vector2 from '../engine/vector-2'
 export default function WorldView( world ) {
 	const self = {}
 	
-	self.replicatorViews = []
+	self.preyViews = []
 	self.predatorViews = []
 	self.foodViews = []
 	
@@ -17,41 +15,41 @@ export default function WorldView( world ) {
 	
 	// const foreground = assets.Foreground()
 	
-	// replicators
+	// prey
 	
-	worldSubs[ 'replicator-replicated' ] = world.on( 'replicator-replicated', ( parent, child ) => {
-		const parentViewIndex = self.replicatorViews.findIndex( view => view.replicator === parent )
+	worldSubs[ 'prey-replicated' ] = world.on( 'prey-replicated', ( parent, child ) => {
+		const parentViewIndex = self.preyViews.findIndex( view => view.replicator === parent )
 		const childView = ReplicatorView( child )
 		// put child behind parent
-		self.replicatorViews.splice( parentViewIndex, 0, childView )
+		self.preyViews.splice( parentViewIndex, 0, childView )
 	} )
 	
-	worldSubs[ 'replicator-died' ] = world.on( 'replicator-died', replicator => {
-		const view = self.replicatorViews.find( view => {
-			return view.replicator === replicator
+	worldSubs[ 'prey-died' ] = world.on( 'prey-died', prey => {
+		const view = self.preyViews.find( view => {
+			return view.replicator === prey
 		} )
 		
 		view.doDeathEffect().then( () => {
-			const i = self.replicatorViews.indexOf( view )
-			self.replicatorViews.splice( i, 1 )
+			const i = self.preyViews.indexOf( view )
+			self.preyViews.splice( i, 1 )
 		} )
 	} )
 	
-	const addReplicatorView = replicator => {
+	const addPreyView = prey => {
 		// HACK added event fires after replicated event; check if view has already been added
-		if ( !self.replicatorViews.find( view => view.replicator === replicator ) ) {
-			self.replicatorViews.push( ReplicatorView( replicator ) )
+		if ( !self.preyViews.find( view => view.replicator === prey ) ) {
+			self.preyViews.push( ReplicatorView( prey ) )
 		}
 	}
 	
-	world.replicators.forEach( addReplicatorView )
-	worldSubs[ 'replicator-added' ] = world.on( 'replicator-added', addReplicatorView )
+	world.preys.forEach( addPreyView )
+	worldSubs[ 'prey-added' ] = world.on( 'prey-added', addPreyView )
 	
 	// predators
 	
 	worldSubs[ 'predator-replicated' ] = world.on( 'predator-replicated', ( parent, child ) => {
 		const parentViewIndex = self.predatorViews.findIndex( view => view.replicator === parent )
-		const childView = PredatorView( child, {}, 'predator' )
+		const childView = ReplicatorView( child, {}, 'predator' )
 		// put child behind parent
 		self.predatorViews.splice( parentViewIndex, 0, childView )
 	} )
@@ -59,7 +57,7 @@ export default function WorldView( world ) {
 	const addPredatorView = predator => {
 		// HACK added event fires after replicated event; check if view has already been added
 		if ( !self.predatorViews.find( view => view.replicator === predator ) ) {
-			self.predatorViews.push( PredatorView( predator, {}, 'predator' ) )
+			self.predatorViews.push( ReplicatorView( predator, {}, 'predator' ) )
 		}
 	}
 	
@@ -86,7 +84,7 @@ export default function WorldView( world ) {
 	world.foods.forEach( addFoodView )
 	worldSubs[ 'food-added' ] = world.on( 'food-added', addFoodView )
 	
-	worldSubs[ 'food-eaten' ] = world.on( 'food-eaten', ( food, replicators ) => {
+	worldSubs[ 'food-eaten' ] = world.on( 'food-eaten', ( food, preys ) => {
 		const foodView = self.foodViews.find( view => {
 			return view.food === food
 		} )
@@ -97,12 +95,12 @@ export default function WorldView( world ) {
 			self.foodViews.splice( i, 1 )
 		} )
 		
-		for ( const replicator of replicators ) {
-			const replicatorView = self.replicatorViews.find( view => {
-				return view.replicator === replicator
+		for ( const prey of preys ) {
+			const preyView = self.preyViews.find( view => {
+				return view.replicator === prey
 			} )
 			
-			replicatorView.doEnergyUpEffect()
+			preyView.doEnergyUpEffect()
 		}
 	} )
 	
@@ -142,7 +140,7 @@ export default function WorldView( world ) {
 	} ) */
 	
 	self.update = ( dt, dt2 ) => {
-		for ( const view of self.replicatorViews ) {
+		for ( const view of self.preyViews ) {
 			let dt3 = dt2
 			while ( dt3 > 1/60 ) {
 				view.update( 0, 1/60 )
@@ -182,8 +180,8 @@ export default function WorldView( world ) {
 		
 		const fisheyeZoomThreshold = 0
 		
-		for ( const view of self.replicatorViews ) {
-			// don't draw offscreen replicators
+		for ( const view of self.preyViews ) {
+			// don't draw offscreen preys
 			const p = view.replicator.position
 			const r = view.replicator.radius + 16
 			if ( p.x + r < viewBounds.topLeft.x || p.x - r > viewBounds.bottomRight.x || p.y + r < viewBounds.topLeft.y || p.y - r > viewBounds.bottomRight.y ) continue
@@ -218,13 +216,14 @@ export default function WorldView( world ) {
 		return distance < 0
 	}
 	
-	// return topmost replicator view at point or undefined
-	self.getReplicatorAt = ( point_world ) => {
-		return world.replicators.slice().reverse().find( replicator => {
-			return pointInCircle( point_world, replicator.position, replicator.radius )
+	// return topmost prey view at point, or undefined
+	self.getPreyAt = ( point_world ) => {
+		return world.preys.slice().reverse().find( prey => {
+			return pointInCircle( point_world, prey.position, prey.radius )
 		} )
 	}
 	
+	// return topmost predator view at point, or undefined
 	self.getPredatorAt = ( point_world ) => {
 		return world.predators.slice().reverse().find( predator => {
 			return pointInCircle( point_world, predator.position, predator.radius )
