@@ -23,9 +23,9 @@ export default function Visualization( world ) {
 	
 	const camera = Camera()
 	
-	// center and slightly zoom camera
+	// set initial camera position and zoom level
 	camera.pan( Vector2.invert( camera.viewCenter( canvas ) ) )
-	camera.zoom( 0.8, camera.viewCenter( canvas ) )
+	camera.zoom( -0.2, camera.viewCenter( canvas ) )
 	
 	const dummyCameraOp = {
 		smoothPan() {},
@@ -187,7 +187,7 @@ export default function Visualization( world ) {
 			selection = selection || worldView.getPreyAt( clickPos_world )
 			
 			if ( selection ) {
-				cameraOp.smoothZoomTo( 7.5, clickPos_world )
+				cameraOp.smoothZoomTo( 6.9, clickPos_world )
 				cameraOp.follow( selection )
 				hud.select( selection )
 				
