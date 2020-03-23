@@ -141,8 +141,8 @@ World.prototype = {
 					// transfer energy,
 					// don't transfer more than is available
 					
-					const take = dt * 0.2
-					const mult = 2.1
+					const take = dt * 0.3
+					const mult = 2
 					
 					if ( prey.energy <= 0 || prey.dead ) {
 						// do nothing
@@ -179,7 +179,7 @@ World.prototype = {
 				if ( Vector2.distance( predator.position, food.position ) < predator.radius + food.radius ) {
 					predator.takingDamage = true
 					
-					const damage = 0.1 * dt
+					const damage = 0.2 * dt
 					
 					if ( predator.energy <= 0) {
 						// do nothing
