@@ -143,6 +143,7 @@ export default function Replic8or( opts = {} ) {
 	// programBasicInstincts( self )
 	programNonsense( self )
 	// programExcitatorySenses( self )
+	self.makeSensoryWeightsExcitatory( self.brain.neurons )
 	
 	return self
 }
@@ -245,6 +246,18 @@ Replic8or.prototype = {
 		}
 	},
 	
+	makeSensoryWeightsExcitatory: function ( neurons ) {
+		for ( const neuron of neurons ) {
+			neuron.weights = neuron.weights.map( ( weight, weightIndex ) => {
+				if ( weightIndex === neuron.index ) {
+					return Math.abs( weight )
+				} else {
+					return weight
+				}
+			} )
+		}
+	},
+	
 	// TODO quietly -> emitEvent
 	replicate: function ( quietly, mutationRate = 0.08 ) {
 		const parent = this
@@ -263,6 +276,7 @@ Replic8or.prototype = {
 		
 		this.copyWeights( parent.brain.neurons, child.brain.neurons )
 		this.mutateWeights( child.brain.neurons, mutationRate )
+		this.makeSensoryWeightsExcitatory( child.brain.neurons )
 		
 		for ( let i = 0; i < parent.brain.neurons.length; i++ ) {
 			child.brain.neurons[ i ].potentialDecayRate = parent.brain.neurons[ i ].potentialDecayRate
