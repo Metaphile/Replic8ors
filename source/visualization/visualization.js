@@ -43,6 +43,7 @@ export default function Visualization( world ) {
 		draw() {},
 		getPredatorAt() {},
 		getPreyAt() {},
+		destroy() {},
 	}
 	let worldView = dummyWorldView
 	
