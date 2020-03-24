@@ -148,6 +148,13 @@ export default function Replic8or( opts = {} ) {
 	return self
 }
 
+// similar to the inverse square function except there's no asymptote at x = 0
+function stimulusStrength( distance ) {
+	const curveHeight = 700
+	const curveWidth = 5
+	return curveHeight * ( 1 / ( 1 + Math.pow( distance / curveWidth, 2 ) ) )
+}
+
 Replic8or.prototype = {
 	update: function ( dt ) {
 		// stimulate hunger neuron _before_ updating brain
@@ -177,8 +184,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( food.position, receptorPosition ) - food.radius
-			const strength = 10000 * ( distance <= 0 ? 1 :
-				1 / ( 1 + Math.pow( distance, 2 ) ) )
+			const strength = stimulusStrength( distance )
 			
 			receptor.neurons.food.stimulate( strength * dt )
 		}
@@ -191,8 +197,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( prey.position, receptorPosition ) - prey.radius
-			const strength = 10000 * ( distance <= 0 ? 1 :
-				1 / ( 1 + Math.pow( distance, 2 ) ) )
+			const strength = stimulusStrength( distance )
 			
 			receptor.neurons.prey.stimulate( strength * dt )
 		}
@@ -205,8 +210,7 @@ Replic8or.prototype = {
 			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
 			
 			const distance = Vector2.distance( predator.position, receptorPosition ) - predator.radius
-			const strength = 10000 * ( distance <= 0 ? 1 :
-				1 / ( 1 + Math.pow( distance, 2 ) ) )
+			const strength = stimulusStrength( distance )
 			
 			receptor.neurons.predator.stimulate( strength * dt )
 		}
