@@ -275,18 +275,10 @@ Replic8or.prototype = {
 	// TODO quietly -> emitEvent
 	replicate: function ( quietly, mutationRate = 0.08 ) {
 		const parent = this
-		const child = Replic8or( {
-			radius: this.radius,
-			mass: this.mass,
-			drag: this.drag,
-			// rotation: Math.random() * Math.PI * 2,
-			elasticity: this.elasticity,
-			numBodySegments: this.numBodySegments,
-			
-			energy: this.energy,
-			metabolism: this.metabolism,
-			flipperStrength: this.flipperStrength,
-		} )
+		
+		const childOpts = {}
+		Object.keys( defaultOpts ).forEach( key => childOpts[ key ] = parent[ key ] )
+		const child = Replic8or( childOpts )
 		
 		this.copyWeights( parent.brain.neurons, child.brain.neurons )
 		this.mutateWeights( child.brain.neurons, mutationRate )
