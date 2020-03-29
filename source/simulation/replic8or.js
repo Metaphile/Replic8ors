@@ -7,6 +7,8 @@ import Math2   from '../engine/math-2'
 import Vector2 from '../engine/vector-2'
 // import { formatWeight } from '../helpers'
 
+const numMinsToStarve = 4
+
 const defaultOpts = {
 	radius: 32,
 	mass: 10,
@@ -14,7 +16,7 @@ const defaultOpts = {
 	elasticity: 1,
 	
 	energy: 0.666,
-	metabolism: 1 / ( 2 * 60 ),
+	metabolism: 1 / ( numMinsToStarve * 60 ),
 	energyCostPerNeuronSpike: 0.0017,
 	
 	numBodySegments: 3,
