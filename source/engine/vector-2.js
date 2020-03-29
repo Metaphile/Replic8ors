@@ -1,7 +1,7 @@
 export default function Vector2( x = 0, y = 0 ) {
 	return { x, y }
 }
-	
+
 Object.assign( Vector2, {
 	add( v1, v2, out = v1 ) {
 		out.x = v1.x + v2.x
