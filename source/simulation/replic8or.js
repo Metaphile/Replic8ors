@@ -15,6 +15,7 @@ const defaultOpts = {
 	
 	energy: 0.666,
 	metabolism: 1 / ( 2 * 60 ),
+	energyCostPerNeuronSpike: 0.0017,
 	
 	numBodySegments: 3,
 	receptorOffset: -Math.PI / 2, // up,
@@ -144,6 +145,13 @@ export default function Replic8or( opts = {} ) {
 	programNonsense( self )
 	// programExcitatorySenses( self )
 	self.makeSensoryWeightsExcitatory( self.brain.neurons )
+	
+	// add metabolic cost to neuron activation
+	self.brain.neurons.forEach( neuron => {
+		neuron.on( 'fire', () => {
+			self.energy -= self.energyCostPerNeuronSpike
+		} )
+	} )
 	
 	return self
 }
