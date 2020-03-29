@@ -19,47 +19,8 @@
 			ga('send', 'pageview');
 		</script>
 		
-		<section id='info' style='display: none;'>
-			<button name='close'>×</button>
-			
-			<div class='column'>
-				<h1 style='text-align: center;'><img src=<%= require('./logo.png') %> alt='Replic8ors' style='image-rendering: pixelated; width: 520px; max-width: 100%;'></h1>
-				
-				<p style='font-size: large; margin-top: 2em;'>Replic8ors is a behavioral evolution simulator with fully visualized neural networks. It works best in desktop <a href='https://www.google.com/chrome/' target='_blank'>Chrome</a>.</p>
-				
-				<h3>Basic Controls</h3>
-				
-				<ul>
-					<li><strong>Click and drag</strong> to move around</li>
-					<li>Zoom in and out with the <strong>mouse wheel</strong></li>
-					<li><strong>Click on a replicator</strong> to automatically follow it (<strong>double-click</strong> to zoom and follow)</li>
-					<li><strong>Hover over replicators</strong> to inspect their networks</li>
-					<li>Pause/resume with the <strong>space bar</strong></li>
-					<li>Step frame-by-frame with the <strong>right arrow key</strong></li>
-				</ul>
-				
-				<h3>How It Works</h3>
-				
-				<p>Black replicators (predators) eat white replicators (prey) eat food particles. Food particles are automatically added or withheld to prevent under/overpopulation.</p>
-				
-				<p>When a replicator eats enough, it automatically replicates. Its offspring inherits its neural programming, with random mutations. Most mutations are harmful or benign, but mutations that improve reproductive success will naturally proliferate.</p>
-				
-				<p>If either population expires, mutant clones of past replicators will be added to keep the simulation going.</p>
-				
-				<h3>The Networks</h3>
-				
-				<p>Replicators are driven by spiking recurrent neural networks, similar to biological networks. They're spiking in the sense that neurons either fire or they don't, and recurrent in the sense that neural connections can be cyclical (A → B → C → A).</p>
-				
-				<p>When a neuron fires, it sends signals to other neurons. Signals range in value from 1 (strongly excitatory) to -1 (strongly inhibitory). Excitatory input increases a neuron's potential; inhibitory input decreases it. If a neuron's potential reaches 100%, it fires and the signaling process continues.</p>
-				
-				<p>The value of a signal is determined by the downstream neuron and does not change&mdash;e.g., neuron B might assign all signals from neuron A a value of 0.5. These assignments can differ from replicator parent to child due to mutation.</p>
-				
-				<p>Ultimately the networks translate sensory input into motor output. Over many generations, they approximate some survival function which is determined by their environment.</p>
-			</div>
-		</section>
-		
 		<section id='visualization'></section>
-		<section id='play-controls'></section>
+		<section id='control-bar'></section>
 		
 		<p id='version-number'><!-- set in main.js --></p>
 		

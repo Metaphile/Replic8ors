@@ -1,0 +1,103 @@
+$blue: rgb(90, 195, 255);
+$hudColor: rgb( 255, 69, 0 );
+
+#control-bar-form {
+	background: fade-out( black, 0.666 );
+	bottom: 0;
+	color: white;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	overflow: auto;
+	padding: 0.25rem;
+	
+	button {
+		margin: 0.25rem 0;
+		
+		&:focus {
+			// not working - in Chrome at least
+			outline-color: $hudColor;
+		}
+		
+		&.active {
+			color: $hudColor;
+		}
+	}
+	
+	[name=elapsed-sim-time] {
+		background: none;
+		border: none;
+		color: white;
+		font-family: monospace;
+		text-align: center;
+		cursor: default;
+		
+		&:focus {
+			outline: none;
+		}
+	}
+}
+
+#control-bar-info {
+	background: fade-out( black, 0.2 );
+	font-size: 10pt;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top:    0;
+	z-index: 999;
+	line-height: 1.5em;
+	
+	color: white;
+	overflow-y: scroll;
+	
+	#executive-summary {
+		line-height: 1.6em;
+		padding: 1em 2em;
+		margin: 3em 0;
+		
+		border-style: solid;
+		border-color: $hudColor;
+		border-width: 1px 14px;
+	}
+	
+	a {
+		color: white;
+	}
+	
+	strong {
+		color: $blue;
+		font-weight: normal;
+	}
+	
+	// show pointer cursor over entire info modal (including close button)
+	// to indicate that it's clickable
+	&, & button {
+		cursor: pointer;
+	}
+	
+	button[name=close] {
+		background: none;
+		border: none;
+		color: white;
+		padding: 0;
+		width: 1.6em;
+		text-align: center;
+		font-size: x-large;
+		
+		// keep close button in top right corner when scrolling
+		position: sticky;
+		top: 0;
+		float: right;
+		
+		&:hover, &:focus {
+			outline: none;
+		}
+	}
+	
+	.column {
+		max-width: 640px;
+		padding: 1rem;
+		margin: 0 auto;
+	}
+}

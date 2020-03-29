@@ -82,6 +82,7 @@ export default function FocusRing() {
 			const gap = Math.PI / 23
 			
 			const bias = ( angle / ( Math.PI * 2 ) * 8 ) % 1 // 0..1
+			// if you change these colors, update boundary color in world view, active button color in control bar
 			const color = interpolateRgba( [ 255, 127, 0, 0.85 ], [ 255, 69, 0, 0.85 ], bias )
 			
 			// bottom arc

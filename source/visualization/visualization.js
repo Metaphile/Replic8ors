@@ -21,6 +21,8 @@ export default function Visualization( world ) {
 	
 	self.$element = $container
 	
+	self.attached = false
+	
 	const camera = Camera()
 	
 	// set initial camera position and zoom level
@@ -229,6 +231,8 @@ export default function Visualization( world ) {
 		hud = Hud( camera )
 		for ( const prey of world.preys ) trackReplicator( prey )
 		for ( const predator of world.predators ) trackPredator( predator )
+		
+		self.attached = true
 	},
 	
 	self.detach = () => {
@@ -243,6 +247,8 @@ export default function Visualization( world ) {
 		cameraOp = dummyCameraOp
 		
 		hud = dummyHud
+		
+		self.attached = false
 	},
 	
 	self.update = ( dt, dt2 ) => {

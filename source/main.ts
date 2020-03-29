@@ -17,7 +17,7 @@ import World from './simulation/world'
 import Scenario from './simulation/scenario'
 import Visualization from './visualization/visualization'
 import GameLoop from './engine/game-loop'
-import PlayControls from './play-controls'
+import ControlBar from './control-bar/control-bar'
 
 const CURRENT_VERSION = '1.2-wip'
 
@@ -56,20 +56,11 @@ $( () => {
 		() => visualization.draw( 0 ) )
 	
 	scenarioLoop.on( 'step', dt => {
-		// TODO scale dt2 parameter?
 		visualization.update( dt, dt )
 	} )
 	
-	function onToggleTurbo( turboEnabled ) {
-		if ( turboEnabled ) {
-			visualization.detach()
-		} else {
-			visualization.attach()
-		}
-	}
-	const controls = PlayControls( scenarioLoop, onToggleTurbo )
-	
-	$( '#play-controls' ).append( controls )
+	const controlBar = ControlBar( scenarioLoop, visualization )
+	$( '#control-bar' ).append( controlBar.$element )
 	
 	// show info box on first load
 	{
@@ -83,7 +74,7 @@ $( () => {
 		// except on localhost
 		if ( !cookieIsSet && location.host !== 'localhost:8080' ) {
 			// no cookie? show info box
-			$( '#info' ).fadeIn()
+			controlBar.showInfo()
 			
 			// set cookie so info box isn't shown automatically next time
 			document.cookie = `${cookieName}=${cookieValue}; expires=Fri, 31 Dec 9999 23:59:59 GMT`
