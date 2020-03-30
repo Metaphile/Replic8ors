@@ -168,7 +168,7 @@ export default function WorldView( world ) {
 		ctx.beginPath()
 			// slightly larger than world radius for aesthetics
 			ctx.arc( 0, 0, world.radius * 1.1, 0, Math.PI * 2 )
-			ctx.strokeStyle = 'silver'
+			ctx.strokeStyle = 'rgba( 255, 127, 0, 0.85 )' // HUD orange
 			ctx.lineWidth = 3
 			ctx.setLineDash( [ 10, 10 ] )
 			ctx.stroke()
