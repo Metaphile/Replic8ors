@@ -51,6 +51,11 @@ module.exports = {
 				loader: 'html-loader',
 			},
 			{
+				test: /\.ejs$/,
+				include: path.resolve(__dirname, 'source'),
+				loader: 'ejs-loader',
+			},
+			{
 				test: /\.png$/,
 				include: path.resolve(__dirname, 'source'),
 				loader: 'base64-image-loader',
