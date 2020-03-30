@@ -233,6 +233,8 @@ export default function Visualization( world ) {
 		for ( const predator of world.predators ) trackPredator( predator )
 		
 		self.attached = true
+		
+		self.$element.removeClass( 'detached' )
 	},
 	
 	self.detach = () => {
@@ -249,6 +251,8 @@ export default function Visualization( world ) {
 		hud = dummyHud
 		
 		self.attached = false
+		
+		self.$element.addClass( 'detached' )
 	},
 	
 	self.update = ( dt, dt2 ) => {
