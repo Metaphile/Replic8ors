@@ -34,9 +34,16 @@ $( () => {
 	const scenario = Scenario( world )
 	
 	// drive scenario/world
-	const scenarioLoop = GameLoop(
-		( dt, t ) => scenario.update( dt, t ),
-		() => {} )
+	
+	const scenarioLoop = ( () => {
+		const update = ( dt, t ) => scenario.update( dt, t )
+		const draw = () => {}
+		const opts = {
+			timestep: 1/30,
+		}
+		
+		return GameLoop( update, draw, opts )
+	} )()
 	
 	const visualization = Visualization( world )
 	$( '#visualization' ).append( visualization.$element )
