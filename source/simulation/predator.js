@@ -6,6 +6,7 @@ export default function Predator( opts = {} ) {
 		mass: 24,
 		drag: 70,
 		flipperStrength: 6900,
+		numInternalNeurons: 5,
 		...opts,
 	} )
 }
