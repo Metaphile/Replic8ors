@@ -9,7 +9,7 @@ const defaultOpts = {
 	spoiled: false,
 	radius: 2.7,
 	mass: 4,
-	drag: 8,
+	drag: 16,
 	elasticity: 2,
 }
 

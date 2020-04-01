@@ -8,7 +8,7 @@ export default function World() {
 	self.foods = []
 	self.preys = []
 	self.predators = []
-	self.radius = 520
+	self.radius = 510
 	
 	return self
 }
@@ -141,8 +141,8 @@ World.prototype = {
 					// transfer energy,
 					// don't transfer more than is available
 					
-					const take = dt * 0.3
-					const mult = 2
+					const take = dt * 0.4
+					const mult = 1.8
 					
 					if ( prey.energy <= 0 || prey.dead ) {
 						// do nothing
@@ -177,17 +177,17 @@ World.prototype = {
 				predator.senseFood( food, dt )
 				
 				if ( Vector2.distance( predator.position, food.position ) < predator.radius + food.radius ) {
-					predator.takingDamage = true
+					// predator.takingDamage = true
 					
-					const damage = 0.2 * dt
+					// const damage = 0.2 * dt
 					
-					if ( predator.energy <= 0) {
-						// do nothing
-					} else if ( predator.energy < damage ) {
-						predator.energy = 0
-					} else {
-						predator.energy -= damage
-					}
+					// if ( predator.energy <= 0) {
+					// 	// do nothing
+					// } else if ( predator.energy < damage ) {
+					// 	predator.energy = 0
+					// } else {
+					// 	predator.energy -= damage
+					// }
 					
 					predator.collideWith( food, dt )
 				}

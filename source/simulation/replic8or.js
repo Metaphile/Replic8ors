@@ -11,9 +11,9 @@ const numMinsToStarve = 4
 
 const defaultOpts = {
 	radius: 32,
-	mass: 10,
-	drag: 60,
-	elasticity: 1,
+	mass: 48,
+	drag: 270,
+	elasticity: 0.3,
 	
 	energy: 0.666,
 	metabolism: 1 / ( numMinsToStarve * 60 ),
@@ -24,7 +24,7 @@ const defaultOpts = {
 	flipperOffset: -Math.PI / 2 + ( Math.PI / 3 ),
 	
 	takingDamage: false,
-	flipperStrength: 4500,
+	flipperStrength: 22000,
 	
 	numInternalNeurons: 3,
 }
@@ -123,7 +123,7 @@ function programBasicInstincts( replicator ) {
 
 function programNonsense( replicator ) {
 	for ( const neuron of replicator.brain.neurons ) {
-		neuron.weights = neuron.weights.map( weight => Math2.randRange( -1.0, 1.0 ) )
+		neuron.weights = neuron.weights.map( weight => Math2.randRange( -0.5, 0.5 ) )
 	}
 	
 	const neuronsPerSegment = 4
