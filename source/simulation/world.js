@@ -8,7 +8,7 @@ export default function World() {
 	self.foods = []
 	self.preys = []
 	self.predators = []
-	self.radius = 510
+	self.radius = 460
 	
 	return self
 }
@@ -136,32 +136,33 @@ World.prototype = {
 				const distance = Vector2.distance( predator.position, prey.position )
 				
 				if ( distance < predator.radius + prey.radius ) {
-					prey.takingDamage = true
+					// prey.takingDamage = true
 					
-					// transfer energy,
-					// don't transfer more than is available
+					// // transfer energy,
+					// // don't transfer more than is available
 					
-					const take = dt * 0.4
-					const mult = 1.8
+					// const take = dt * 0.5
+					// const mult = 1.9
 					
-					if ( prey.energy <= 0 || prey.dead ) {
-						// do nothing
-					} else if ( prey.energy < take ) {
-						predator.energy += prey.energy * mult
-						this.emit( 'predator-eating-prey', predator, prey )
-						prey.energy = 0
-					} else {
-						predator.energy += take * mult
-						this.emit( 'predator-eating-prey', predator, prey )
-						prey.energy -= take
-					}
+					// if ( prey.energy <= 0 || prey.dead ) {
+					// 	// do nothing
+					// } else if ( prey.energy < take ) {
+					// 	predator.energy += prey.energy * mult
+					// 	this.emit( 'predator-eating-prey', predator, prey )
+					// 	prey.energy = 0
+					// } else {
+					// 	predator.energy += take * mult
+					// 	this.emit( 'predator-eating-prey', predator, prey )
+					// 	prey.energy -= take
+					// }
 					
 					predator.collideWith( prey, dt )
 					
-					// if ( prey.energy > 0 ) {
-					// 	prey.energy = 0
-					// 	predator.energy = 1.2
-					// }
+					if ( prey.energy > 0 ) {
+						this.emit( 'predator-eating-prey', predator, prey )
+						predator.energy += prey.energy * 2
+						prey.energy = 0
+					}
 				}
 				
 				prey.sensePredator( predator, dt )
@@ -177,17 +178,17 @@ World.prototype = {
 				predator.senseFood( food, dt )
 				
 				if ( Vector2.distance( predator.position, food.position ) < predator.radius + food.radius ) {
-					// predator.takingDamage = true
+					predator.takingDamage = true
 					
-					// const damage = 0.2 * dt
+					const damage = 0.2 * dt
 					
-					// if ( predator.energy <= 0) {
-					// 	// do nothing
-					// } else if ( predator.energy < damage ) {
-					// 	predator.energy = 0
-					// } else {
-					// 	predator.energy -= damage
-					// }
+					if ( predator.energy <= 0) {
+						// do nothing
+					} else if ( predator.energy < damage ) {
+						predator.energy = 0
+					} else {
+						predator.energy -= damage
+					}
 					
 					predator.collideWith( food, dt )
 				}

@@ -5,7 +5,7 @@ import Prey from './prey'
 import RingBuffer from '../engine/ring-buffer'
 
 const defaultOpts = {
-	maxFoods:       35,
+	maxFoods:       21,
 	numPreys:        7,
 	maxPreys:       13,
 	numPredators:    5,

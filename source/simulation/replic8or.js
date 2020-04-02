@@ -7,17 +7,17 @@ import Math2   from '../engine/math-2'
 import Vector2 from '../engine/vector-2'
 // import { formatWeight } from '../helpers'
 
-const numMinsToStarve = 4
+const numMinsToStarve = 2
 
 const defaultOpts = {
 	radius: 32,
-	mass: 48,
-	drag: 270,
-	elasticity: 0.3,
+	mass: 90,
+	drag: 260,
+	elasticity: 0.4,
 	
 	energy: 0.666,
 	metabolism: 1 / ( numMinsToStarve * 60 ),
-	energyCostPerNeuronSpike: 0.0017,
+	energyCostPerNeuronSpike: 0.0,
 	
 	numBodySegments: 3,
 	receptorOffset: -Math.PI / 2, // up,
@@ -26,7 +26,9 @@ const defaultOpts = {
 	takingDamage: false,
 	flipperStrength: 22000,
 	
-	numInternalNeurons: 3,
+	numInternalNeurons: 0,
+	
+	ancestorWeights: undefined,
 }
 
 function createSymmetricSegments() {
@@ -123,7 +125,7 @@ function programBasicInstincts( replicator ) {
 
 function programNonsense( replicator ) {
 	for ( const neuron of replicator.brain.neurons ) {
-		neuron.weights = neuron.weights.map( weight => Math2.randRange( -0.5, 0.5 ) )
+		neuron.weights = neuron.weights.map( weight => Math2.randRange( -1.0, 1.0 ) )
 	}
 	
 	const neuronsPerSegment = 4
@@ -251,7 +253,7 @@ Replic8or.prototype = {
 			neuron.weights = neuron.weights.map( weight => {
 				if ( mutationRate > Math.random() ) {
 					// -1..1, biased toward 0
-					const mutation = Math.pow( Math2.randRange( -0.5, 0.5 ), 3 )
+					const mutation = Math.pow( Math2.randRange( -1, 1 ), 3 )
 					const mutatedWeight = Math.sin( Math.asin( weight ) + Math.asin( mutation ) )
 					// console.log( `${ formatWeight( weight ) } => ${ formatWeight( mutatedWeight ) } (${ formatWeight( mutatedWeight - weight ) })` )
 					return mutatedWeight
@@ -275,7 +277,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.08 ) {
+	replicate: function ( quietly, mutationRate = 0.07 ) {
 		const parent = this
 		
 		const childOpts = {}
