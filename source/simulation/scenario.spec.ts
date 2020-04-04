@@ -1,101 +1,101 @@
-import Scenario, { createPopulation } from './scenario'
+import Scenario from './scenario'
 import World from './world'
 import Food from './food'
-import Prey from './replic8or'
+import Prey from './prey'
+import Predator from './predator'
 
-xdescribe( 'scenario', () => {
-	// WIP
-	describe( 'maintains prey population', () => {
-		const minPrey =  5
-		const maxPrey = 10
+describe( 'scenario', () => {
+	let world
+	let scenario
+	
+	function addFoods( numFoods ) {
+		while ( numFoods-- ) {
+			world.addFood( Food() )
+		}
+	}
+	
+	function addPreys( numPreys ) {
+		while ( numPreys-- ) {
+			world.addPrey( Prey() )
+		}
+	}
+	
+	function addPredators( numPredators ) {
+		while ( numPredators-- ) {
+			world.addPredator( Predator() )
+		}
+	}
+	
+	beforeEach( () => {
+		world = World()
 		
-		let world, scenario
+		const scenarioOpts = {
+			maxFoods:     10,
+			numPreys:      5,
+			maxPreys:     10,
+			numPredators:  5,
+			maxPredators: 10,
+		}
 		
-		beforeEach( () => {
-			world = World()
-			scenario = Scenario( world, {
-				numReplicators:  0,
-				numPredators:    0,
-				minPreys:        2,
-				maxPreys:        5,
-			} )
+		scenario = Scenario( world, scenarioOpts )
+	} )
+	
+	describe( 'manages foods', () => {
+		it( 'doesn\'t add foods when foods >= max', () => {
+			addFoods( scenario.maxFoods )
+			scenario.balancePopulations()
+			
+			expect( scenario.getNumFoods() ).toBe( scenario.maxFoods )
 		} )
 		
-		it( 'creates minimal population when population goes extinct', () => {
-			scenario.minPreys = 1
-			scenario.update( 0 )
-			expect( scenario.world.preys.length ).toBe( scenario.minPreys )
+		it( 'adds foods when preys < max', () => {
+			addPreys( scenario.maxPreys - 1 )
+			scenario.balancePopulations()
+			
+			expect( scenario.getNumFoods() ).toBe( scenario.maxFoods )
 		} )
 		
-		it( 'feeds small populations until they become large populations', () => {
-			scenario.minPreys = scenario.maxPreys = 2
+		it( 'adds foods when predators AND preys < max', () => {
+			addPreys( scenario.maxPreys - 1 )
+			addPredators( scenario.maxPredators - 1 )
+			scenario.balancePopulations()
 			
-			scenario.addPrey( Prey() )
-			scenario.update( 0 )
-			expect( scenario.feeding ).toBeTruthy( 'population < min' )
-			
-			scenario.addPrey( Prey() )
-			scenario.update( 0 )
-			expect( scenario.feeding ).toBeTruthy( 'population within min/max' )
-			
-			scenario.addPrey( Prey() )
-			scenario.update( 0 )
-			expect( scenario.feeding ).toBeFalsy( 'population > max' )
+			expect( scenario.getNumFoods() ).toBe( scenario.maxFoods )
 		} )
 		
-		it( 'starves large populations until they become small populations', () => {
-			scenario.minPreys = scenario.maxPreys = 2
+		it( 'doesn\'t add foods when predators >= max, preys > 0', () => {
+			addPreys( 1 )
+			addPredators( scenario.maxPredators )
 			
-			const prey1 = Prey()
-			const prey2 = Prey()
-			const prey3 = Prey()
+			expect( scenario.getNumFoods() ).toBe( 0 )
+		} )
+		
+		it( 'adds foods when predators >= max, preys == 0', () => {
+			addPredators( scenario.maxPredators )
+			scenario.balancePopulations()
 			
-			scenario
-				.addPrey( prey1 )
-				.addPrey( prey2 )
-				.addPrey( prey3 )
-			scenario.update( 0 )
-			expect( scenario.feeding ).toBeFalsy( 'population > max' )
-			
-			scenario.removePrey( prey3 )
-			scenario.update( 0 )
-			expect( scenario.feeding ).toBeFalsy( 'population within max/min' )
-			
-			scenario.removePrey( prey2 )
-			scenario.update( 0 )
-			expect( scenario.feeding ).toBeTruthy( 'population < min' )
+			expect( scenario.getNumFoods() ).toBe( scenario.maxFoods )
 		} )
 	} )
 	
-	it( 'adds replicators to the world', () => {
-		const world = World()
-		const scenario = Scenario( world, { numReplicators: 3 } )
-		expect( world.preys.length ).toBe( 3 )
-	} )
-	
-	describe( 'when the last replicator dies', () => {
-		it( 'removes leftover food', () => {
-			const world = World()
-			const scenario = Scenario( world, { numReplicators: 1 } )
-			
-			world.addFood( Food() )
-			world.addFood( Food() )
-			expect( world.foods.length ).toBe( 2 )
-			
-			world.preys[ 0 ].die()
-			expect( world.foods.length ).toBe( 0 )
+	describe( 'manages preys', () => {
+		it( 'adds preys when preys == 0', () => {
+			scenario.balancePopulations()
+			expect( scenario.getNumPreys() ).toBe( scenario.numPreys )
 		} )
 		
-		it( 'adds more replicators', () => {
-			const world = World()
-			const scenario = Scenario( world, { numReplicators: 3 } )
+		it( 'doesn\'t add preys when predators >= max', () => {
+			addPredators( scenario.maxPredators )
+			scenario.balancePopulations()
 			
-			world.preys[ 0 ].die()
-			expect( world.preys.length ).toBe( 2 )
-			
-			world.preys[ 0 ].die() // 1 left
-			world.preys[ 0 ].die() // 0 left
-			expect( world.preys.length ).toBe( 3 )
+			expect( scenario.getNumPreys() ).toBe( scenario.numPreys )
+		} )
+	} )
+	
+	describe( 'manages predators', () => {
+		it( 'adds predators when predators == 0', () => {
+			scenario.balancePopulations()
+			expect( scenario.getNumPredators() ).toBe( scenario.numPredators )
 		} )
 	} )
 } )
