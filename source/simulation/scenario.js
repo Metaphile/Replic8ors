@@ -5,6 +5,7 @@ import Prey from './prey'
 import RingBuffer from '../engine/ring-buffer'
 
 const defaultOpts = {
+	maxFoods:       35,
 	numPreys:        7,
 	maxPreys:       13,
 	numPredators:    5,
@@ -128,7 +129,7 @@ export default function Scenario( world, opts = {} ) {
 			self.repopulatePredators()
 		}
 		
-		const areTooManyFoods = world.foods.length > 35
+		const areTooManyFoods = world.foods.length > self.maxFoods
 		const areAnyPreys = world.preys.length > 0
 		const areTooManyPreys = world.preys.length > self.maxPreys
 		const areAnyPredators = world.predators.length > 0
