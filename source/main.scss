@@ -14,18 +14,6 @@ $green: rgb(7, 141,  62);
 $blue: rgb(90, 195, 255);
 $red: rgb(110, 0, 0);
 
-h2 {
-	font-size: larger;
-}
-
-h2, h3 {
-	// color: lighten($red, 25%);
-	color: $blue;
-	font-weight: normal;
-	border-bottom: 1px solid $blue;
-	margin-top: 2em;
-}
-
 html, body {
 	height: 100%;
 }

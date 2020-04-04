@@ -59,6 +59,18 @@ $hudColor: rgb( 255, 69, 0 );
 		border-style: solid;
 		border-color: $hudColor;
 		border-width: 1px 14px;
+	h2 {
+		font-size: larger;
+	}
+	
+	h2, h3 {
+		// color: lighten($red, 25%);
+		color: $blue;
+		font-weight: normal;
+		border-bottom: 1px solid $blue;
+		margin-top: 2em;
+	}
+	
 	}
 	
 	a {
