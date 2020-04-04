@@ -74,8 +74,8 @@ EnergyUpEffect.prototype = {
 	
 	// assumes energy gradient transforms have been applied
 	draw( ctx, energy ) {
-		const globalCompositeOperation = ctx.globalCompositeOperation
-		const globalAlpha = ctx.globalAlpha
+		ctx.savePartial( 'fillStyle', 'globalAlpha', 'globalCompositeOperation' )
+		
 		const gradientOffset = 1 - Math.pow( this.progress, 1/2 ) * 2
 		// undo energy translation so y=0 is at replicator center, y=1 is at bottom
 		ctx.translate( 0, -energy )
@@ -88,8 +88,8 @@ EnergyUpEffect.prototype = {
 		
 		ctx.translate( 0, -gradientOffset )
 		ctx.translate( 0, energy )
-		ctx.globalAlpha = globalAlpha
-		ctx.globalCompositeOperation = globalCompositeOperation
+		
+		ctx.restorePartial()
 	},
 }
 
@@ -115,8 +115,7 @@ DamageEffect.prototype = {
 	},
 	
 	draw( ctx, position, radius ) {
-		const ctx_globalCompositeOperation = ctx.globalCompositeOperation
-		const ctx_globalAlpha = ctx.globalAlpha
+		ctx.savePartial( 'fillStyle', 'globalAlpha', 'globalCompositeOperation' )
 		
 		ctx.beginPath()
 			ctx.translate( position.x, position.y )
@@ -132,8 +131,7 @@ DamageEffect.prototype = {
 			ctx.scale( 1 / radius, 1 / radius )
 			ctx.translate( -position.x, -position.y )
 		
-		ctx.globalAlpha = ctx_globalAlpha
-		ctx.globalCompositeOperation = ctx_globalCompositeOperation
+		ctx.restorePartial()
 	},
 }
 

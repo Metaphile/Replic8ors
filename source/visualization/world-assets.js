@@ -1,5 +1,3 @@
-const ctx = document.createElement( 'canvas' ).getContext( '2d' )
-
 const defaultOpts = {
 	numParticles: 32,
 	minParticleSize: 2,
@@ -45,7 +43,7 @@ export function Foreground( opts = {} ) {
 		},
 		
 		draw( ctx, offset ) {
-			const globalAlpha = ctx.globalAlpha
+			ctx.savePartial( 'fillStyle', 'globalAlpha' )
 			ctx.translate( -offset.x, -offset.y )
 			
 			for ( const particle of particles ) {
@@ -60,7 +58,7 @@ export function Foreground( opts = {} ) {
 			}
 			
 			ctx.translate( offset.x, offset.y )
-			ctx.globalAlpha = globalAlpha
+			ctx.restorePartial()
 		},
 	}
 }

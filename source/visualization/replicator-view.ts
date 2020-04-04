@@ -276,6 +276,8 @@ ReplicatorView.prototype = {
 	drawBackside( ctx ) {
 		const { position, radius } = this.replicator
 		
+		ctx.savePartial( 'fillStyle' )
+		
 		ctx.beginPath()
 			ctx.translate( position.x, position.y )
 			ctx.scale( radius, radius )
@@ -286,6 +288,8 @@ ReplicatorView.prototype = {
 			
 			ctx.scale( 1 / radius, 1 / radius )
 			ctx.translate( -position.x, -position.y )
+		
+		ctx.restorePartial()
 	},
 	
 	// indicate symmetric/free sections
@@ -295,6 +299,8 @@ ReplicatorView.prototype = {
 		const tineLength = 0.1
 		
 		const replicator = this.replicator
+		
+		ctx.savePartial( 'lineWidth', 'strokeStyle' )
 		
 		ctx.beginPath()
 			ctx.translate( replicator.position.x, replicator.position.y )
@@ -318,6 +324,8 @@ ReplicatorView.prototype = {
 			
 			ctx.scale( 1 / replicator.radius, 1 / replicator.radius )
 			ctx.translate( -replicator.position.x, -replicator.position.y )
+		
+		ctx.restorePartial()
 	},
 	
 	drawSignals( ctx ) {
@@ -494,6 +502,8 @@ ReplicatorView.prototype = {
 	},
 	
 	drawEnergy( ctx ) {
+		ctx.savePartial( 'fillStyle', 'globalCompositeOperation' )
+		
 		ctx.beginPath()
 			const { position, radius } = this.replicator
 			
@@ -510,8 +520,6 @@ ReplicatorView.prototype = {
 			const sloshAngle = 0.008 * ( Math.cos( this._slosh * 7 ) * Math.cos( this._slosh * 13 ) )
 			ctx.rotate( sloshAngle )
 			
-			const ctx_globalCompositeOperation = ctx.globalCompositeOperation
-			
 			ctx.globalCompositeOperation = 'darken'
 			ctx.fillStyle = this.assets.energyGradient
 			ctx.fill()
@@ -522,11 +530,12 @@ ReplicatorView.prototype = {
 			}
 			
 			// manually restore canvas state
-			ctx.globalCompositeOperation = ctx_globalCompositeOperation
 			ctx.rotate( -sloshAngle )
 			ctx.translate( 0, -energyOffsetY )
 			ctx.scale( 1 / radius, 1 / radius )
 			ctx.translate( -position.x, -position.y )
+		
+		ctx.restorePartial()
 	},
 	
 	drawFlippers( ctx ) {
@@ -539,6 +548,8 @@ ReplicatorView.prototype = {
 		const tilt      =   0.0
 		
 		const replicator = this.replicator
+		
+		ctx.savePartial( 'fillStyle' )
 		
 		ctx.beginPath()
 			ctx.translate( replicator.position.x, replicator.position.y )
@@ -576,6 +587,8 @@ ReplicatorView.prototype = {
 			ctx.fill()
 			
 			ctx.translate( -replicator.position.x, -replicator.position.y )
+		
+		ctx.restorePartial()
 	},
 	
 	drawEdge( ctx ) {
@@ -588,6 +601,8 @@ ReplicatorView.prototype = {
 		
 		const cx = this.replicator.position.x
 		const cy = this.replicator.position.y
+		
+		ctx.savePartial( 'lineCap', 'lineWidth', 'strokeStyle' )
 		
 		ctx.strokeStyle = this.assets.skinColor
 		ctx.lineWidth = 2.9
@@ -611,11 +626,12 @@ ReplicatorView.prototype = {
 			ctx.arc( cx, cy, this.replicator.radius - ctx.lineWidth/4, 0, Math.PI * 2 )
 			ctx.lineWidth /= 2
 			ctx.stroke()
+		
+		ctx.restorePartial()
 	},
 	
 	draw( ctx, camera, detail, keepHoverOverride ) {
-		const ctx_globalCompositeOperation = ctx.globalCompositeOperation
-		const ctx_globalAlpha = ctx.globalAlpha
+		ctx.savePartial( 'fillStyle', 'globalAlpha', 'globalCompositeOperation' )
 		
 		if ( this.effects.death ) {
 			ctx.globalCompositeOperation = 'screen'
@@ -694,7 +710,6 @@ ReplicatorView.prototype = {
 				ctx.fill()
 		}
 		
-		ctx.globalCompositeOperation = ctx_globalCompositeOperation
-		ctx.globalAlpha = ctx_globalAlpha
+		ctx.restorePartial()
 	},
 }

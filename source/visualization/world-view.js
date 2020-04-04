@@ -164,6 +164,8 @@ export default function WorldView( world ) {
 	}
 	
 	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {
+		ctx.savePartial( 'lineWidth', 'strokeStyle' )
+		
 		// show world radius
 		ctx.beginPath()
 			// slightly larger than world radius for aesthetics
@@ -209,6 +211,8 @@ export default function WorldView( world ) {
 		}
 		
 		// foreground.draw( ctx, camera.viewCenter( ctx.canvas ) )
+		
+		ctx.restorePartial()
 	}
 	
 	const pointInCircle = ( point, center, radius ) => {

@@ -9,6 +9,7 @@ Marker.prototype = {
 	
 	draw( ctx, tip, angleToTrackable, trackableSelected ) {
 		// Math.random() > 0.996 && console.log( tip )
+		ctx.savePartial( 'fillStyle' )
 		
 		ctx.beginPath()
 			const width = 0.37 // radians
@@ -38,5 +39,7 @@ Marker.prototype = {
 			
 			ctx.fillStyle = 'rgba( 255, 70, 0, 0.45 )'
 			ctx.fill()
+		
+		ctx.restorePartial()
 	}
 }

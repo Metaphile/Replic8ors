@@ -5,6 +5,7 @@ import $ from '../../third-party/jquery'
 import Hud from './hud'
 import HudMarker from './hud-marker'
 import Vector2 from '../engine/vector-2'
+import { CtxPartialStateStack } from '../helpers'
 
 export default function Visualization( world ) {
 	const self = {}
@@ -14,6 +15,7 @@ export default function Visualization( world ) {
 	const $canvas = $Canvas()
 	const canvas = $canvas[0]
 	const ctx = canvas.getContext( '2d' )
+	CtxPartialStateStack( ctx )
 	
 	$container.append( $canvas )
 	

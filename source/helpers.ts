@@ -47,3 +47,28 @@ export function formatElapsedTime( elapsedSecs: number ): string {
 		leftPadInt( ms, 3 )
 	)
 }
+
+export function pick( source: object, keys: string[] ): object {
+	const subset = {}
+	
+	for ( const key of keys ) {
+		subset[ key ] = source[ key ]
+	}
+	
+	return subset
+}
+
+// mixin for canvas context that adds partial state save/restore
+export function CtxPartialStateStack( ctx ) {
+	const states = []
+	
+	ctx.savePartial = function ( ...properties ) {
+		states.push( pick( ctx, properties ) )
+	}
+	
+	ctx.restorePartial = function () {
+		Object.assign( ctx, states.pop() )
+	}
+	
+	return ctx
+}

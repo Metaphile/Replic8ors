@@ -1,5 +1,6 @@
 import Hud from './hud'
 import Camera from '../engine/camera'
+import { CtxPartialStateStack } from '../helpers'
 
 const precision = 9
 
@@ -8,7 +9,7 @@ describe( 'hud', () => {
 	
 	beforeEach( () => {
 		canvas = document.createElement( 'canvas' )
-		ctx = canvas.getContext( '2d' )
+		ctx = CtxPartialStateStack( canvas.getContext( '2d' ) )
 		canvas.width = 800
 		canvas.height = 600
 		

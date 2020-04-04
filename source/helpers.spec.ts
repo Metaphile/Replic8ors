@@ -75,3 +75,38 @@ describe( 'formatElapsedTime()', () => {
 		expect( formatElapsedTime( 99 * 24 * 60 * 60 ) ).toBe( '99:00:00:00.000' )
 	} )
 } )
+
+describe( 'pick()', () => {
+	const { pick } = helpers
+	
+	it( 'picks zero properties', () => {
+		const obj = {
+			foo: 'foo',
+			bar: 'bar',
+		}
+		
+		expect( pick( obj, [] ) ).toEqual( {} )
+	} )
+	
+	it( 'picks one property', () => {
+		const obj = {
+			foo: 'foo',
+			bar: 'bar',
+		}
+		
+		expect( pick( obj, [ 'foo' ] ) ).toEqual( { foo: 'foo' } )
+	} )
+	
+	it( 'picks multiple properties', () => {
+		const obj = {
+			foo: 'foo',
+			bar: 'bar',
+		}
+		
+		expect( pick( obj, [ 'foo', 'bar' ] ) ).toEqual( { foo: 'foo', bar: 'bar' } )
+	} )
+	
+	it( 'doesn\'t validate source properties ', () => {
+		expect( pick( {}, [ 'foo']  ) ).toEqual( { foo: undefined } )
+	} )
+} )

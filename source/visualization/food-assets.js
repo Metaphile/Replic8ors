@@ -65,7 +65,8 @@ CrumbsEffect.prototype = {
 	},
 	
 	draw( ctx ) {
-		const globalAlpha = ctx.globalAlpha
+		ctx.savePartial( 'fillStyle', 'globalAlpha' )
+		
 		ctx.globalAlpha = Math.pow( 1 - this.progress, 0.5 )
 		ctx.fillStyle = 'white'
 		
@@ -75,7 +76,7 @@ CrumbsEffect.prototype = {
 				ctx.fill()
 		}
 		
-		ctx.globalAlpha = globalAlpha
+		ctx.restorePartial()
 	},
 }
 
@@ -105,7 +106,8 @@ SpoiledEffect.prototype = {
 	},
 	
 	draw( ctx ) {
-		const globalAlpha = ctx.globalAlpha
+		ctx.savePartial( 'fillStyle', 'globalAlpha' )
+		
 		ctx.globalAlpha = ( 1 - this.progress ) * 0.18
 		ctx.fillStyle = 'white'
 		
@@ -114,9 +116,8 @@ SpoiledEffect.prototype = {
 		
 		ctx.beginPath()
 			ctx.arc( this.position.x, this.position.y, r, 0, Math.PI * 2 )
-			ctx.fillStyle = 'white'
 			ctx.fill()
 		
-		ctx.globalAlpha = globalAlpha
+		ctx.restorePartial()
 	},
 }

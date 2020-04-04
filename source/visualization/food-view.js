@@ -59,11 +59,15 @@ FoodView.prototype = {
 		} else if ( this.effects.spoiled ) {
 			this.effects.spoiled.draw( ctx )
 		} else if ( !this.food.eaten && !this.food.spoiled ) {
+			ctx.savePartial( 'fillStyle' )
+			
 			ctx.beginPath()
 				const p = this.food.position, r = this.food.radius
 				ctx.arc( p.x, p.y, r, 0, Math.PI * 2 )
 				ctx.fillStyle = 'white'
 				ctx.fill()
+			
+			ctx.restorePartial()
 		}
 	},
 }

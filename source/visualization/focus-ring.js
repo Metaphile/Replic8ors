@@ -70,7 +70,8 @@ export default function FocusRing() {
 		},
 		
 		draw( ctx, camera ) {
-			const ctx_globalAlpha = ctx.globalAlpha
+			ctx.savePartial( 'fillStyle', 'globalAlpha', 'lineWidth', 'strokeStyle' )
+			
 			ctx.globalAlpha = currentOpacity
 			
 			ctx.translate( currentPosition.x, currentPosition.y )
@@ -178,9 +179,7 @@ export default function FocusRing() {
 				
 				ctx.stroke()
 			
-			ctx.globalAlpha /= 0.6
-			
-			ctx.globalAlpha = ctx_globalAlpha
+			ctx.restorePartial()
 		},
 	}
 }

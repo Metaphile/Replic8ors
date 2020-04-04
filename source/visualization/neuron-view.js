@@ -21,6 +21,8 @@ function drawGauge( ctx, neuron ) {
 	// rotate potential bar counter-clockwise so gap is top center
 	const firingOffset = neuron.firing ? neuron.potential * -Math.PI : 0
 	
+	ctx.savePartial( 'fillStyle', 'globalCompositeOperation' )
+	
 	// indicate potential
 	ctx.beginPath()
 		const potentialStart = gaugeStart + firingOffset
@@ -46,6 +48,8 @@ function drawGauge( ctx, neuron ) {
 			ctx.globalCompositeOperation = config.inhibitoryCompositeOperation
 			ctx.fill()
 	}
+	
+	ctx.restorePartial()
 }
 
 export default function NeuronView( neuron, role = 'think', opts = {} ) {
@@ -78,11 +82,12 @@ NeuronView.prototype = {
 	},
 	
 	draw( ctx, detail ) {
-		const globalCompositeOperation = ctx.globalCompositeOperation
+		ctx.savePartial( 'fillStyle', 'globalAlpha', 'globalCompositeOperation' )
+		
+		ctx.globalCompositeOperation = 'screen'
 		
 		ctx.beginPath()
 			ctx.arc( this.position.x, this.position.y, this.radius, 0, Math.PI * 2 )
-			ctx.globalCompositeOperation = 'screen'
 			ctx.fillStyle = this.active ? 'rgba( 90, 195, 255, 0.9 )' : 'rgba( 90, 195, 255, 0.09 )'
 			ctx.fill()
 		
@@ -96,11 +101,10 @@ NeuronView.prototype = {
 			}
 			
 			const r = this.radius * 0.36
-			ctx.globalCompositeOperation = 'screen'
-			const ctx_globalAlpha = ctx.globalAlpha
+			ctx.savePartial( 'globalAlpha' )
 			ctx.globalAlpha *= 1 - ( 1 - detail ) / 0.9
 			ctx.drawImage( this.icon, -r, -r, r * 2, r * 2 )
-			ctx.globalAlpha = ctx_globalAlpha
+			ctx.restorePartial()
 			
 			if ( !this.neuron.firing ) {
 				ctx.rotate( -rotation )
@@ -115,6 +119,6 @@ NeuronView.prototype = {
 		ctx.scale( 1 / this.radius, 1 / this.radius )
 		ctx.translate( -this.position.x, -this.position.y )
 		
-		ctx.globalCompositeOperation = globalCompositeOperation
+		ctx.restorePartial()
 	},
 }
