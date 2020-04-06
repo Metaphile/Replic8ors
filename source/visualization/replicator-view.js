@@ -449,17 +449,20 @@ ReplicatorView.prototype = {
 		const baAngle = abAngle + Math.PI
 		
 		// MAYBE embed start and end points by width/2
-		const startPoint = {}
-		startPoint.x = a_center.x + Math.cos( abAngle ) * a_radius
-		startPoint.y = a_center.y + Math.sin( abAngle ) * a_radius
+		const startPoint = {
+			x: a_center.x + Math.cos( abAngle ) * a_radius,
+			y: a_center.y + Math.sin( abAngle ) * a_radius,
+		}
 		
-		const endPoint = {}
-		endPoint.x = b_center.x + Math.cos( baAngle ) * b_radius
-		endPoint.y = b_center.y + Math.sin( baAngle ) * b_radius
+		const endPoint = {
+			x: b_center.x + Math.cos( baAngle ) * b_radius,
+			y: b_center.y + Math.sin( baAngle ) * b_radius,
+		}
 		
-		const midpoint = {}
-		midpoint.x = startPoint.x + Math.cos( abAngle ) * signalStartDist
-		midpoint.y = startPoint.y + Math.sin( abAngle ) * signalStartDist
+		const midpoint = {
+			x: startPoint.x + Math.cos( abAngle ) * signalStartDist,
+			y: startPoint.y + Math.sin( abAngle ) * signalStartDist,
+		}
 		
 		// draw
 		
