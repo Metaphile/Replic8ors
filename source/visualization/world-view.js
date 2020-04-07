@@ -166,7 +166,7 @@ export default function WorldView( world ) {
 	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {
 		ctx.savePartial( 'lineWidth', 'strokeStyle' )
 		
-		// show world radius
+		// show world radius / boundary / edge
 		ctx.beginPath()
 			// slightly larger than world radius for aesthetics
 			ctx.arc( 0, 0, world.radius * 1.1, 0, Math.PI * 2 )
@@ -220,14 +220,14 @@ export default function WorldView( world ) {
 		return distance < 0
 	}
 	
-	// return topmost prey view at point, or undefined
+	// return topmost prey at point, or undefined
 	self.getPreyAt = ( point_world ) => {
 		return world.preys.slice().reverse().find( prey => {
 			return pointInCircle( point_world, prey.position, prey.radius )
 		} )
 	}
 	
-	// return topmost predator view at point, or undefined
+	// return topmost predator at point, or undefined
 	self.getPredatorAt = ( point_world ) => {
 		return world.predators.slice().reverse().find( predator => {
 			return pointInCircle( point_world, predator.position, predator.radius )
