@@ -103,7 +103,11 @@ NeuronView.prototype = {
 			const r = this.radius * 0.36
 			ctx.savePartial( 'globalAlpha' )
 			ctx.globalAlpha *= 1 - ( 1 - detail ) / 0.9
-			ctx.drawImage( this.icon, -r, -r, r * 2, r * 2 )
+			
+			// shift icons by half a pixel right and down to properly center them
+			const halfAPixel = r / this.icon.width
+			ctx.drawImage( this.icon, -r + halfAPixel, -r + halfAPixel, r * 2, r * 2 )
+			
 			ctx.restorePartial()
 			
 			if ( !this.neuron.firing ) {
