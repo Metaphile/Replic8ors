@@ -220,18 +220,26 @@ export default function WorldView( world ) {
 		return distance < 0
 	}
 	
-	// return topmost prey at point, or undefined
+	// return topmost prey at point (by view z order), or undefined
 	self.getPreyAt = ( point_world ) => {
-		return world.preys.slice().reverse().find( prey => {
-			return pointInCircle( point_world, prey.position, prey.radius )
+		const view = self.preyViews.slice().reverse().find( view => {
+			return pointInCircle( point_world, view.replicator.position, view.replicator.radius )
 		} )
+		
+		if ( view && world.preys.find( replicator => replicator === view.replicator ) ) {
+			return view.replicator
+		}
 	}
 	
-	// return topmost predator at point, or undefined
+	// return topmost predator at point (by view z order), or undefined
 	self.getPredatorAt = ( point_world ) => {
-		return world.predators.slice().reverse().find( predator => {
-			return pointInCircle( point_world, predator.position, predator.radius )
+		const view = self.predatorViews.slice().reverse().find( view => {
+			return pointInCircle( point_world, view.replicator.position, view.replicator.radius )
 		} )
+		
+		if ( view && world.predators.find( replicator => replicator === view.replicator ) ) {
+			return view.replicator
+		}
 	}
 	
 	self.destroy = () => {
