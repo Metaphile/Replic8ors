@@ -91,13 +91,16 @@ NeuronView.prototype = {
 			ctx.fillStyle = this.active ? 'rgba( 90, 195, 255, 0.9 )' : 'rgba( 90, 195, 255, 0.09 )'
 			ctx.fill()
 		
+		const beginIconLod = 2.1
+		const endIconLod   = 5.4
+		
 		// icon
-		if ( detail > 0.1 ) {
+		if ( detail >= beginIconLod ) {
 			ctx.translate( this.position.x, this.position.y )
 			
 			const r = this.radius * 0.36
 			ctx.savePartial( 'globalAlpha' )
-			ctx.globalAlpha *= 1 - ( 1 - detail ) / 0.9
+			ctx.globalAlpha *= Math.min( ( detail - beginIconLod ) / ( endIconLod - beginIconLod ), 1 )
 			
 			// shift icons by half a pixel right and down to properly center them
 			const halfAPixel = r / this.icon.width

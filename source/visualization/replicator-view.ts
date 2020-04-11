@@ -325,21 +325,29 @@ ReplicatorView.prototype = {
 	drawWithFisheye( ctx, camera, mousePos_world, detail ) {
 		const hoverTargets = []
 		
+		const beginFisheyeLod = 2.9
+		// fisheye LoD should end at max zoom
+		// (most distortion when fully zoomed in)
+		const endFisheyeLod = 18.0
+		const distCoeff = Math.min( ( detail - beginFisheyeLod ) / ( endFisheyeLod - beginFisheyeLod ), 1 )
+		
 		for ( const view of this.neuronViews ) {
+			if ( detail < beginFisheyeLod ) break
+			
 			const offset = Vector2.subtract( mousePos_world, view.position, {} )
 			const distance = Vector2.getLength( offset )
-			const fisheyeStartDist = 14
+			const fisheyeStartDist = 20
 			
 			if ( distance < fisheyeStartDist ) {
 				hoverTargets.push( view )
 				
-				const distortion = 0.5 * ( 1 + distort( 1 - distance / fisheyeStartDist ) ) // 0..1
+				const distortion = 0.5 * ( 1 + distort( 1 - distance / fisheyeStartDist ) ) * distCoeff // 0..1
 				
 				view.originalPosition = Object.assign( {}, view.position )
-				Vector2.subtract( view.position, Vector2.scale( offset, 1.2 * distortion, {} ) )
+				Vector2.subtract( view.position, Vector2.scale( offset, 1.3 * distortion, {} ) )
 				
 				view.originalRadius = view.radius
-				view.radius += view.radius * 1.0 * distortion
+				view.radius += view.radius * 1.3 * distortion
 				
 				// highlight hover neuron(s) and incoming/outgoing signals; hide other traffic
 				
@@ -376,6 +384,7 @@ ReplicatorView.prototype = {
 		for ( const hoverTarget of hoverTargets ) {
 			Vector2.set( hoverTarget.position, hoverTarget.originalPosition )
 			hoverTarget.radius = hoverTarget.originalRadius
+			hoverTarget.active = false
 		}
 		
 		for ( const view of this.neuronViews ) {
@@ -573,7 +582,7 @@ ReplicatorView.prototype = {
 	drawSignal( ctx, a_center, a_radius, b_center, b_radius, ancestorWeight, weight, txProgress, baseOpacity, hoverOverride, isIgnored ) {
 		const connSep     = 0.040 // how much to separate opposing connections
 		const guideWidth  = 0.015
-		const signalWidth = 0.130
+		const signalWidth = 0.140
 		
 		const signalParts = getSignalParts( ancestorWeight, weight )
 		
@@ -841,9 +850,16 @@ ReplicatorView.prototype = {
 		ctx.rotate( -this.replicator.rotation )
 		ctx.translate( -p0.x, -p0.y )
 		
-		// for performance, only draw signals while mouseover
-		if ( keepHoverOverride ) {
+		const beginSignalLod = 2.9
+		const endSignalLod   = 6.7
+		
+		if ( ( this.replicator.selected || keepHoverOverride ) && detail >= beginSignalLod ) {
+			ctx.savePartial( 'globalAlpha' )
+			ctx.globalAlpha *= Math.min( ( detail - beginSignalLod ) / ( endSignalLod - beginSignalLod ), 1.0 )
+			
 			this.drawSignals( ctx )
+			
+			ctx.restorePartial()
 		}
 		
 		// draw neurons
@@ -851,14 +867,21 @@ ReplicatorView.prototype = {
 			neuronView.draw( ctx, detail )
 		}
 		
-		// fade energy on hover
-		// TODO smooth transition
+		// draw energy
 		{
 			let oldGlobalAlpha
 			
-			if ( keepHoverOverride ) {
+			const beginEnergyLod = 1.0
+			const endEnergyLod   = 7.1
+			const minAlpha       = 0.2
+			const maxAlpha       = 1.0
+			
+			const progress = 1 - ( detail - beginEnergyLod ) / ( endEnergyLod - beginEnergyLod ) // 1..0
+			const alpha = minAlpha + ( progress * ( maxAlpha - minAlpha ) )
+			
+			if ( detail >= beginEnergyLod ) {
 				oldGlobalAlpha = ctx.globalAlpha
-				ctx.globalAlpha *= 0.3
+				ctx.globalAlpha *= Math.max( alpha, minAlpha )
 			}
 			
 			this.drawEnergy( ctx )
@@ -866,7 +889,7 @@ ReplicatorView.prototype = {
 			// draw glossy face
 			ctx.drawImage( this.assets.face, p0.x - r0, p0.y - r0, r0 * 2, r0 * 2 )
 			
-			if ( keepHoverOverride ) {
+			if ( detail >= beginEnergyLod ) {
 				ctx.globalAlpha = oldGlobalAlpha
 			}
 		}

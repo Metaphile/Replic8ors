@@ -180,7 +180,7 @@ export default function WorldView( world ) {
 		
 		for ( const view of self.foodViews ) view.draw( ctx )
 		
-		const fisheyeZoomThreshold = 0
+		const fisheyeZoomThreshold = 1.8
 		
 		for ( const view of self.preyViews ) {
 			// don't draw offscreen preys
@@ -189,7 +189,7 @@ export default function WorldView( world ) {
 			if ( p.x + r < viewBounds.topLeft.x || p.x - r > viewBounds.bottomRight.x || p.y + r < viewBounds.topLeft.y || p.y - r > viewBounds.bottomRight.y ) continue
 			
 			const mouseDistance = Vector2.distance( mousePos_world, view.replicator.position )
-			if ( mouseDistance < view.replicator.radius && camera.zoomLevel() > fisheyeZoomThreshold ) {
+			if ( ( mouseDistance < view.replicator.radius && camera.zoomLevel() >= fisheyeZoomThreshold && !view.replicator.dead ) || view.replicator.selected ) {
 				view.drawWithFisheye( ctx, camera, mousePos_world, detail )
 			} else {
 				view.draw( ctx, camera, detail )
@@ -203,7 +203,7 @@ export default function WorldView( world ) {
 			if ( p.x + r < viewBounds.topLeft.x || p.x - r > viewBounds.bottomRight.x || p.y + r < viewBounds.topLeft.y || p.y - r > viewBounds.bottomRight.y ) continue
 			
 			const mouseDistance = Vector2.distance( mousePos_world, view.replicator.position )
-			if ( mouseDistance < view.replicator.radius && camera.zoomLevel() > fisheyeZoomThreshold ) {
+			if ( ( mouseDistance < view.replicator.radius && camera.zoomLevel() >= fisheyeZoomThreshold && !view.replicator.dead ) || view.replicator.selected ) {
 				view.drawWithFisheye( ctx, camera, mousePos_world, detail )
 			} else {
 				view.draw( ctx, camera, detail )

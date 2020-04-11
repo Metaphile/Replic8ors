@@ -177,8 +177,13 @@ export default function Visualization( world ) {
 			selection = worldView.getPredatorAt( clickPos_world )
 			selection = selection || worldView.getPreyAt( clickPos_world )
 			
+			for ( const replicator of [ ...world.preys, ...world.predators ] ) {
+				replicator.selected = false
+			}
+			
 			if ( selection ) {
 				cameraOp.follow( selection )
+				selection.selected = true
 				hud.select( selection )
 			} else {
 				cameraOp.unfollow()
@@ -197,6 +202,7 @@ export default function Visualization( world ) {
 			
 			if ( selection ) {
 				cameraOp.smoothZoomTo( 6.9, clickPos_world )
+				selection.selected = true
 				cameraOp.follow( selection )
 				hud.select( selection )
 				
@@ -208,6 +214,7 @@ export default function Visualization( world ) {
 		world.on( 'prey-died predator-died', entity => {
 			if ( selection === entity ) {
 				cameraOp.unfollow()
+				entity.selected = false
 				hud.deselect()
 			}
 			
@@ -271,7 +278,7 @@ export default function Visualization( world ) {
 		canvas.width = canvas.width
 		
 		camera.applyView( ctx )
-		worldView.draw( ctx, camera, camera.toWorld( mousePos_screen ) )
+		worldView.draw( ctx, camera, camera.toWorld( mousePos_screen ), camera.zoomLevel() )
 		
 		// HUD expects untransformed canvas
 		ctx.setTransform( 1, 0, 0, 1, 0, 0 )
