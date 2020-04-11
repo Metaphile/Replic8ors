@@ -95,11 +95,6 @@ NeuronView.prototype = {
 		if ( detail > 0.1 ) {
 			ctx.translate( this.position.x, this.position.y )
 			
-			const rotation = ( -this.neuron.inhibitoryInput * Math.PI * 2 ) % ( Math.PI * 2 )
-			if ( !this.neuron.firing ) {
-				ctx.rotate( rotation )
-			}
-			
 			const r = this.radius * 0.36
 			ctx.savePartial( 'globalAlpha' )
 			ctx.globalAlpha *= 1 - ( 1 - detail ) / 0.9
@@ -109,10 +104,6 @@ NeuronView.prototype = {
 			ctx.drawImage( this.icon, -r + halfAPixel, -r + halfAPixel, r * 2, r * 2 )
 			
 			ctx.restorePartial()
-			
-			if ( !this.neuron.firing ) {
-				ctx.rotate( -rotation )
-			}
 			
 			ctx.translate( -this.position.x, -this.position.y )
 		}
