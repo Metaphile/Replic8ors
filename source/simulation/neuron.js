@@ -55,9 +55,10 @@ Neuron.prototype = {
 		const input = w * dt
 		
 		if ( !this.firing ) {
-			if ( input < 0 ) {
-				this.inhibitoryInput -= input
-			}
+			// input is modeled as a fixed-magnitude value, with excitatory and
+			// inhibitory components. if the ratio of components is 1:1, the net value
+			// is 0; if it's 2:1, the net value is > 0; etc.
+			this.inhibitoryInput += ( 1 - ( ( w + 1 ) / 2 ) ) * dt
 			
 			this.inputBuffer.push( input )
 		}

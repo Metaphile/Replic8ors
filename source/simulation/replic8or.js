@@ -159,6 +159,8 @@ export default function Replic8or( opts = {} ) {
 		} )
 	} )
 	
+	self.ancestorWeights = opts.ancestorWeights || self.getOwnWeights()
+	
 	return self
 }
 
@@ -170,6 +172,18 @@ function stimulusStrength( distance ) {
 }
 
 Replic8or.prototype = {
+	getOwnWeights: function () {
+		const pseudoNeurons = []
+		
+		this.brain.neurons.forEach( () => {
+			pseudoNeurons.push( { weights: [] } )
+		} )
+		
+		this.copyWeights( this.brain.neurons, pseudoNeurons )
+		
+		return pseudoNeurons
+	},
+	
 	update: function ( dt ) {
 		// stimulate hunger neuron _before_ updating brain
 		// may fix rare issue where neuron has potential == 1 on activation frame
