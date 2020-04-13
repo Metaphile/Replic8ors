@@ -5,7 +5,7 @@ import $ from '../../third-party/jquery'
 import Hud from './hud'
 import HudMarker from './hud-marker'
 import Vector2 from '../engine/vector-2'
-import { CtxPartialStateStack } from '../helpers'
+import { CtxPartialStateStack, pointIsInCircle } from '../helpers'
 
 export default function Visualization( world ) {
 	const self = {}
@@ -43,10 +43,10 @@ export default function Visualization( world ) {
 	let cameraOp = dummyCameraOp
 	
 	const dummyWorldView = {
+		predatorViews: [],
+		preyViews: [],
 		update() {},
 		draw() {},
-		getPredatorAt() {},
-		getPreyAt() {},
 		destroy() {},
 	}
 	let worldView = dummyWorldView
@@ -174,37 +174,66 @@ export default function Visualization( world ) {
 		$canvas.on( 'click', ( event ) => {
 			const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
 			
-			selection = worldView.getPredatorAt( clickPos_world )
-			selection = selection || worldView.getPreyAt( clickPos_world )
+			// reverse z-order (topmost first)
+			const replicatorViews = [ ...worldView.predatorViews, ...worldView.preyViews ].reverse()
 			
-			for ( const replicator of [ ...world.preys, ...world.predators ] ) {
-				replicator.selected = false
+			function selectReplicatorView( replicatorView ) {
+				replicatorView.selected = true
+				cameraOp.follow( replicatorView.replicator )
+				hud.select( replicatorView.replicator )
+				selection = replicatorView.replicator
 			}
 			
-			if ( selection ) {
-				cameraOp.follow( selection )
-				selection.selected = true
-				hud.select( selection )
-			} else {
+			function deselectReplicatorViews() {
+				replicatorViews.forEach( v => v.selected = false )
 				cameraOp.unfollow()
 				hud.deselect()
 			}
+			
+			function deselectNeuronViews() {
+				replicatorViews
+					.forEach( v => v.neuronViews
+						.forEach( v => v.selected = false ) )
+			}
+			
+			const clickedReplicatorView = replicatorViews.find( v => pointIsInCircle( clickPos_world, v.replicator ) )
+			
+			if ( !clickedReplicatorView ) {
+				// clicked outside of any replicator
+				deselectNeuronViews()
+				deselectReplicatorViews()
+				return
+			}
+			
+			if ( clickedReplicatorView.replicator !== selection ) {
+				// clicked on different replicator
+				deselectNeuronViews()
+				deselectReplicatorViews()
+				// continue with click handling logic, below
+				// clicked replicator will get selected
+			}
+			
+			selectReplicatorView( clickedReplicatorView )
+			
+			const clickedNeuronView = clickedReplicatorView.neuronViews.slice().reverse().find( v => pointIsInCircle( clickPos_world, v ) )
+			
+			if ( !clickedNeuronView ) {
+				// clicked outside of any neuron
+				deselectNeuronViews()
+				return
+			}
+			
+			// enable neuron selection at or above beginFisheyeLod
+			if ( camera.zoomLevel() >= 2.9 ) {
+				clickedNeuronView.selected = !clickedNeuronView.selected
+			}
 		} )
 		
-		// TODO smooth transition
-		// TODO move replicator completely into view
-		// TODO zoom more or less according to screen size
 		$canvas.on( 'dblclick', ( event ) => {
-			const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
-			
-			selection = worldView.getPredatorAt( clickPos_world )
-			selection = selection || worldView.getPreyAt( clickPos_world )
-			
 			if ( selection ) {
+				const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
 				cameraOp.smoothZoomTo( 6.9, clickPos_world )
-				selection.selected = true
 				cameraOp.follow( selection )
-				hud.select( selection )
 				
 				event.preventDefault()
 			}

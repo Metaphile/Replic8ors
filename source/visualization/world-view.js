@@ -189,7 +189,7 @@ export default function WorldView( world ) {
 			if ( p.x + r < viewBounds.topLeft.x || p.x - r > viewBounds.bottomRight.x || p.y + r < viewBounds.topLeft.y || p.y - r > viewBounds.bottomRight.y ) continue
 			
 			const mouseDistance = Vector2.distance( mousePos_world, view.replicator.position )
-			if ( ( mouseDistance < view.replicator.radius && camera.zoomLevel() >= fisheyeZoomThreshold && !view.replicator.dead ) || view.replicator.selected ) {
+			if ( ( mouseDistance < view.replicator.radius && camera.zoomLevel() >= fisheyeZoomThreshold && !view.replicator.dead ) ) {
 				view.drawWithFisheye( ctx, camera, mousePos_world, detail )
 			} else {
 				view.draw( ctx, camera, detail )
@@ -203,7 +203,7 @@ export default function WorldView( world ) {
 			if ( p.x + r < viewBounds.topLeft.x || p.x - r > viewBounds.bottomRight.x || p.y + r < viewBounds.topLeft.y || p.y - r > viewBounds.bottomRight.y ) continue
 			
 			const mouseDistance = Vector2.distance( mousePos_world, view.replicator.position )
-			if ( ( mouseDistance < view.replicator.radius && camera.zoomLevel() >= fisheyeZoomThreshold && !view.replicator.dead ) || view.replicator.selected ) {
+			if ( ( mouseDistance < view.replicator.radius && camera.zoomLevel() >= fisheyeZoomThreshold && !view.replicator.dead ) ) {
 				view.drawWithFisheye( ctx, camera, mousePos_world, detail )
 			} else {
 				view.draw( ctx, camera, detail )
@@ -213,33 +213,6 @@ export default function WorldView( world ) {
 		// foreground.draw( ctx, camera.viewCenter( ctx.canvas ) )
 		
 		ctx.restorePartial()
-	}
-	
-	const pointInCircle = ( point, center, radius ) => {
-		const distance = Vector2.getLength( Vector2.subtract( center, point, {} ) ) - radius
-		return distance < 0
-	}
-	
-	// return topmost prey at point (by view z order), or undefined
-	self.getPreyAt = ( point_world ) => {
-		const view = self.preyViews.slice().reverse().find( view => {
-			return pointInCircle( point_world, view.replicator.position, view.replicator.radius )
-		} )
-		
-		if ( view && world.preys.find( replicator => replicator === view.replicator ) ) {
-			return view.replicator
-		}
-	}
-	
-	// return topmost predator at point (by view z order), or undefined
-	self.getPredatorAt = ( point_world ) => {
-		const view = self.predatorViews.slice().reverse().find( view => {
-			return pointInCircle( point_world, view.replicator.position, view.replicator.radius )
-		} )
-		
-		if ( view && world.predators.find( replicator => replicator === view.replicator ) ) {
-			return view.replicator
-		}
 	}
 	
 	self.destroy = () => {

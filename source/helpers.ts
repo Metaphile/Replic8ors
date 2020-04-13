@@ -1,3 +1,5 @@
+import Vector2 from './engine/vector-2'
+
 function leftPadInt( integer: number, maxLength: number = 2, fillString: string = '0' ): string {
 	return integer.toString().padStart( maxLength, fillString )
 }
@@ -71,4 +73,9 @@ export function CtxPartialStateStack( ctx ) {
 	}
 	
 	return ctx
+}
+
+export function pointIsInCircle( point, circle ) {
+	const distance = Vector2.getLength( Vector2.subtract( circle.position, point, {} ) ) - circle.radius
+	return distance <= 0
 }
