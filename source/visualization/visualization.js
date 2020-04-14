@@ -233,7 +233,7 @@ export default function Visualization( world ) {
 		$canvas.on( 'dblclick', ( event ) => {
 			if ( selection ) {
 				const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
-				const inspectZoomLevel = 6.9
+				const inspectZoomLevel = 7.7
 				if ( camera.zoomLevel() < inspectZoomLevel ) {
 					cameraOp.smoothZoomTo( inspectZoomLevel, clickPos_world )
 				}

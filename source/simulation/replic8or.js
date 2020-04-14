@@ -291,7 +291,7 @@ Replic8or.prototype = {
 	},
 	
 	// TODO quietly -> emitEvent
-	replicate: function ( quietly, mutationRate = 0.07 ) {
+	replicate: function ( quietly, mutationRate = 0.04 ) {
 		const parent = this
 		
 		const childOpts = {}
