@@ -115,6 +115,62 @@ const EnergyUpEffectFactory = ( energyUpGradient ) => {
 	return EnergyUpEffect
 }
 
+const SpawnEffect = ( onDone ) => {
+	const self = Object.create( SpawnEffect.prototype )
+	self.onDone = onDone
+	return self
+}
+
+SpawnEffect.prototype = {
+	duration: 1/5,
+	progress: 0,
+	
+	update( dt ) {
+		if ( this.progress < 1 ) {
+			this.progress += 1 / this.duration * dt
+		}
+		
+		if ( this.progress >= 1 ) {
+			this.progress = 1
+			
+			if ( this.onDone ) {
+				this.onDone( this )
+				this.onDone = null
+			}
+		}
+	},
+	
+	beginDraw( ctx, position ) {
+		// enforce lower bound to avoid floating point issues
+		const progress = Math.max( this.progress, 0.5 )
+		
+		ctx.translate( position.x, position.y )
+		
+		const xScale = Math.pow( progress, 4 )
+		const yScale = 1 / xScale
+		ctx.scale( xScale, yScale )
+		
+		ctx.translate( -position.x, -position.y )
+		
+		ctx.globalAlpha *= progress
+	},
+	
+	endDraw( ctx, position ) {
+		// enforce lower bound to avoid floating point issues
+		const progress = Math.max( this.progress, 0.5 )
+		
+		ctx.translate( position.x, position.y )
+		
+		const xScale = 1 / Math.pow( progress, 4 )
+		const yScale = 1 / xScale
+		ctx.scale( xScale, yScale )
+		
+		ctx.translate( -position.x, -position.y )
+		
+		ctx.globalAlpha /= progress
+	},
+}
+
 const backsideGradient = ( () => {
 	const angle = -Math.PI / 4 // -45 degrees
 	const offset = -1/3
@@ -139,6 +195,7 @@ export {
 	DamageEffect,
 	DeathEffect,
 	EnergyUpEffectFactory,
+	SpawnEffect,
 	backsideGradient,
 	ctx,
 	face,

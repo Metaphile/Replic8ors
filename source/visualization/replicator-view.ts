@@ -233,12 +233,25 @@ export default function ReplicatorView( replicator, opts = {}, theme = 'prey' ) 
 	// energy up effect is stackable
 	self.effects.energyUps = []
 	
+	self.doSpawnEffect()
+	
 	return self
 }
 
 const distort = x => Math.cos( ( x - 1 ) * Math.PI )
 
 ReplicatorView.prototype = {
+	doSpawnEffect() {
+		return new Promise( resolve => {
+			const onDone = () => {
+				this.effects.spawn = null
+				resolve()
+			}
+			
+			this.effects.spawn = this.assets.SpawnEffect( onDone )
+		} )
+	},
+	
 	doEnergyUpEffect() {
 		return new Promise( resolve => {
 			const onDone = ( which ) => {
@@ -295,6 +308,7 @@ ReplicatorView.prototype = {
 		this._apparentEnergy += ( this.replicator.energy - this._apparentEnergy ) * 9 * dt_sim
 		this._slosh = ( this._slosh + ( 0.51 * dt_sim ) ) % ( Math.PI * 2 )
 		
+		if ( this.effects.spawn ) this.effects.spawn.update( dt_real )
 		for ( const effect of this.effects.energyUps ) effect.update( dt_sim )
 		if ( this.effects.damage ) this.effects.damage.update( dt_sim )
 		if ( this.effects.death ) this.effects.death.update( dt_sim )
@@ -821,6 +835,10 @@ ReplicatorView.prototype = {
 		const p0 = replicator.position
 		const r0 = replicator.radius
 		
+		if ( this.effects.spawn ) {
+			this.effects.spawn.beginDraw( ctx, p0 )
+		}
+		
 		this.drawBackside( ctx )
 		
 		// this.drawSeparators( ctx )
@@ -882,6 +900,10 @@ ReplicatorView.prototype = {
 				ctx.arc( this.replicator.position.x, this.replicator.position.y, this.replicator.radius - 2.9/2, 0, Math.PI * 2 )
 				ctx.fillStyle = 'orange'
 				ctx.fill()
+		}
+		
+		if ( this.effects.spawn ) {
+			this.effects.spawn.endDraw( ctx, p0 )
 		}
 		
 		ctx.restorePartial()
