@@ -141,21 +141,11 @@ export default function WorldView( world ) {
 	
 	self.update = ( dt_real, dt_sim ) => {
 		for ( const view of self.preyViews ) {
-			let dt3 = dt_sim
-			while ( dt3 > 1/60 ) {
-				view.update( 0, 1/60 )
-				dt3 -= 1/60
-			}
-			view.update( dt_real, dt3 )
+			view.update( dt_real, dt_sim )
 		}
 		
 		for ( const view of self.predatorViews ) {
-			let dt3 = dt_sim
-			while ( dt3 > 1/60 ) {
-				view.update( 0, 1/60 )
-				dt3 -= 1/60
-			}
-			view.update( dt_real, dt3 )
+			view.update( dt_real, dt_sim )
 		}
 		
 		for ( const view of self.foodViews ) {
