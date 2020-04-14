@@ -14,9 +14,9 @@ DamageEffect.prototype = {
 	duration: 1/3,
 	progress: 0,
 	
-	update( dt_real, dt_sim ) {
+	update( dt ) {
 		if ( this.progress < 1 ) {
-			this.progress += 1 / this.duration * dt_sim
+			this.progress += 1 / this.duration * dt
 		}
 		
 		if ( this.progress >= 1 && this.onDone ) {
@@ -56,9 +56,9 @@ DeathEffect.prototype = {
 	duration: 1,
 	progress: 0,
 	
-	update( dt_real, dt_sim ) {
+	update( dt ) {
 		if ( this.progress < 1 ) {
-			this.progress += 1 / this.duration * dt_sim
+			this.progress += 1 / this.duration * dt
 		}
 		
 		if ( this.progress >= 1 && this.onDone ) {
@@ -80,9 +80,9 @@ const EnergyUpEffectFactory = ( energyUpGradient ) => {
 	}
 	
 	EnergyUpEffect.prototype = {
-		update( dt, dt2 ) {
+		update( dt ) {
 			if ( this.progress < 1 ) {
-				this.progress += 1 / this.duration * dt2
+				this.progress += 1 / this.duration * dt
 			}
 			
 			if ( this.progress >= 1 && this.onDone ) {

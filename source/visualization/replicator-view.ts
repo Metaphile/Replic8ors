@@ -296,9 +296,9 @@ ReplicatorView.prototype = {
 		this._apparentEnergy += ( this.replicator.energy - this._apparentEnergy ) * 9 * dt_sim
 		this._slosh = ( this._slosh + ( 0.51 * dt_sim ) ) % ( Math.PI * 2 )
 		
-		for ( const effect of this.effects.energyUps ) effect.update( dt_real, dt_sim )
-		if ( this.effects.damage ) this.effects.damage.update( dt_real, dt_sim )
-		if ( this.effects.death ) this.effects.death.update( dt_real, dt_sim )
+		for ( const effect of this.effects.energyUps ) effect.update( dt_sim )
+		if ( this.effects.damage ) this.effects.damage.update( dt_sim )
+		if ( this.effects.death ) this.effects.death.update( dt_sim )
 		
 		if ( this.replicator.takingDamage ) {
 			// TODO this only works accidentally
