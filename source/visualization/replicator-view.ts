@@ -128,15 +128,14 @@ function confineNeuronView( neuronView, replicatorPosition, adjustedConfinementR
 function anchorNeuronViews() {
 	const p0 = this.replicator.position
 	const r0 = this.replicator.radius
-	const a0 = this.replicator.rotation
 	
 	// anchor flipper neurons
 	for ( const flipper of this.replicator.flippers ) {
 		const neuronView = this.neuronViews[ flipper.neuron.index ]
 		const r1 = r0 * 0.73
 		const a1 = flipper.angle
-		neuronView.anchor.x = p0.x + Math.cos( a0 + a1 ) * r1
-		neuronView.anchor.y = p0.y + Math.sin( a0 + a1 ) * r1
+		neuronView.anchor.x = p0.x + Math.cos( a1 ) * r1
+		neuronView.anchor.y = p0.y + Math.sin( a1 ) * r1
 	}
 	
 	// anchor receptor neurons
@@ -146,7 +145,7 @@ function anchorNeuronViews() {
 		const deltaAngle = 0.37
 		const radius = r0 * 0.73
 		
-		const startAngle = a0 + receptor.angle + ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
+		const startAngle = receptor.angle + ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
 		
 		for ( let i = 0, n = receptor.neurons.length; i < n; i++ ) {
 			const neuron = receptor.neurons[ i ]
@@ -163,15 +162,15 @@ function anchorNeuronViews() {
 		
 		const r1 = r0 * 0
 		
-		hungerView.anchor.x = p0.x + Math.cos( a0 + Math.PI / 2 ) * r1
-		hungerView.anchor.y = p0.y + Math.sin( a0 + Math.PI / 2 ) * r1
+		hungerView.anchor.x = p0.x + Math.cos( Math.PI / 2 ) * r1
+		hungerView.anchor.y = p0.y + Math.sin( Math.PI / 2 ) * r1
 	}
 	
 	// think neurons
 	{
 		const r1 = r0 * 0.3
 		const { numInternalNeurons } = this.replicator
-		let angle = ( numInternalNeurons % 2 === 0 ) ? a0 : a0 + Math.PI/2
+		let angle = ( numInternalNeurons % 2 === 0 ) ? 0 : Math.PI/2
 		for ( const thinkNeuron of this.replicator.thinkNeurons ) {
 			const thinkView = this.neuronViews[ thinkNeuron.index ]
 			thinkView.anchor.x = p0.x + Math.cos( angle ) * r1
@@ -445,7 +444,6 @@ ReplicatorView.prototype = {
 	
 	drawSignals( ctx ) {
 		const numNeuronViews = this.neuronViews.length
-		const a0 = this.replicator.rotation
 		
 		for ( let i = 0; i < numNeuronViews; i++ ) {
 			const neuronViewI = this.neuronViews[ i ]
@@ -492,7 +490,7 @@ ReplicatorView.prototype = {
 			if ( flipper.neuron.firing ) {
 				const neuronView = this.neuronViews[ flipper.neuron.index ]
 				const r1 = this.replicator.radius
-				const a1 = a0 + flipper.angle
+				const a1 = flipper.angle
 				const flipperPosition = {
 					x: this.replicator.position.x + Math.cos( a1 ) * r1,
 					y: this.replicator.position.y + Math.sin( a1 ) * r1,
@@ -507,8 +505,8 @@ ReplicatorView.prototype = {
 		// receptor signals
 		for ( const receptor of this.replicator.receptors ) {
 			const receptorPosition = { x: 0, y: 0 }
-			receptorPosition.x = this.replicator.position.x + Math.cos( a0 + receptor.angle ) * this.replicator.radius * 0.9
-			receptorPosition.y = this.replicator.position.y + Math.sin( a0 + receptor.angle ) * this.replicator.radius * 0.9
+			receptorPosition.x = this.replicator.position.x + Math.cos( receptor.angle ) * this.replicator.radius * 0.9
+			receptorPosition.y = this.replicator.position.y + Math.sin( receptor.angle ) * this.replicator.radius * 0.9
 			
 			this.drawInputSource( ctx, receptorPosition, inputSourceRadius )
 			
@@ -825,20 +823,11 @@ ReplicatorView.prototype = {
 		
 		this.drawBackside( ctx )
 		
-		// rotate (some parts) with replicator
-		ctx.translate( p0.x, p0.y )
-		ctx.rotate( this.replicator.rotation )
-		ctx.translate( -p0.x, -p0.y )
-		
 		// this.drawSeparators( ctx )
 		
 		if ( this.effects.damage ) {
 			this.effects.damage.draw( ctx, this.replicator.position, this.replicator.radius )
 		}
-		
-		ctx.translate( p0.x, p0.y )
-		ctx.rotate( -this.replicator.rotation )
-		ctx.translate( -p0.x, -p0.y )
 		
 		const beginSignalLod = 2.9
 		const endSignalLod   = 6.7
@@ -883,10 +872,6 @@ ReplicatorView.prototype = {
 				ctx.globalAlpha = oldGlobalAlpha
 			}
 		}
-		
-		ctx.translate( p0.x, p0.y )
-		ctx.rotate( this.replicator.rotation )
-		ctx.translate( -p0.x, -p0.y )
 		
 		this.drawFlippers( ctx )
 		
