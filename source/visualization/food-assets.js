@@ -49,13 +49,13 @@ CrumbsEffect.prototype = {
 	onDone: null,
 	spread: Math.PI * 2,
 	
-	update( dt, dt2 ) {
+	update( dt_real, dt_sim ) {
 		if ( this.progress < 1 ) {
 			for ( const crumb of this.crumbs ) {
-				crumb.updatePhysics( dt2 )
+				crumb.updatePhysics( dt_sim )
 			}
 			
-			this.progress += 1 / this.duration * dt2
+			this.progress += 1 / this.duration * dt_sim
 		}
 		
 		if ( this.progress >= 1 && this.onDone ) {
@@ -94,9 +94,9 @@ export const SpoiledEffect = ( position, onDone, opts = {} ) => {
 SpoiledEffect.prototype = {
 	duration: 2.5,
 	
-	update( dt, dt2 ) {
+	update( dt_real, dt_sim ) {
 		if ( this.progress < 1 ) {
-			this.progress += 1 / this.duration * dt2
+			this.progress += 1 / this.duration * dt_sim
 		}
 		
 		if ( this.progress >= 1 && this.onDone ) {

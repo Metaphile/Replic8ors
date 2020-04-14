@@ -69,12 +69,12 @@ export default function NeuronView( neuron, role = 'think', opts = {} ) {
 }
 
 NeuronView.prototype = {
-	update( dt, dt2 ) {
+	update( dt_real, dt_sim ) {
 		const dx = this.anchor.x - this.position.x
 		const dy = this.anchor.y - this.position.y
 		
-		this.position.x += dx * this.clinginess * dt2
-		this.position.y += dy * this.clinginess * dt2
+		this.position.x += dx * this.clinginess * dt_sim
+		this.position.y += dy * this.clinginess * dt_sim
 		
 		// TEMP
 		this.radius = defaultOpts.radius

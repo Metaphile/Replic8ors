@@ -46,9 +46,9 @@ FoodView.prototype = {
 		return this.doCrumbsEffect()
 	},
 	
-	update( dt, dt2 ) {
+	update( dt_real, dt_sim ) {
 		for ( const key of Object.keys( this.effects ) ) {
-			this.effects[ key ].update( dt, dt2 )
+			this.effects[ key ].update( dt_real, dt_sim )
 		}
 	},
 	

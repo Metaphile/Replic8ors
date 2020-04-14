@@ -297,10 +297,10 @@ export default function Visualization( world ) {
 		self.$element.addClass( 'detached' )
 	},
 	
-	self.update = ( dt, dt2 ) => {
-		cameraOp.update( dt, dt2 )
-		worldView.update( dt, dt2 )
-		hud.update( dt )
+	self.update = ( dt_real, dt_sim ) => {
+		cameraOp.update( dt_real, dt_sim )
+		worldView.update( dt_real, dt_sim )
+		hud.update( dt_real )
 	},
 	
 	self.draw = () => {

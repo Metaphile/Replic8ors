@@ -139,28 +139,30 @@ export default function WorldView( world ) {
 		} )
 	} ) */
 	
-	self.update = ( dt, dt2 ) => {
+	self.update = ( dt_real, dt_sim ) => {
 		for ( const view of self.preyViews ) {
-			let dt3 = dt2
+			let dt3 = dt_sim
 			while ( dt3 > 1/60 ) {
 				view.update( 0, 1/60 )
 				dt3 -= 1/60
 			}
-			view.update( dt, dt3 )
+			view.update( dt_real, dt3 )
 		}
 		
 		for ( const view of self.predatorViews ) {
-			let dt3 = dt2
+			let dt3 = dt_sim
 			while ( dt3 > 1/60 ) {
 				view.update( 0, 1/60 )
 				dt3 -= 1/60
 			}
-			view.update( dt, dt3 )
+			view.update( dt_real, dt3 )
 		}
 		
-		for ( const view of self.foodViews       ) view.update( dt, dt2 )
+		for ( const view of self.foodViews ) {
+			view.update( dt_real, dt_sim )
+		}
 		
-		// foreground.update( dt2 )
+		// foreground.update( dt_sim )
 	}
 	
 	self.draw = ( ctx, camera, mousePos_world, detail = 1 ) => {

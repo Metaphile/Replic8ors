@@ -59,15 +59,15 @@ export default function CameraOperator( camera, canvas ) {
 		self.offset.y = viewCenter.y
 	}
 	
-	self.update = ( dt, dt2 ) => {
+	self.update = ( dt_real, dt_sim ) => {
 		const viewCenter = camera.viewCenter( canvas )
 		
 		// pseudo-random camera bob
 		// pauses with simulation
-		if ( dt2 ) {
-			bobAngle = ( bobAngle + 0.21 * dt2 ) % ( Math.PI * 2 )
+		if ( dt_sim > 0 ) {
+			bobAngle = ( bobAngle + 0.21 * dt_sim ) % ( Math.PI * 2 )
 			
-			var m = 1.875 * dt2
+			var m = 1.875 * dt_sim
 			self.offset.x += Math.cos( bobAngle *  7 ) * m
 			self.offset.y += Math.sin( bobAngle * 13 ) * m
 		}
@@ -89,8 +89,8 @@ export default function CameraOperator( camera, canvas ) {
 			var speed = 5.6
 			
 			camera.pan(
-				( px - viewCenter.x ) * speed * dt,
-				( py - viewCenter.y ) * speed * dt
+				( px - viewCenter.x ) * speed * dt_real,
+				( py - viewCenter.y ) * speed * dt_real
 			)
 		}
 		
