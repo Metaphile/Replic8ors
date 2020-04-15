@@ -188,6 +188,7 @@ export default function Visualization( world ) {
 				replicatorViews.forEach( v => v.selected = false )
 				cameraOp.unfollow()
 				hud.deselect()
+				selection = null
 			}
 			
 			function deselectNeuronViews() {
