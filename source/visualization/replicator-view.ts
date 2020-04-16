@@ -635,7 +635,7 @@ ReplicatorView.prototype = {
 			ctx.moveTo( x0, y0 )
 			ctx.lineTo( x1, y1 )
 			ctx.lineWidth = guideWidth
-			ctx.strokeStyle = config.excitatoryColor
+			ctx.strokeStyle = 'rgba(  90, 195, 255, 0.6 )'
 			ctx.globalCompositeOperation = config.excitatoryCompositeOperation
 			ctx.stroke()
 		
