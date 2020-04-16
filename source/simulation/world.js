@@ -75,6 +75,17 @@ World.prototype = {
 		
 		// collisions
 		
+		// foods-foods
+		for ( let i = 0, n = foods.length; i < n; i++ ) {
+			const foodA = foods[ i ]
+			
+			for ( let j = i + 1; j < n; j++ ) {
+				const foodB = foods[ j ]
+				
+				foodA.collideWith( foodB, dt )
+			}
+		}
+		
 		// foods-preys / preys-foods
 		for ( let foodIndex = 0; foodIndex < foods.length; foodIndex++ ) {
 			const food = foods[ foodIndex ]
