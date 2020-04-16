@@ -78,7 +78,7 @@ export default function Scenario( world, opts = {} ) {
 			
 			foodQueue.push( food )
 			
-			const preDelay = 0
+			const preDelay = 1
 			
 			timer.scheduleAction( preDelay + ( foodQueue.length * spawnDelay ), () => {
 				world.addFood( foodQueue.pop() )
@@ -98,7 +98,7 @@ export default function Scenario( world, opts = {} ) {
 			
 			preyQueue.push( prey )
 			
-			const preDelay = ( foodQueue.length * spawnDelay )
+			const preDelay = 2
 			
 			timer.scheduleAction( preDelay + ( preyQueue.length * spawnDelay ), () => {
 				world.addPrey( preyQueue.pop() )
@@ -118,7 +118,7 @@ export default function Scenario( world, opts = {} ) {
 			
 			predatorQueue.push( predator )
 			
-			const preDelay = ( foodQueue.length * spawnDelay ) + ( preyQueue.length * spawnDelay )
+			const preDelay = 3
 			
 			timer.scheduleAction( preDelay + ( predatorQueue.length * spawnDelay ), () => {
 				world.addPredator( predatorQueue.pop() )
