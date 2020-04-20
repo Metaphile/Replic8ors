@@ -854,8 +854,8 @@ ReplicatorView.prototype = {
 			this.effects.damage.draw( ctx, this.replicator.position, this.replicator.radius )
 		}
 		
-		const beginSignalLod = 2.9
-		const endSignalLod   = 6.7
+		const beginSignalLod = 2.5
+		const endSignalLod   = 5.8
 		
 		if ( ( this.selected || keepHoverOverride ) && detail >= beginSignalLod ) {
 			ctx.savePartial( 'globalAlpha' )
@@ -877,7 +877,7 @@ ReplicatorView.prototype = {
 			
 			const beginEnergyLod = 1.0
 			const endEnergyLod   = 7.1
-			const minAlpha       = 0.2
+			const minAlpha       = 0.22
 			const maxAlpha       = 1.0
 			
 			const progress = 1 - ( detail - beginEnergyLod ) / ( endEnergyLod - beginEnergyLod ) // 1..0
