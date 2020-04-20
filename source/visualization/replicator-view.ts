@@ -367,11 +367,18 @@ ReplicatorView.prototype = {
 				const distortedOffset = Vector2.subtract( mousePos_world, view.position, {} )
 				const distortedDistance = Vector2.getLength( distortedOffset )
 				
-				if ( distortedDistance < view.radius || view.selected ) {
+				if ( distortedDistance < view.radius && view.selected ) {
 					view.connectionOpacity = 1
 					view.overrideSignalOpacity = true
 					// multiple neurons can be active hover targets and that's OK
 					view.active = true
+				} else if ( distortedDistance < view.radius ) {
+					view.connectionOpacity = 1
+					view.overrideSignalOpacity = true
+					view.active = true
+				} else if ( view.selected ) {
+					view.connectionOpacity = 1
+					view.overrideSignalOpacity = true
 				} else {
 					view.connectionOpacity = 0.0
 					view.overrideSignalOpacity = false

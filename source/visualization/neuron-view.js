@@ -89,8 +89,10 @@ NeuronView.prototype = {
 		ctx.beginPath()
 			ctx.arc( this.position.x, this.position.y, this.radius, 0, Math.PI * 2 )
 			
-			if ( this.selected ) {
-				ctx.fillStyle = 'rgba( 255, 144, 36, 0.7 )'
+			if ( this.selected && this.active ) {
+				ctx.fillStyle = 'rgba( 255, 70, 0, 0.45 )'
+			} else if ( this.selected ) {
+				ctx.fillStyle = 'rgba( 255, 70, 0, 0.45 )'
 			} else if ( this.active ) {
 				ctx.fillStyle = 'rgba( 90, 195, 255, 0.9 )'
 			} else {
