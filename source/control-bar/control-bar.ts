@@ -119,11 +119,11 @@ export default function ControlBar( scenarioLoop, visualization ) {
 		},
 		
 		showInfo() {
-			$info.fadeIn()
+			$info.show()
 		},
 		
 		toggleInfo() {
-			$info.fadeToggle()
+			$info.toggle()
 		},
 	}
 	
