@@ -170,8 +170,6 @@ export default function WorldView( world ) {
 		
 		const viewBounds = camera.viewBounds( ctx.canvas )
 		
-		for ( const view of self.foodViews ) view.draw( ctx )
-		
 		const fisheyeZoomThreshold = 1.8
 		
 		for ( const view of self.preyViews ) {
@@ -201,6 +199,8 @@ export default function WorldView( world ) {
 				view.draw( ctx, camera, detail )
 			}
 		}
+		
+		for ( const view of self.foodViews ) view.draw( ctx )
 		
 		// foreground.draw( ctx, camera.viewCenter( ctx.canvas ) )
 		
