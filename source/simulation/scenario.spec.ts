@@ -31,9 +31,7 @@ describe( 'scenario', () => {
 		
 		const scenarioOpts = {
 			maxFoods:     10,
-			numPreys:      5,
 			maxPreys:     10,
-			numPredators:  5,
 			maxPredators: 10,
 		}
 		
@@ -81,21 +79,21 @@ describe( 'scenario', () => {
 	describe( 'manages preys', () => {
 		it( 'adds preys when preys == 0', () => {
 			scenario.balancePopulations()
-			expect( scenario.getNumPreys() ).toBe( scenario.numPreys )
+			expect( scenario.getNumPreys() ).toBe( scenario.maxPreys / 2 )
 		} )
 		
 		it( 'doesn\'t add preys when predators >= max', () => {
 			addPredators( scenario.maxPredators )
 			scenario.balancePopulations()
 			
-			expect( scenario.getNumPreys() ).toBe( scenario.numPreys )
+			expect( scenario.getNumPreys() ).toBe( scenario.maxPreys / 2 )
 		} )
 	} )
 	
 	describe( 'manages predators', () => {
 		it( 'adds predators when predators == 0', () => {
 			scenario.balancePopulations()
-			expect( scenario.getNumPredators() ).toBe( scenario.numPredators )
+			expect( scenario.getNumPredators() ).toBe( scenario.maxPredators / 2 )
 		} )
 	} )
 } )

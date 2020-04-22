@@ -6,9 +6,7 @@ import RingBuffer from '../engine/ring-buffer'
 
 const defaultOpts = {
 	maxFoods:       21,
-	numPreys:        7,
 	maxPreys:       13,
-	numPredators:    5,
 	maxPredators:   11,
 }
 
@@ -17,8 +15,8 @@ export default function Scenario( world, opts = {} ) {
 	Object.assign( self, defaultOpts, opts )
 	
 	// archive
-	const preyCryo = RingBuffer( self.numPreys )
-	const predatorCryo = RingBuffer( self.numPredators )
+	const preyCryo = RingBuffer( Math.ceil( self.maxPreys / 2 ) )
+	const predatorCryo = RingBuffer( Math.ceil( self.maxPredators / 2 ) )
 	
 	const timer = Timer()
 	
@@ -42,11 +40,11 @@ export default function Scenario( world, opts = {} ) {
 		}
 		
 		if ( !areAnyPreys && !areTooManyPredators ) {
-			addPreys( self.numPreys - self.getNumPreys() )
+			addPreys( Math.ceil( self.maxPreys / 2 ) - self.getNumPreys() )
 		}
 		
 		if ( !areAnyPredators ) {
-			addPredators( self.numPredators - self.getNumPredators() )
+			addPredators( Math.ceil ( self.maxPredators / 2 ) - self.getNumPredators() )
 		}
 	}
 	
