@@ -171,56 +171,61 @@ export default function Visualization( world ) {
 		// selected prey or predator
 		let selection
 		
+		function selectReplicatorByView( replicatorView ) {
+			replicatorView.selected = true
+			cameraOp.follow( replicatorView.replicator )
+			hud.select( replicatorView.replicator )
+			selection = replicatorView.replicator
+		}
+		
+		function deselectReplicatorByView( replicatorView ) {
+			replicatorView.selected = false
+			replicatorView.neuronViews.forEach( v => v.selected = false )
+			
+			if ( selection === replicatorView.replicator ) {
+				cameraOp.unfollow()
+				hud.deselect()
+				selection = null
+			}
+		}
+		
 		$canvas.on( 'click', ( event ) => {
 			const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
 			
 			// reverse z-order (topmost first)
 			const replicatorViews = [ ...worldView.predatorViews, ...worldView.preyViews ].reverse()
 			
-			function selectReplicatorView( replicatorView ) {
-				replicatorView.selected = true
-				cameraOp.follow( replicatorView.replicator )
-				hud.select( replicatorView.replicator )
-				selection = replicatorView.replicator
-			}
-			
-			function deselectReplicatorViews() {
-				replicatorViews.forEach( v => v.selected = false )
-				cameraOp.unfollow()
-				hud.deselect()
-				selection = null
-			}
-			
-			function deselectNeuronViews() {
-				replicatorViews
-					.forEach( v => v.neuronViews
-						.forEach( v => v.selected = false ) )
-			}
-			
-			const clickedReplicatorView = replicatorViews.find( v => pointIsInCircle( clickPos_world, v.replicator ) )
+			const clickedReplicatorView = replicatorViews
+				.filter( v => !v.replicator.dead )
+				.find( v => pointIsInCircle( clickPos_world, v.replicator ) )
 			
 			if ( !clickedReplicatorView ) {
 				// clicked outside of any replicator
-				deselectNeuronViews()
-				deselectReplicatorViews()
+				replicatorViews.forEach( v => deselectReplicatorByView( v ) )
 				return
 			}
 			
-			if ( clickedReplicatorView.replicator !== selection ) {
-				// clicked on different replicator
-				deselectNeuronViews()
-				deselectReplicatorViews()
-				// continue with click handling logic, below
-				// clicked replicator will get selected
+			if ( selection && selection !== clickedReplicatorView.replicator ) {
+				// clicked on a different replicator
+				// select new replicator before deselecting old replicator
+				// so focus ring animates
+				
+				const previouslySelectedReplicatorView = replicatorViews.find( v => v.replicator === selection )
+				selectReplicatorByView( clickedReplicatorView )
+				
+				// view won't be found when previously selected replicator died during turbo mode
+				if ( previouslySelectedReplicatorView ) {
+					deselectReplicatorByView( previouslySelectedReplicatorView )
+				}
+			} else if ( !selection ) {
+				selectReplicatorByView( clickedReplicatorView )
 			}
-			
-			selectReplicatorView( clickedReplicatorView )
 			
 			const clickedNeuronView = clickedReplicatorView.neuronViews.slice().reverse().find( v => pointIsInCircle( clickPos_world, v ) )
 			
 			if ( !clickedNeuronView ) {
 				// clicked outside of any neuron
-				deselectNeuronViews()
+				clickedReplicatorView.neuronViews.forEach( v => v.selected = false )
 				return
 			}
 			
@@ -243,15 +248,22 @@ export default function Visualization( world ) {
 			}
 		} )
 		
-		// TODO -> prey-removed
-		world.on( 'prey-died predator-died', entity => {
-			if ( selection === entity ) {
-				cameraOp.unfollow()
-				entity.selected = false
-				hud.deselect()
+		world.on( 'prey-died predator-died', replicator => {
+			const replicatorView = [
+				...worldView.predatorViews,
+				...worldView.preyViews,
+			].find( v => v.replicator === replicator )
+			
+			// no views when running in turbo mode
+			if ( !replicatorView ) {
+				return
 			}
 			
-			hud.untrack( entity )
+			// essentially a no-op if view isn't currently selected
+			deselectReplicatorByView( replicatorView )
+			
+			// don't show offscreen indicators for dead replicators
+			hud.untrack( replicator )
 		} )
 	}
 	
