@@ -10,6 +10,8 @@ import Vector2 from '../engine/vector-2'
 const numMinsToStarve = 2
 
 const defaultOpts = {
+	type: 'replicator',
+	
 	radius: 32,
 	mass: 90,
 	drag: 260,
@@ -164,13 +166,6 @@ export default function Replic8or( opts = {} ) {
 	return self
 }
 
-// similar to the inverse square function except there's no asymptote at x = 0
-function stimulusStrength( distance ) {
-	const curveHeight = 700
-	const curveWidth = 5
-	return curveHeight * ( 1 / ( 1 + Math.pow( distance / curveWidth, 2 ) ) )
-}
-
 Replic8or.prototype = {
 	getOwnWeights: function () {
 		const pseudoNeurons = []
@@ -205,42 +200,41 @@ Replic8or.prototype = {
 		if ( this.energy <= 0 ) this.die()
 	},
 	
-	senseFood: function ( food, dt ) {
-		for ( const receptor of this.receptors ) {
-			const receptorPosition = Object.assign( {}, this.position )
-			receptorPosition.x += Math.cos( this.rotation + receptor.angle ) * this.radius
-			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
+	sense: function ( stimulus, dt ) {
+		// cache properties for performance
+		const stimulusPosX   = stimulus.position.x
+		const stimulusPosY   = stimulus.position.y
+		const stimulusRadius = stimulus.radius
+		const stimulusType   = stimulus.type
+		const receptors      = this.receptors
+		const repPosX        = this.position.x
+		const repPosY        = this.position.y
+		const repRadius      = this.radius
+		const repRotation    = this.rotation
+		const numReceptors   = receptors.length
+		
+		for ( let i = 0; i < numReceptors; i++ ) {
+			const receptor = receptors[ i ]
+			const receptorNeuron = receptor.neurons[ stimulusType ]
 			
-			const distance = Vector2.distance( food.position, receptorPosition ) - food.radius
-			const strength = stimulusStrength( distance )
+			if ( !receptorNeuron ) {
+				throw `can't sense unknown stimulus type ${ stimulusType }`
+			}
 			
-			receptor.neurons.food.stimulate( strength * dt )
-		}
-	},
-	
-	sensePrey: function ( prey, dt ) {
-		for ( const receptor of this.receptors ) {
-			const receptorPosition = Object.assign( {}, this.position )
-			receptorPosition.x += Math.cos( this.rotation + receptor.angle ) * this.radius
-			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
+			const receptPosX = repPosX + Math.cos( repRotation + receptor.angle ) * repRadius
+			const receptPosY = repPosY + Math.sin( repRotation + receptor.angle ) * repRadius
 			
-			const distance = Vector2.distance( prey.position, receptorPosition ) - prey.radius
-			const strength = stimulusStrength( distance )
+			// distance from pointlike receptor to nearest edge of stimulus
+			const dx = stimulusPosX - receptPosX
+			const dy = stimulusPosY - receptPosY
+			const distance = Math.sqrt( dx*dx + dy*dy ) - stimulusRadius
 			
-			receptor.neurons.prey.stimulate( strength * dt )
-		}
-	},
-	
-	sensePredator: function ( predator, dt ) {
-		for ( const receptor of this.receptors ) {
-			const receptorPosition = Object.assign( {}, this.position )
-			receptorPosition.x += Math.cos( this.rotation + receptor.angle ) * this.radius
-			receptorPosition.y += Math.sin( this.rotation + receptor.angle ) * this.radius
+			const curveWidth = 5
+			const curveHeight = 700
+			// similar to the inverse square function except there's no asymptote at x = 0
+			const input = curveHeight * ( 1 / ( 1 + Math.pow( distance / curveWidth, 2 ) ) ) * dt
 			
-			const distance = Vector2.distance( predator.position, receptorPosition ) - predator.radius
-			const strength = stimulusStrength( distance )
-			
-			receptor.neurons.predator.stimulate( strength * dt )
+			receptorNeuron.stimulate( input )
 		}
 	},
 	

@@ -2,6 +2,7 @@ import Physics from '../engine/physics'
 import Events from '../engine/events'
 
 const defaultOpts = {
+	type: 'food',
 	age: 0,
 	calories: 0.7,
 	shelfLife: 5 * 60,

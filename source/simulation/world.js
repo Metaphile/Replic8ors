@@ -102,7 +102,7 @@ World.prototype = {
 				const minimum = Math.pow( r1 + r2, 2 )
 				
 				if ( actual > minimum ) {
-					prey.senseFood( food, dt )
+					prey.sense( food, dt )
 				} else {
 					recipients.push( prey )
 				}
@@ -134,8 +134,8 @@ World.prototype = {
 				
 				preyA.collideWith( preyB, dt )
 				
-				preyA.sensePrey( preyB, dt )
-				preyB.sensePrey( preyA, dt )
+				preyA.sense( preyB, dt )
+				preyB.sense( preyA, dt )
 			}
 		}
 		
@@ -176,8 +176,8 @@ World.prototype = {
 					}
 				}
 				
-				prey.sensePredator( predator, dt )
-				predator.sensePrey( prey, dt )
+				prey.sense( predator, dt )
+				predator.sense( prey, dt )
 			}
 		}
 		
@@ -186,7 +186,7 @@ World.prototype = {
 			predator.takingDamage = false
 			
 			for ( const food of this.foods ) {
-				predator.senseFood( food, dt )
+				predator.sense( food, dt )
 				
 				if ( Vector2.distance( predator.position, food.position ) < predator.radius + food.radius ) {
 					predator.takingDamage = true
@@ -215,8 +215,8 @@ World.prototype = {
 				
 				predatorA.collideWith( predatorB, dt )
 				
-				predatorA.sensePredator( predatorB, dt )
-				predatorB.sensePredator( predatorA, dt )
+				predatorA.sense( predatorB, dt )
+				predatorB.sense( predatorA, dt )
 				
 				// when predators are touching, equalize their energy levels
 				// {
