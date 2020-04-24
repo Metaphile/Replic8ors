@@ -1,22 +1,38 @@
-$blue: rgb(90, 195, 255);
-$hudColor: rgb( 255, 69, 0 );
+$blue: rgb( 90, 195, 255 );
+$hudColor: rgb( 255, 70, 0 );
 
 #control-bar-form {
-	background: fade-out( black, 0.666 );
+	$controlBarHeight: 42px;
+	$font-size: 12px;
+	$padding: 5px;
+	
+	background: black;
 	bottom: 0;
 	color: white;
+	font-size: $font-size;
+	line-height: $controlBarHeight - ( $padding * 2 );
+	overflow: auto;
+	padding: $padding;
 	position: absolute;
 	text-align: center;
 	width: 100%;
-	overflow: auto;
-	padding: 0.25rem;
 	
 	button {
-		margin: 0.25rem 0;
+		background: none;
+		border: none;
+		color: white;
+		height: $controlBarHeight - ( $padding * 2 );
+		line-height: $controlBarHeight - ( $padding * 2 );
+		margin: 0;
+		padding: 0;
+		width: $controlBarHeight - ( $padding * 2 );
+		
+		&:hover {
+			cursor: pointer;
+		}
 		
 		&:focus {
-			// not working - in Chrome at least
-			outline-color: $hudColor;
+			outline: none;
 		}
 		
 		&.active {
@@ -27,14 +43,19 @@ $hudColor: rgb( 255, 69, 0 );
 	[name=elapsed-sim-time] {
 		background: none;
 		border: none;
-		color: white;
-		font-family: monospace;
-		text-align: center;
+		color: silver;
 		cursor: default;
+		font-family: monospace;
+		font-size: $font-size;
+		text-align: center;
 		
 		&:focus {
 			outline: none;
 		}
+	}
+	
+	[name=info] {
+		float: right;
 	}
 }
 
