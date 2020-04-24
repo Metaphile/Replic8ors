@@ -25,7 +25,8 @@ html, body {
 #version-number {
 	color: white;
 	font-size: x-small;
-	display: inline-block;
+	// display: inline-block;
+	display: none;
 	margin: 0;
 	padding: 0.25rem 0.5rem;
 	position: absolute;
