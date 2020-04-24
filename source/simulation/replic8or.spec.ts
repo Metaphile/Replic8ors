@@ -24,6 +24,59 @@ describe( 'replicator', () => {
 		} )
 	} )
 	
+	describe( 'ancestor weights', () => {
+		function setWeightsTo( neurons, newWeight ) {
+			for ( const neuron of neurons ) {
+				neuron.weights = neuron.weights.map( oldWeight => newWeight )
+			}
+		}
+		
+		function setUniqueWeights( neurons ) {
+			let count = 0
+			
+			for ( const neuron of neurons ) {
+				neuron.weights = neuron.weights.map( oldWeight => count++ )
+			}
+		}
+		
+		it( 'getOwnWeights() works, probably', () => {
+			// fewest possible neurons
+			const replicator = Replic8or( {
+				numBodySegments: 1,
+				numInternalNeurons: 0,
+			} )
+			
+			setUniqueWeights( replicator.brain.neurons )
+			
+			const expectedWeights = [
+				{ weights: [  0,  1,  2,  3,  4 ] },
+				{ weights: [  5,  6,  7,  8,  9 ] },
+				{ weights: [ 10, 11, 12, 13, 14 ] },
+				{ weights: [ 15, 16, 17, 18, 19 ] },
+				{ weights: [ 20, 21, 22, 23, 24 ] },
+			]
+			
+			expect( replicator.getOwnWeights() ).toEqual( expectedWeights )
+		} )
+		
+		it( 'ancestor weights default to own weights', () => {
+			const gen1 = Replic8or()
+			expect( gen1.getOwnWeights() ).toEqual( gen1.ancestorWeights )
+		} )
+		
+		it( 'nth gen references 1st gen', () => {
+			const gen1 = Replic8or()
+			setUniqueWeights( gen1.brain.neurons )
+			gen1.ancestorWeights = gen1.getOwnWeights()
+			
+			const gen2 = gen1.replicate()
+			const gen3 = gen2.replicate()
+			
+			expect( gen2.ancestorWeights ).toEqual( gen1.ancestorWeights, 'gen2' )
+			expect( gen3.ancestorWeights ).toEqual( gen1.ancestorWeights, 'gen3' )
+		} )
+	} )
+	
 	describe( 'radial symmetry', () => {
 		it( 'maintains symmetric neuron weights', () => {
 			const numSegments = 3
