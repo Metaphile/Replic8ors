@@ -3,16 +3,11 @@ import Timer from '../engine/timer'
 import Predator from './predator'
 import Prey from './prey'
 import RingBuffer from '../engine/ring-buffer'
-
-const defaultOpts = {
-	maxFoods:       21,
-	maxPreys:       13,
-	maxPredators:   11,
-}
+import { scenarioSettings } from '../settings/settings'
 
 export default function Scenario( world, opts = {} ) {
 	const self = {}
-	Object.assign( self, defaultOpts, opts )
+	Object.assign( self, scenarioSettings, opts )
 	
 	// archive
 	const preyCryo = RingBuffer( Math.ceil( self.maxPreys / 2 ) )

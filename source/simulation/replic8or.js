@@ -6,32 +6,9 @@ import Physics from '../engine/physics'
 import Math2   from '../engine/math-2'
 import Vector2 from '../engine/vector-2'
 // import { formatWeight } from '../helpers'
-
-const numMinsToStarve = 2
-
-const defaultOpts = {
-	type: 'replicator',
-	
-	radius: 32,
-	mass: 90,
-	drag: 260,
-	elasticity: 0.4,
-	
-	energy: 0.666,
-	metabolism: 1 / ( numMinsToStarve * 60 ),
-	energyCostPerNeuronSpike: 0.0,
-	
-	numBodySegments: 3,
-	receptorOffset: -Math.PI / 2, // up,
-	flipperOffset: -Math.PI / 2 + ( Math.PI / 3 ),
-	
-	takingDamage: false,
-	flipperStrength: 22000,
-	
-	numInternalNeurons: 0,
-	
-	ancestorWeights: undefined,
-}
+import { replicatorSettings } from '../settings/settings'
+import Predator from './predator'
+import Prey from './prey'
 
 function createSymmetricSegments() {
 	this.flippers  = []
@@ -145,7 +122,7 @@ export default function Replic8or( opts = {} ) {
 	Events( self )
 	Physics( self )
 	
-	Object.assign( self, defaultOpts, opts )
+	Object.assign( self, replicatorSettings, opts )
 	self.brain = Network()
 	createSymmetricSegments.call( self )
 	
@@ -167,6 +144,9 @@ export default function Replic8or( opts = {} ) {
 }
 
 Replic8or.prototype = {
+	type: 'replicator',
+	takingDamage: false,
+	
 	getOwnWeights: function () {
 		const pseudoNeurons = []
 		
@@ -287,10 +267,25 @@ Replic8or.prototype = {
 	// TODO quietly -> emitEvent
 	replicate: function ( quietly, mutationRate = 0.04 ) {
 		const parent = this
-		
-		const childOpts = {}
-		Object.keys( defaultOpts ).forEach( key => childOpts[ key ] = parent[ key ] )
-		const child = Replic8or( childOpts )
+		const child = ( () => {
+			const childOpts = {}
+			Object.keys( replicatorSettings ).forEach( key => childOpts[ key ] = parent[ key ] )
+			childOpts.ancestorWeights = parent.ancestorWeights
+			
+			switch ( parent.type ) {
+				case 'replicator':
+					return Replic8or( childOpts )
+				
+				case 'predator':
+					return Predator( childOpts )
+				
+				case 'prey':
+					return Prey( childOpts )
+				
+				default:
+					throw `can't replicate unknown replicator type ${ parent.type }`
+			}
+		} )()
 		
 		this.copyWeights( parent.brain.neurons, child.brain.neurons )
 		this.mutateWeights( child.brain.neurons, mutationRate )

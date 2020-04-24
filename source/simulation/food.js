@@ -1,18 +1,6 @@
 import Physics from '../engine/physics'
 import Events from '../engine/events'
-
-const defaultOpts = {
-	type: 'food',
-	age: 0,
-	calories: 0.7,
-	shelfLife: 5 * 60,
-	eaten: false,
-	spoiled: false,
-	radius: 2.7,
-	mass: 4,
-	drag: 16,
-	elasticity: 2,
-}
+import { foodSettings } from '../settings/settings'
 
 export default function Food( opts = {} ) {
 	const self = Object.create( Food.prototype )
@@ -20,12 +8,17 @@ export default function Food( opts = {} ) {
 	Physics( self )
 	Events( self )
 	
-	Object.assign( self, defaultOpts, opts )
+	Object.assign( self, foodSettings, opts )
 	
 	return self
 }
 
 Food.prototype = {
+	type: 'food',
+	age: 0,
+	eaten: false,
+	spoiled: false,
+	
 	update: function ( dt ) {
 		this.age += dt
 		
