@@ -13,12 +13,16 @@ export enum State {
 }
 
 export default function ControlBar( scenarioLoop, visualization ) {
+	const activate = ( selector ) => {
+		$( selector, $form ).addClass( 'active' )
+	}
+	
+	const deactivate = ( selector ) => {
+		$( selector, $form ).removeClass( 'active' )
+	}
+	
 	const onStateChanged = ( oldState, newState ) => {
 		$( '.active', $form ).removeClass( 'active' )
-		
-		const activate = ( selector ) => {
-			$( selector, $form ).addClass( 'active' )
-		}
 		
 		switch ( newState ) {
 			case State.pause:
@@ -58,11 +62,22 @@ export default function ControlBar( scenarioLoop, visualization ) {
 		},
 		
 		step() {
+			this.beginStep()
+			this.endStep()
+		},
+		
+		beginStep() {
 			if ( this.state !== State.pause ) {
 				this.pause()
 			}
 			
 			scenarioLoop.step()
+			
+			activate( '[name=step]' )
+		},
+		
+		endStep() {
+			deactivate( '[name=step]' )
 		},
 		
 		play() {
@@ -137,7 +152,8 @@ export default function ControlBar( scenarioLoop, visualization ) {
 	$form.submit( event => event.preventDefault() )
 	
 	$( '[name=pause-resume]', $form ).click( () => self.togglePause() )
-	$( '[name=step]', $form ).click( () => self.step() )
+	$( '[name=step]', $form ).mousedown( () => self.beginStep() )
+	$( '[name=step]', $form ).mouseup( () => self.endStep() )
 	$( '[name=speed-normal]', $form ).click( () => self.play() )
 	$( '[name=speed-fast]', $form ).click( () => self.fastForward() )
 	$( '[name=speed-turbo]', $form ).click( () => self.toggleTurbo() )
@@ -171,7 +187,7 @@ export default function ControlBar( scenarioLoop, visualization ) {
 			
 			case keys.RIGHT_ARROW:
 				event.preventDefault()
-				self.step()
+				self.beginStep()
 				break
 			
 			case keys.NUM_1:
@@ -187,6 +203,14 @@ export default function ControlBar( scenarioLoop, visualization ) {
 			case keys.NUM_3:
 				event.preventDefault()
 				self.toggleTurbo()
+				break
+		}
+	} )
+	
+	$( document ).keyup( function ( event ) {
+		switch ( event.which ) {
+			case keys.RIGHT_ARROW:
+				self.endStep()
 				break
 		}
 	} )
