@@ -86,43 +86,43 @@ export default function FocusRing() {
 			// if you change these colors, update boundary color in world view, active button color in control bar
 			const color = interpolateRgba( [ 255, 127, 0, 0.85 ], [ 255, 69, 0, 0.85 ], bias )
 			
-			// bottom arc
-			ctx.beginPath()
-				ctx.arc( 0, 0, innerRadius, 0 + gap, Math.PI - gap )
-				ctx.arc( 0, 0, outerRadius, Math.PI - gap, 0 + gap, true )
-				
-				ctx.globalAlpha *= 0.4
-				ctx.fillStyle = color
-				ctx.fill()
-				ctx.globalAlpha /= 0.4
-				
+			// top and bottom arcs
+			
+			ctx.globalAlpha *= 0.4
+			ctx.fillStyle = color
+			
 			// top arc
 			ctx.beginPath()
 				ctx.arc( 0, 0, innerRadius, Math.PI + gap, Math.PI * 2 - gap )
 				ctx.arc( 0, 0, outerRadius, Math.PI * 2 - gap, Math.PI + gap, true )
-				
-				ctx.globalAlpha *= 0.4
-				ctx.fillStyle = color
 				ctx.fill()
-				ctx.globalAlpha /= 0.4
+			
+			// bottom arc
+			ctx.beginPath()
+				ctx.arc( 0, 0, innerRadius, 0 + gap, Math.PI - gap )
+				ctx.arc( 0, 0, outerRadius, Math.PI - gap, 0 + gap, true )
+				ctx.fill()
+			
+			ctx.globalAlpha /= 0.4
+			
+			// outlines
 			
 			ctx.strokeStyle = color
 			ctx.lineWidth = 1.5
 			ctx.globalAlpha *= 0.6
 			
-			// fine outlines
 			ctx.beginPath()
-				// bottom outline
-				ctx.moveTo( Math.cos( 0 + gap ) * outerRadius, Math.sin( 0 + gap ) * outerRadius )
-				ctx.lineTo( Math.cos( 0 + gap ) * innerRadius, Math.sin( 0 + gap ) * innerRadius )
-				ctx.arc( 0, 0, innerRadius, 0 + gap, Math.PI - gap )
-				ctx.lineTo( Math.cos( Math.PI - gap ) * outerRadius, Math.sin( Math.PI - gap ) * outerRadius )
-				
 				// top outline
 				ctx.moveTo( Math.cos( Math.PI + gap ) * outerRadius, Math.sin( Math.PI + gap ) * outerRadius )
 				ctx.lineTo( Math.cos( Math.PI + gap ) * innerRadius, Math.sin( Math.PI + gap ) * innerRadius )
 				ctx.arc( 0, 0, innerRadius, Math.PI + gap, Math.PI * 2 - gap )
 				ctx.lineTo( Math.cos( Math.PI * 2 - gap ) * outerRadius, Math.sin( Math.PI * 2 - gap ) * outerRadius )
+				
+				// bottom outline
+				ctx.moveTo( Math.cos( 0 + gap ) * outerRadius, Math.sin( 0 + gap ) * outerRadius )
+				ctx.lineTo( Math.cos( 0 + gap ) * innerRadius, Math.sin( 0 + gap ) * innerRadius )
+				ctx.arc( 0, 0, innerRadius, 0 + gap, Math.PI - gap )
+				ctx.lineTo( Math.cos( Math.PI - gap ) * outerRadius, Math.sin( Math.PI - gap ) * outerRadius )
 				
 				ctx.stroke()
 			
