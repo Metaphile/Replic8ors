@@ -1,5 +1,5 @@
 import GameLoop from '../engine/game-loop'
-import $ from '../../third-party/jquery'
+import * as $ from 'jquery'
 import formTemplate from './form.ejs'
 import infoTemplate from './info.ejs'
 import { formatElapsedTime } from '../helpers'
@@ -215,7 +215,7 @@ export default function ControlBar( scenarioLoop, visualization ) {
 		}
 	} )
 	
-	const elapsedSimTime = $( '[name=elapsed-sim-time]', $form )[ 0 ]
+	const elapsedSimTime = <HTMLInputElement>$( '[name=elapsed-sim-time]', $form )[ 0 ]
 	GameLoop( () => {
 		elapsedSimTime.value = formatElapsedTime( scenarioLoop.elapsed )
 	},

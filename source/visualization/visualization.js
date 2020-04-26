@@ -1,7 +1,7 @@
 import WorldView from './world-view'
 import Camera from '../engine/camera'
 import CameraOperator from './camera-operator'
-import $ from '../../third-party/jquery'
+import * as $ from 'jquery'
 import Hud from './hud'
 import HudMarker from './hud-marker'
 import Vector2 from '../engine/vector-2'
