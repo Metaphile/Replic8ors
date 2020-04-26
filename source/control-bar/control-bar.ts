@@ -156,7 +156,7 @@ export default function ControlBar( scenarioLoop, visualization ) {
 	$( '[name=step]', $form ).mouseup( () => self.endStep() )
 	$( '[name=speed-normal]', $form ).click( () => self.play() )
 	$( '[name=speed-fast]', $form ).click( () => self.fastForward() )
-	$( '[name=speed-turbo]', $form ).click( () => self.toggleTurbo() )
+	$( '[name=speed-turbo]', $form ).click( () => self.turbo() )
 	
 	$( '[name=info]', $form ).click( () => self.toggleInfo() )
 	
@@ -202,7 +202,7 @@ export default function ControlBar( scenarioLoop, visualization ) {
 			
 			case keys.NUM_3:
 				event.preventDefault()
-				self.toggleTurbo()
+				self.turbo()
 				break
 		}
 	} )
