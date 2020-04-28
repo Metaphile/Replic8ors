@@ -141,33 +141,22 @@ SpawnEffect.prototype = {
 	},
 	
 	beginDraw( ctx, position ) {
-		// enforce lower bound to avoid floating point issues
-		const progress = Math.max( this.progress, 0.5 )
+		// save/restore canvas state else floating point errors cause skewing
+		ctx.save()
 		
 		ctx.translate( position.x, position.y )
 		
-		const xScale = Math.pow( progress, 4 )
+		const xScale = Math.pow( this.progress, 4 )
 		const yScale = 1 / xScale
 		ctx.scale( xScale, yScale )
 		
 		ctx.translate( -position.x, -position.y )
 		
-		ctx.globalAlpha *= progress
+		ctx.globalAlpha *= this.progress
 	},
 	
-	endDraw( ctx, position ) {
-		// enforce lower bound to avoid floating point issues
-		const progress = Math.max( this.progress, 0.5 )
-		
-		ctx.translate( position.x, position.y )
-		
-		const xScale = 1 / Math.pow( progress, 4 )
-		const yScale = 1 / xScale
-		ctx.scale( xScale, yScale )
-		
-		ctx.translate( -position.x, -position.y )
-		
-		ctx.globalAlpha /= progress
+	endDraw( ctx ) {
+		ctx.restore()
 	},
 }
 

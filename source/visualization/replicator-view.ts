@@ -910,7 +910,7 @@ ReplicatorView.prototype = {
 		}
 		
 		if ( this.effects.spawn ) {
-			this.effects.spawn.endDraw( ctx, p0 )
+			this.effects.spawn.endDraw( ctx )
 		}
 		
 		ctx.restorePartial()
