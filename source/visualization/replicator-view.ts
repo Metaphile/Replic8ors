@@ -301,7 +301,7 @@ ReplicatorView.prototype = {
 		const confinementRadius = r0 * 0.9
 		
 		for ( const neuronView of this.neuronViews ) {
-			neuronView.update( dt_real, dt_real )
+			neuronView.update( dt_real, dt_sim )
 			confineNeuronView( neuronView, p0, confinementRadius - neuronView.radius )
 		}
 		

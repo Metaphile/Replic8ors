@@ -73,8 +73,8 @@ NeuronView.prototype = {
 		const dx = this.anchor.x - this.position.x
 		const dy = this.anchor.y - this.position.y
 		
-		this.position.x += dx * this.clinginess * dt_sim
-		this.position.y += dy * this.clinginess * dt_sim
+		this.position.x += dx * this.clinginess * dt_real
+		this.position.y += dy * this.clinginess * dt_real
 		
 		// TEMP
 		this.radius = defaultOpts.radius
