@@ -32,7 +32,7 @@ const replicator = {
 	flipperStrength: 22000,
 	
 	numBodySegments: 3,
-	numInternalNeurons: 3,
+	numInternalNeurons: 0,
 	potentialDecayRate: 0.0,
 	
 	// collision values
