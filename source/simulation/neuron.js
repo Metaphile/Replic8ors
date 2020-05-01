@@ -10,10 +10,11 @@
 
 import Events from '../engine/events'
 import Math2 from '../engine/math-2'
+import { potentialDecayFn } from './neuron-helpers'
 
 const defaultOpts = {
 	potentialDecayRate: 0.0,
-	refractoryPeriod: 0.5,
+	refractoryPeriod: 0.6,
 }
 
 export default function Neuron( opts = {} ) {
@@ -80,21 +81,13 @@ Neuron.prototype = {
 	},
 	
 	update: function ( dt ) {
-		this.potential += this.inputBuffer.reduce( ( runningTotal, currentValue ) => runningTotal + currentValue, 0 )
-		this.inputBuffer.length = 0
-		
-		this.simTimeSinceLastFired += dt
-		
-		if ( !this.gotSensoryInput ) {
-			this.sensoryPotential = 0
+		if ( !this.firing ) {
+			// decay
+			this.potential += this.inputBuffer.reduce( ( runningTotal, currentValue ) => runningTotal + currentValue, 0 )
+			this.potential -= potentialDecayFn( this.potentialDecayRate ) * dt
 		}
 		
 		if ( this.potential >= 1 ) this.fire()
-		
-		if ( !this.firing ) {
-			// decay
-			this.potential -= this.potentialDecayRate * dt
-		}
 		
 		if ( this.firing ) {
 			// drain potential over refractory period
@@ -103,6 +96,15 @@ Neuron.prototype = {
 			if ( this.potential <= 0 ) {
 				this.firing = false
 			}
+		}
+		
+		// any input not processed by this point should be discarded
+		this.inputBuffer.length = 0
+		
+		this.simTimeSinceLastFired += dt
+		
+		if ( !this.gotSensoryInput ) {
+			this.sensoryPotential = 0
 		}
 		
 		this.potential = Math2.clamp( this.potential, 0, 1 )

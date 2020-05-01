@@ -3,11 +3,69 @@ import Timer from '../engine/timer'
 import Predator from './predator'
 import Prey from './prey'
 import RingBuffer from '../engine/ring-buffer'
-import { scenarioSettings } from '../settings/settings'
+import settings, { settingsEvents } from '../settings/settings'
 
 export default function Scenario( world, opts = {} ) {
 	const self = {}
-	Object.assign( self, scenarioSettings, opts )
+	Object.assign( self, settings.scenario, opts )
+	
+	settingsEvents.on( 'setting-changed', ( section, key, value ) => {
+		switch ( section ) {
+			case 'scenario':
+				switch ( key ) {
+					default:
+						self[ key ] = value
+						break
+				}
+				
+				break
+			
+			case 'predator':
+				const predators = [ ...predatorCryo, ...world.predators ]
+				
+				predators.forEach( predator => predator[ key ] = value )
+				
+				switch ( key ) {
+					case 'potentialDecayRate':
+						for ( const predator of predators ) {
+							for ( const neuron of predator.brain.neurons ) {
+								neuron.potentialDecayRate = value
+							}
+						}
+						break
+				}
+				
+				break
+			
+			case 'prey':
+				const preys = [ ...preyCryo, ...world.preys ]
+				
+				preys.forEach( prey => prey[ key ] = value )
+				
+				switch ( key ) {
+					case 'potentialDecayRate':
+						for ( const prey of preys ) {
+							for ( const neuron of prey.brain.neurons ) {
+								neuron.potentialDecayRate = value
+							}
+						}
+						break
+				}
+				
+				break
+			
+			case 'food':
+				const foods = [ ...world.foods ]
+				
+				foods.forEach( food => food[ key ] = value )
+				
+				switch ( key ) {
+					// ...
+				}
+				
+				break
+		}
+	} )
 	
 	// archive
 	const preyCryo = RingBuffer( Math.ceil( self.maxPreys / 2 ) )
@@ -15,31 +73,37 @@ export default function Scenario( world, opts = {} ) {
 	
 	const timer = Timer()
 	
-	const foodQueue = []
-	const preyQueue = []
-	const predatorQueue = []
-	
-	self.getNumFoods = () => world.foods.length + foodQueue.length
-	self.getNumPreys = () => world.preys.length + preyQueue.length
-	self.getNumPredators = () => world.predators.length + predatorQueue.length
-	
 	self.balancePopulations = function () {
-		const areTooManyFoods = self.getNumFoods() > self.maxFoods
-		const areAnyPreys = self.getNumPreys() > 0
-		const areTooManyPreys = self.getNumPreys() > self.maxPreys
-		const areAnyPredators = self.getNumPredators() > 0
-		const areTooManyPredators = self.getNumPredators() > self.maxPredators
-		
-		if ( !areTooManyFoods && !areTooManyPreys && !areTooManyPredators ) {
-			addFoods( self.maxFoods - self.getNumFoods() )
+		const excessPredators = world.predators.length - self.maxPredators
+		const neededPredators = Math.ceil( self.maxPredators / 2 ) - world.predators.length
+		if ( excessPredators > 0 ) {
+			for ( let i = 0; i < excessPredators; i++ ) {
+				// expire oldest predators
+				world.predators[ i ].energy = -Infinity
+			}
+		} else if ( neededPredators > 0 ) {
+			addPredators( neededPredators )
 		}
 		
-		if ( !areAnyPreys && !areTooManyPredators ) {
-			addPreys( Math.ceil( self.maxPreys / 2 ) - self.getNumPreys() )
+		const excessPreys = world.preys.length - self.maxPreys
+		const neededPreys = Math.ceil( self.maxPreys / 2 ) - world.preys.length
+		if ( excessPreys > 0 ) {
+			for ( let i = 0; i < excessPreys; i++ ) {
+				// expire oldest preys
+				world.preys[ i ].energy = -Infinity
+			}
+		} else if ( neededPreys > 0 ) {
+			addPreys( neededPreys )
 		}
 		
-		if ( !areAnyPredators ) {
-			addPredators( Math.ceil ( self.maxPredators / 2 ) - self.getNumPredators() )
+		const excessFoods = world.foods.length - self.maxFoods
+		if ( excessFoods > 0 ) {
+			for ( let i = 0; i < excessFoods; i++ ) {
+				// expire oldest foods
+				world.foods[ i ].age = Infinity
+			}
+		} else if ( excessFoods < 0 ) {
+			addFoods( -excessFoods )
 		}
 	}
 	
@@ -54,77 +118,79 @@ export default function Scenario( world, opts = {} ) {
 		return population
 	}
 	
-	const spawnDelay = 0.2
+	const numEntityTypes = 3
+	const numSpokes = numEntityTypes * 5
 	
+	let foodSpokeIndex = 0
 	function addFoods( howMany ) {
-		const minRadius = world.radius * 2/3
-		const maxRadius = world.radius * 3/3
+		const ownSpokeOffset = 0
 		
 		for ( ; howMany > 0; howMany-- ) {
 			const food = Food()
 			
-			const angle = Math.random() * Math.PI * 2
-			const radius = minRadius + ( Math.random() * ( maxRadius - minRadius ) )
+			const radiusScale = Math.pow( Math.random(), 1 / Math.PI )
+			const radius = radiusScale * world.radius
+			
+			const tau = Math.PI * 2
+			const minAngle = ( ( ownSpokeOffset + foodSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) - ( tau / numSpokes / 2 )
+			const maxAngle = ( ( ownSpokeOffset + foodSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) + ( tau / numSpokes / 2 )
+			const angle = minAngle + ( Math.random() * ( maxAngle - minAngle ) )
 			
 			food.position.x = Math.cos( angle ) * radius
 			food.position.y = Math.sin( angle ) * radius
 			
-			foodQueue.push( food )
+			world.addFood( food )
 			
-			const preDelay = 1
-			
-			timer.scheduleAction( preDelay + ( foodQueue.length * spawnDelay ), () => {
-				world.addFood( foodQueue.pop() )
-			} )
+			foodSpokeIndex = ( foodSpokeIndex + numEntityTypes ) % numSpokes
 		}
 	}
 	
+	let preySpokeIndex = 0
 	function addPreys( howMany ) {
-		const minRadius = world.radius * 1/3
-		const maxRadius = world.radius * 2/3
+		const ownSpokeOffset = 1
 		
 		createPopulation( howMany, preyCryo, prey => { prey.energy = 1; return prey.replicate( true ) }, Prey ).forEach( ( prey, i, newPreys ) => {
-			const angle = Math.random() * Math.PI * 2
-			const radius = minRadius + ( Math.random() * ( maxRadius - minRadius ) )
+			const radiusScale = Math.pow( Math.random(), 1 / Math.PI )
+			const radius = radiusScale * world.radius
+			
+			const tau = Math.PI * 2
+			const minAngle = ( ( ownSpokeOffset + preySpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) - ( tau / numSpokes / 2 )
+			const maxAngle = ( ( ownSpokeOffset + preySpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) + ( tau / numSpokes / 2 )
+			const angle = minAngle + ( Math.random() * ( maxAngle - minAngle ) )
+			
 			prey.position.x = Math.cos( angle ) * radius
 			prey.position.y = Math.sin( angle ) * radius
 			
-			preyQueue.push( prey )
+			world.addPrey( prey )
 			
-			const preDelay = 2
-			
-			timer.scheduleAction( preDelay + ( preyQueue.length * spawnDelay ), () => {
-				world.addPrey( preyQueue.pop() )
-			} )
+			preySpokeIndex = ( preySpokeIndex + numEntityTypes ) % numSpokes
 		} )
 	}
 	
+	let predatorSpokeIndex = 0
 	function addPredators( howMany ) {
-		const minRadius = world.radius * 0/3
-		const maxRadius = world.radius * 2/3
+		const ownSpokeOffset = 2
 		
 		createPopulation( howMany, predatorCryo, predator => { predator.energy = 1; return predator.replicate( true ) }, Predator ).forEach( ( predator, i, newPredators ) => {
-			const angle = Math.random() * Math.PI * 2
-			const radius = minRadius + ( Math.random() * ( maxRadius - minRadius ) )
+			const radiusScale = Math.pow( Math.random(), 1 / Math.PI )
+			const radius = radiusScale * world.radius
+			
+			const tau = Math.PI * 2
+			const minAngle = ( ( ownSpokeOffset + predatorSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) - ( tau / numSpokes / 2 )
+			const maxAngle = ( ( ownSpokeOffset + predatorSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) + ( tau / numSpokes / 2 )
+			const angle = minAngle + ( Math.random() * ( maxAngle - minAngle ) )
+			
 			predator.position.x = Math.cos( angle ) * radius
 			predator.position.y = Math.sin( angle ) * radius
 			
-			predatorQueue.push( predator )
+			world.addPredator( predator )
 			
-			const preDelay = 3
-			
-			timer.scheduleAction( preDelay + ( predatorQueue.length * spawnDelay ), () => {
-				world.addPredator( predatorQueue.pop() )
-			} )
+			predatorSpokeIndex = ( predatorSpokeIndex + numEntityTypes ) % numSpokes
 		} )
 	}
 	
 	self.reset = function ( hard ) {
 		timer.cancelAllActions()
-		
-		foodQueue.length = 0
-		preyQueue.length = 0
-		predatorQueue.length = 0
 		
 		world.foods.slice().forEach( food => food.spoil() )
 		world.preys.slice().forEach( prey => prey.die() )

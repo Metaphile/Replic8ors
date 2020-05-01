@@ -1,3 +1,5 @@
+@import '../settings/settings-panel.scss';
+
 $blue: rgb( 90, 195, 255 );
 $hudColor: rgb( 255, 70, 0 );
 
@@ -17,6 +19,10 @@ $hudColor: rgb( 255, 70, 0 );
 	text-align: center;
 	width: 100%;
 	
+	[name=settings] {
+		float: right;
+	}
+	
 	button {
 		background: none;
 		border: none;
@@ -26,13 +32,10 @@ $hudColor: rgb( 255, 70, 0 );
 		margin: 0;
 		padding: 0;
 		width: $controlBarHeight - ( $padding * 2 );
+		outline-color: $hudColor;
 		
 		&:hover {
 			cursor: pointer;
-		}
-		
-		&:focus {
-			outline: none;
 		}
 		
 		&.active {
@@ -55,7 +58,7 @@ $hudColor: rgb( 255, 70, 0 );
 	}
 	
 	[name=info] {
-		float: right;
+		float: left;
 	}
 }
 
@@ -63,9 +66,11 @@ $hudColor: rgb( 255, 70, 0 );
 	background: fade-out( black, 0.2 );
 	font-size: 10pt;
 	position: absolute;
-	width: 100%;
-	height: 100%;
+	width: 800px;
+	max-width: 50%;
 	top:    0;
+	left: 0;
+	bottom: 43px; // touch top of control bar
 	z-index: 999;
 	line-height: 1.5em;
 	

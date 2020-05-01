@@ -1,6 +1,6 @@
 import Physics from '../engine/physics'
 import Events from '../engine/events'
-import { foodSettings } from '../settings/settings'
+import settings from '../settings/settings'
 
 export default function Food( opts = {} ) {
 	const self = Object.create( Food.prototype )
@@ -8,7 +8,7 @@ export default function Food( opts = {} ) {
 	Physics( self )
 	Events( self )
 	
-	Object.assign( self, foodSettings, opts )
+	Object.assign( self, settings.food, opts )
 	
 	return self
 }

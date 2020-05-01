@@ -358,7 +358,7 @@ function $Canvas() {
 		$canvas.attr( 'width',  $parent.width() )
 		// TODO actual control bar height is zero at first
 		// canvas isn't sized properly until first window resize
-		const controlBarHeight = 44
+		const controlBarHeight = 43
 		$canvas.attr( 'height', $parent.height() - controlBarHeight )
 	}
 	

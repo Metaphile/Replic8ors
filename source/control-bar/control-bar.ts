@@ -3,6 +3,7 @@ import * as $ from 'jquery'
 import formTemplate from './form.ejs'
 import infoTemplate from './info.ejs'
 import { formatElapsedTime } from '../helpers'
+import SettingsPanel from '../settings/settings-panel'
 
 // must match method names
 export enum State {
@@ -13,6 +14,8 @@ export enum State {
 }
 
 export default function ControlBar( scenarioLoop, visualization ) {
+	const settingsPanel = SettingsPanel()
+	
 	const activate = ( selector ) => {
 		$( selector, $form ).addClass( 'active' )
 	}
@@ -22,7 +25,7 @@ export default function ControlBar( scenarioLoop, visualization ) {
 	}
 	
 	const onStateChanged = ( oldState, newState ) => {
-		$( '.active', $form ).removeClass( 'active' )
+		$( '.transport.active', $form ).removeClass( 'active' )
 		
 		switch ( newState ) {
 			case State.pause:
@@ -133,12 +136,30 @@ export default function ControlBar( scenarioLoop, visualization ) {
 			}
 		},
 		
+		toggleSettings() {
+			settingsPanel.$element.toggle()
+			
+			if ( settingsPanel.$element.is( ':visible' ) ) {
+				activate( '[name=settings]' )
+			} else {
+				deactivate( '[name=settings]' )
+			}
+		},
+		
 		showInfo() {
 			$info.show()
+			
+			activate( '[name=info]' )
 		},
 		
 		toggleInfo() {
 			$info.toggle()
+			
+			if ( $info.is( ':visible' ) ) {
+				activate( '[name=info]' )
+			} else {
+				deactivate( '[name=info]' )
+			}
 		},
 	}
 	
@@ -146,10 +167,13 @@ export default function ControlBar( scenarioLoop, visualization ) {
 	const $form = $( formTemplate() )
 	const $info = $( infoTemplate() )
 	self.$element.append( $form )
+	self.$element.append( settingsPanel.$element )
 	self.$element.append( $info )
 	
 	// prevent submit
 	$form.submit( event => event.preventDefault() )
+	
+	$( '[name=settings]', $form ).click( () => self.toggleSettings() )
 	
 	$( '[name=pause-resume]', $form ).click( () => self.togglePause() )
 	$( '[name=step]', $form ).mousedown( () => self.beginStep() )
@@ -165,51 +189,111 @@ export default function ControlBar( scenarioLoop, visualization ) {
 	// keyboard shortcuts
 
 	enum keys {
+		ENTER        = 13,
 		ESCAPE       = 27,
 		SPACEBAR     = 32,
 		RIGHT_ARROW  = 39,
 		NUM_1        = 49,
 		NUM_2        = 50,
 		NUM_3        = 51,
+		BACKTICK     = 192,
+	}
+	
+	const numberInputHasFocus = () => {
+		const el = <any>document.activeElement
+		return el.tagName === 'INPUT' && el.type === 'number'
+	}
+	
+	const rangeInputHasFocus = () => {
+		const el = <any>document.activeElement
+		return el.tagName === 'INPUT' && el.type === 'range'
+	}
+	
+	const buttonHasFocus = () => {
+		const el = <any>document.activeElement
+		return el.tagName === 'BUTTON'
+	}
+	
+	const stepButtonHasFocus = () => {
+		const el = <any>document.activeElement
+		return el.tagName === 'BUTTON' && el.name === 'step'
 	}
 	
 	$( document ).keydown( function ( event ) {
 		switch ( event.which ) {
+			case keys.ENTER:
+				if ( stepButtonHasFocus() ) {
+					self.beginStep()
+				}
+				break
+			
 			case keys.ESCAPE:
-				event.preventDefault()
 				self.toggleInfo()
 				break
 			
 			case keys.SPACEBAR:
-				event.preventDefault()
-				self.togglePause()
+				if ( stepButtonHasFocus() ) {
+					self.beginStep()
+				} else if ( buttonHasFocus() ) {
+					return
+				} else {
+					self.togglePause()
+				}
 				break
 			
 			case keys.RIGHT_ARROW:
-				event.preventDefault()
+				if ( numberInputHasFocus() || rangeInputHasFocus() ) {
+					return
+				}
 				self.beginStep()
 				break
 			
 			case keys.NUM_1:
-				event.preventDefault()
+				if ( numberInputHasFocus() ) {
+					return
+				}
 				self.play()
 				break
 			
 			case keys.NUM_2:
-				event.preventDefault()
+				if ( numberInputHasFocus() ) {
+					return
+				}
 				self.fastForward()
 				break
 			
 			case keys.NUM_3:
-				event.preventDefault()
+				if ( numberInputHasFocus() ) {
+					return
+				}
 				self.turbo()
+				break
+			
+			case keys.BACKTICK:
+				event.preventDefault()
+				self.toggleSettings()
 				break
 		}
 	} )
 	
 	$( document ).keyup( function ( event ) {
 		switch ( event.which ) {
+			case keys.ENTER:
+				if ( stepButtonHasFocus() ) {
+					self.endStep()
+				}
+				break
+			
+			case keys.SPACEBAR:
+				if ( stepButtonHasFocus() ) {
+					self.endStep()
+				}
+				break
+			
 			case keys.RIGHT_ARROW:
+				if ( numberInputHasFocus() || rangeInputHasFocus() ) {
+					return
+				}
 				self.endStep()
 				break
 		}

@@ -1,0 +1,14 @@
+<label>
+	<span><%= fieldLabel %></span>
+	
+	<!-- number input -->
+	<input type='number' name='<%= inputName %>' step='<%= step %>' value='<%= value %>'>
+	
+	<!-- range input -->
+	<input type='range' name='<%= inputName %>' step='<%= step %>' min='<%= rangeInputMinValue %>' max='<%= rangeInputMaxValue %>' value='<%= value %>' list='<%= datalistId %>'>
+	
+	<!-- indicate default value with range option -->
+	<datalist id='<%= datalistId %>'>
+		<option value='<%= defaultValue %>'></option>
+	</datalist>
+</label>

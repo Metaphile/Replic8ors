@@ -1,10 +1,10 @@
 import Replic8or from './replic8or'
-import { preySettings } from '../settings/settings'
+import settings from '../settings/settings'
 
 export default function Prey( opts = {} ) {
 	return Replic8or( {
 		type: 'prey',
-		...preySettings,
+		...settings.prey,
 		...opts,
 	} )
 }

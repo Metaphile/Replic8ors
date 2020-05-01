@@ -1,0 +1,117 @@
+$blue: rgb(90, 195, 255);
+
+.row {
+	display: flex;
+	
+	.column {
+		flex: 100%;
+	}
+}
+
+#settings-panel {
+	$blue: rgb(90, 195, 255);
+	$hudColor: rgb( 255, 69, 0 );
+	
+	// hide initially
+	display: none;
+	
+	background: fade-out( black, 0.2 );
+	bottom: 43px; // touch top of control bar
+	max-width: 66.7%;
+	overflow-y: scroll;
+	padding: 0 1rem;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 66.7%;
+	
+	&, input {
+		color: silver;
+	}
+	
+	h2, h3 {
+		color: $blue;
+		font-weight: normal;
+		margin: 2rem 1rem;
+	}
+	
+	h2 {
+		font-size: larger;
+	}
+	
+	h3 {
+		font-size: 10pt;
+	}
+	
+	input[type=number] {
+		background: none;
+		border: none;
+		float: right;
+		font-size: inherit;
+		outline: none;
+		text-align: right;
+		width: 5em;
+		
+		&.invalid {
+			color: red;
+		}
+	}
+	
+	label {
+		cursor: pointer;
+		display: block;
+		margin: 2rem 1rem;
+		
+		&:focus-within {
+			&, input {
+				color: white;
+			}
+		}
+	}
+	
+	input[type=range] {
+		& {
+			-webkit-appearance: none;
+			background: none;
+			display: block;
+			margin: 0;
+			width: 100%;
+		}
+		
+		&:focus {
+			outline: none;
+		}
+		
+		&::-webkit-slider-runnable-track {
+			background: black;
+			cursor: pointer;
+			height: 1px;
+			width: 100%;
+		}
+		
+		&::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			background: white;
+			border-radius: 13px;
+			cursor: pointer;
+			height: 14px;
+			margin-top: -6.5px;
+			width: 7px;
+		}
+		
+		&::-moz-range-track {
+			background: black;
+			cursor: pointer;
+			height: 1px;
+			width: 100%;
+		}
+		
+		&::-moz-range-thumb {
+			background: white;
+			border-radius: 13px;
+			cursor: pointer;
+			height: 14px;
+			width: 7px;
+		}
+	}
+}

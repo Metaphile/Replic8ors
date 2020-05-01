@@ -1,6 +1,7 @@
 import config from '../config'
 import * as assets from './neuron-assets'
 import Math2 from '../engine/math-2'
+import { potentialDecayFn } from '../simulation/neuron-helpers'
 
 const defaultOpts = {
 	radius: 3.4,
@@ -65,6 +66,8 @@ export default function NeuronView( neuron, role = 'think', opts = {} ) {
 	self.originalRadius = self.radius
 	self.connectionOpacity = 1
 	
+	self.potentialDecayRotation = 0
+	
 	return self
 }
 
@@ -79,6 +82,13 @@ NeuronView.prototype = {
 		// TEMP
 		this.radius = defaultOpts.radius
 		if ( this.neuron.firing ) this.radius += jiggle( Math.max( 1 - this.neuron.potential, Number.MIN_VALUE ) )
+		
+		if ( !this.neuron.firing ) {
+			this.potentialDecayRotation -= potentialDecayFn( this.neuron.potentialDecayRate ) * Math.PI * 2 * dt_sim
+			this.potentialDecayRotation %= Math.PI * 2
+		} else {
+			this.potentialDecayRotation = 0
+		}
 	},
 	
 	draw( ctx, detail ) {
@@ -108,6 +118,10 @@ NeuronView.prototype = {
 		if ( detail >= beginIconLod ) {
 			ctx.translate( this.position.x, this.position.y )
 			
+			if ( !this.neuron.firing ) {
+				ctx.rotate( this.potentialDecayRotation )
+			}
+			
 			const r = this.radius * 0.36
 			ctx.savePartial( 'globalAlpha' )
 			ctx.globalAlpha *= Math.min( ( detail - beginIconLod ) / ( endIconLod - beginIconLod ), 1 )
@@ -117,6 +131,10 @@ NeuronView.prototype = {
 			ctx.drawImage( this.icon, -r + halfAPixel, -r + halfAPixel, r * 2, r * 2 )
 			
 			ctx.restorePartial()
+			
+			if ( !this.neuron.firing ) {
+				ctx.rotate( -this.potentialDecayRotation )
+			}
 			
 			ctx.translate( -this.position.x, -this.position.y )
 		}

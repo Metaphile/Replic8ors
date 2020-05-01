@@ -6,7 +6,7 @@ import Physics from '../engine/physics'
 import Math2   from '../engine/math-2'
 import Vector2 from '../engine/vector-2'
 // import { formatWeight } from '../helpers'
-import { replicatorSettings } from '../settings/settings'
+import settings from '../settings/settings'
 import Predator from './predator'
 import Prey from './prey'
 
@@ -20,7 +20,7 @@ function createSymmetricSegments() {
 			const angle = this.flipperOffset + ( i / this.numBodySegments * Math.PI * 2 )
 			const flipper = Flipper( angle, { strength: this.flipperStrength } )
 			
-			const motorNeuron = Neuron()
+			const motorNeuron = Neuron( { potentialDecayRate: this.potentialDecayRate } )
 			motorNeuron.on( 'fire', () => flipper.flip() )
 			this.brain.addNeuron( motorNeuron )
 			// TODO the neuron property isn't part of Flipper's interface and
@@ -46,13 +46,13 @@ function createSymmetricSegments() {
 			const angle = this.receptorOffset + ( i / this.numBodySegments * Math.PI * 2 )
 			const receptor = { angle }
 			
-			const foodNeuron = Neuron()
+			const foodNeuron = Neuron( { potentialDecayRate: this.potentialDecayRate } )
 			this.brain.addNeuron( foodNeuron )
 			
-			const predatorNeuron = Neuron()
+			const predatorNeuron = Neuron( { potentialDecayRate: this.potentialDecayRate } )
 			this.brain.addNeuron( predatorNeuron )
 			
-			const preyNeuron = Neuron()
+			const preyNeuron = Neuron( { potentialDecayRate: this.potentialDecayRate } )
 			this.brain.addNeuron( preyNeuron )
 			
 			receptor.neurons = [ foodNeuron, predatorNeuron, preyNeuron ]
@@ -64,12 +64,12 @@ function createSymmetricSegments() {
 		}
 	}
 	
-	this.hungerNeuron = Neuron()
+	this.hungerNeuron = Neuron( { potentialDecayRate: this.potentialDecayRate } )
 	this.brain.addNeuron( this.hungerNeuron )
 	
 	this.thinkNeurons = []
 	for ( let n = this.numInternalNeurons; n > 0; n-- ) {
-		const thinkNeuron = Neuron()
+		const thinkNeuron = Neuron( { potentialDecayRate: this.potentialDecayRate } )
 		this.brain.addNeuron( thinkNeuron )
 		this.thinkNeurons.push( thinkNeuron )
 	}
@@ -122,7 +122,7 @@ export default function Replic8or( opts = {} ) {
 	Events( self )
 	Physics( self )
 	
-	Object.assign( self, replicatorSettings, opts )
+	Object.assign( self, settings.replicator, opts )
 	self.brain = Network()
 	createSymmetricSegments.call( self )
 	
@@ -269,7 +269,7 @@ Replic8or.prototype = {
 		const parent = this
 		const child = ( () => {
 			const childOpts = {}
-			Object.keys( replicatorSettings ).forEach( key => childOpts[ key ] = parent[ key ] )
+			Object.keys( settings.replicator ).forEach( key => childOpts[ key ] = parent[ key ] )
 			childOpts.ancestorWeights = parent.ancestorWeights
 			
 			switch ( parent.type ) {

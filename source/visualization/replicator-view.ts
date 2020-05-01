@@ -742,7 +742,7 @@ ReplicatorView.prototype = {
 		const speed     =   2.6
 		const amplitude =   0.6
 		
-		const length    =   0.48
+		const length    =   14.4
 		const lengthMid =   8.4
 		const baseAngle =   0.26 * Math.PI
 		const tilt      =   0.0
@@ -773,7 +773,7 @@ ReplicatorView.prototype = {
 				ctx.lineTo( Math.cos(  baseAngle ) * lengthMid, Math.sin(  baseAngle ) * lengthMid ) // base, right
 				
 				ctx.rotate( flipAngle * 0.5 )
-				ctx.lineTo( replicator.radius * length, 0 ) // tip
+				ctx.lineTo( length, 0 ) // tip
 				
 				// this isn't necessary
 				// ctx.closePath()
