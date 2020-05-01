@@ -5,6 +5,9 @@ import settings from '../settings/settings'
 export default function Food( opts = {} ) {
 	const self = Object.create( Food.prototype )
 	
+	self.previousColliders = []
+	self.currentColliders = []
+	
 	Physics( self )
 	Events( self )
 	
@@ -18,11 +21,18 @@ Food.prototype = {
 	age: 0,
 	eaten: false,
 	spoiled: false,
+	energy: 1,
 	
 	update: function ( dt ) {
+		this.energy = Math.min( this.energy, 1 )
+		
 		this.age += dt
 		
-		if ( this.age >= this.shelfLife ) this.spoil()
+		if ( this.energy <= 0 ) {
+			this.chomp()
+		} else if ( this.age >= this.shelfLife ) {
+			this.spoil()
+		}
 		
 		this.updatePhysics( dt )
 	},

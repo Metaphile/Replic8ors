@@ -94,24 +94,6 @@ export default function WorldView( world ) {
 			const i = self.foodViews.indexOf( foodView )
 			self.foodViews.splice( i, 1 )
 		} )
-		
-		for ( const prey of preys ) {
-			const preyView = self.preyViews.find( view => {
-				return view.replicator === prey
-			} )
-			
-			preyView.doEnergyUpEffect()
-		}
-	} )
-	
-	worldSubs[ 'predator-eating-prey' ] = world.on( 'predator-eating-prey', ( predator ) => {
-		const predatorView = self.predatorViews.find( view => view.replicator === predator )
-		
-		// loop energy up effect while predator is eating
-		// predator-eating-prey event fires once per tick
-		if ( predatorView.effects.energyUps.length === 0 ) {
-			predatorView.doEnergyUpEffect()
-		}
 	} )
 	
 	worldSubs[ 'food-spoiled' ] = world.on( 'food-spoiled', food => {

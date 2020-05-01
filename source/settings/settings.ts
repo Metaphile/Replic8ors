@@ -34,14 +34,29 @@ const replicator = {
 	numBodySegments: 3,
 	numInternalNeurons: 3,
 	potentialDecayRate: 0.0,
+	
+	// collision values
+	predatorValue: 0.0,
+	preyValue: 0.0,
+	foodValue: 0.0,
 }
 
 const predator = {
 	...replicator,
+	
+	// collision values
+	predatorValue: 0.0,
+	preyValue: 0.667,
+	foodValue: -0.101,
 }
 
 const prey = {
 	...replicator,
+	
+	// collision values
+	predatorValue: -0.334,
+	preyValue: 0.0,
+	foodValue: 0.334,
 }
 
 const food = {
@@ -51,6 +66,11 @@ const food = {
 	mass: 4,
 	drag: 16,
 	elasticity: 2,
+	
+	// collision values
+	predatorValue: 0.0,
+	preyValue: -0.334,
+	foodValue: 0.0,
 }
 
 const settings = {

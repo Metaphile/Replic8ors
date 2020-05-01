@@ -61,9 +61,20 @@ FoodView.prototype = {
 		} else if ( !this.food.eaten && !this.food.spoiled ) {
 			ctx.savePartial( 'fillStyle' )
 			
+			const p = this.food.position, r = this.food.radius
+			
 			ctx.beginPath()
-				const p = this.food.position, r = this.food.radius
 				ctx.arc( p.x, p.y, r, 0, Math.PI * 2 )
+				ctx.fillStyle = 'gray'
+				ctx.fill()
+				ctx.lineWidth = 1
+				ctx.strokeStyle = 'gray'
+				ctx.stroke()
+			
+			ctx.beginPath()
+				ctx.moveTo( p.x, p.y )
+				ctx.arc( p.x, p.y, r, Math.max( 1 - this.food.energy, 0 ) * Math.PI * 2 - ( Math.PI / 2 ), Math.PI * 2 - ( Math.PI / 2 ) )
+				// ctx.globalCompositeOperation = 'screen'
 				ctx.fillStyle = 'white'
 				ctx.fill()
 			

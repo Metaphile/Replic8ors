@@ -235,6 +235,9 @@ export default function ReplicatorView( replicator, opts = {}, theme = 'prey' ) 
 	
 	self.doSpawnEffect()
 	
+	replicator.on( 'gained-energy', () => self.doEnergyUpEffect() )
+	replicator.on( 'lost-energy', () => self.doDamageEffect() )
+	
 	return self
 }
 

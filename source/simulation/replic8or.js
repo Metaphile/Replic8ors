@@ -119,6 +119,10 @@ function programExcitatorySenses( replicator ) {
 
 export default function Replic8or( opts = {} ) {
 	const self = Object.create( Replic8or.prototype )
+	
+	self.previousColliders = []
+	self.currentColliders = []
+	
 	Events( self )
 	Physics( self )
 	

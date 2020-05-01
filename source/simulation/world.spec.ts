@@ -28,53 +28,6 @@ describe( 'world', () => {
 		expect( world.foods.includes( food ) ).toBe( false )
 	} )
 	
-	it( 'feeds preys that touch food', () => {
-		const world = World()
-		
-		const preyA = Prey( { radius: 50, energy: 0.5, metabolism: 0 } )
-		const preyB = Prey( { radius: 50, energy: 0.5, metabolism: 0 } )
-		const food = Food( { radius: 10, calories: 0.1 } )
-		
-		world.addPrey( preyA )
-		world.addPrey( preyB )
-		world.addFood( food )
-		
-		food.position = { x: 0, y: 0 }
-		
-		preyA.position = { x: 1000, y: 0 } // far away
-		preyB.position = { x: 10 + 50 - 1, y: 0 } // barely touching food
-		
-		world.update( 0, 0 )
-		
-		// should be the same
-		expect( preyA.energy ).toBeCloseTo( 0.5, precision )
-		// should be more
-		expect( preyB.energy ).toBeCloseTo( 0.5 + 0.1, precision )
-		// should be gone
-		expect( world.foods.includes( food ) ).toBe( false )
-	} )
-	
-	it( 'divvies up food in the case of a tie', () => {
-		const world = World()
-		
-		const preyA = Prey( { energy: 0.3, metabolism: 0 } )
-		const preyB = Prey( { energy: 0.5, metabolism: 0 } )
-		const food = Food( { calories: 0.2 } )
-		
-		world.addPrey( preyA )
-		world.addPrey( preyB )
-		world.addFood( food )
-		
-		preyA.position = { x: 0, y: 0 }
-		preyB.position = { x: 0, y: 0 }
-		food.position        = { x: 0, y: 0 }
-		
-		world.update( 0, 0 )
-		
-		expect( preyA.energy ).toBeCloseTo( 0.3 + 0.1, precision )
-		expect( preyB.energy ).toBeCloseTo( 0.5 + 0.1, precision )
-	} )
-	
 	it( 'removes dead preys', () => {
 		const world = World()
 		

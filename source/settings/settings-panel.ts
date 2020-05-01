@@ -63,6 +63,37 @@ export default function SettingsPanel() {
 			rangeInputMaxValue: 32,
 			validator: helpers.isNonNegativeInt,
 		},
+		{
+			section: undefined,
+			fieldLabel: 'Collision Values',
+		},
+		{
+			section: 'predator',
+			settingsKey: 'predatorValue',
+			fieldLabel: 'Other Black Replicators',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
+		},
+		{
+			section: 'predator',
+			settingsKey: 'preyValue',
+			fieldLabel: 'White Replicators',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
+		},
+		{
+			section: 'predator',
+			settingsKey: 'foodValue',
+			fieldLabel: 'Food Particles',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
+		},
 	]
 	
 	const preyFieldDefs = [
@@ -80,6 +111,37 @@ export default function SettingsPanel() {
 			rangeInputMinValue: 0,
 			rangeInputMaxValue: 32,
 			validator: helpers.isNonNegativeInt,
+		},
+		{
+			section: undefined,
+			fieldLabel: 'Collision Values',
+		},
+		{
+			section: 'prey',
+			settingsKey: 'predatorValue',
+			fieldLabel: 'Black Replicators',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
+		},
+		{
+			section: 'prey',
+			settingsKey: 'preyValue',
+			fieldLabel: 'Other White Replicators',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
+		},
+		{
+			section: 'prey',
+			settingsKey: 'foodValue',
+			fieldLabel: 'Food Particles',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
 		},
 	]
 	
@@ -111,30 +173,73 @@ export default function SettingsPanel() {
 			rangeInputMaxValue: 256,
 			validator: helpers.isNonNegativeInt,
 		},
+		{
+			section: undefined,
+			fieldLabel: 'Collision Values',
+		},
+		{
+			section: 'food',
+			settingsKey: 'predatorValue',
+			fieldLabel: 'Black Replicators',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
+		},
+		{
+			section: 'food',
+			settingsKey: 'preyValue',
+			fieldLabel: 'White Replicators',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
+		},
+		{
+			section: 'food',
+			settingsKey: 'foodValue',
+			fieldLabel: 'Other Food Particles',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
+		},
 	]
 	
 	for ( const fieldDef of predatorFieldDefs ) {
-		predatorFields.push( helpers.populateFieldTemplate(
-			fieldDef,
-			settings,
-			defaultSettings,
-		) )
+		if ( fieldDef.section ) {
+			predatorFields.push( helpers.populateFieldTemplate(
+				fieldDef,
+				settings,
+				defaultSettings,
+			) )
+		} else {
+			predatorFields.push( `<h3>${ fieldDef.fieldLabel }</h3>` )
+		}
 	}
 	
 	for ( const fieldDef of preyFieldDefs ) {
-		preyFields.push( helpers.populateFieldTemplate(
-			fieldDef,
-			settings,
-			defaultSettings,
-		) )
+		if ( fieldDef.section ) {
+			preyFields.push( helpers.populateFieldTemplate(
+				fieldDef,
+				settings,
+				defaultSettings,
+			) )
+		} else {
+			preyFields.push( `<h3>${ fieldDef.fieldLabel }</h3>` )
+		}
 	}
 	
 	for ( const fieldDef of foodFieldDefs ) {
-		foodFields.push( helpers.populateFieldTemplate(
-			fieldDef,
-			settings,
-			defaultSettings,
-		) )
+		if ( fieldDef.section ) {
+			foodFields.push( helpers.populateFieldTemplate(
+				fieldDef,
+				settings,
+				defaultSettings,
+			) )
+		} else {
+			foodFields.push( `<h3>${ fieldDef.fieldLabel }</h3>` )
+		}
 	}
 	
 	const $element = $( settingsPanelTemplate( {
