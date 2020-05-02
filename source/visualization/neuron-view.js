@@ -4,7 +4,7 @@ import Math2 from '../engine/math-2'
 import { potentialDecayFn } from '../simulation/neuron-helpers'
 
 const defaultOpts = {
-	radius: 3.4,
+	radius: 2.7,
 	clinginess: 8,
 }
 

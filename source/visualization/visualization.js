@@ -43,8 +43,7 @@ export default function Visualization( world ) {
 	let cameraOp = dummyCameraOp
 	
 	const dummyWorldView = {
-		predatorViews: [],
-		preyViews: [],
+		replicatorViews: [],
 		update() {},
 		draw() {},
 		destroy() {},
@@ -193,7 +192,7 @@ export default function Visualization( world ) {
 			const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
 			
 			// reverse z-order (topmost first)
-			const replicatorViews = [ ...worldView.predatorViews, ...worldView.preyViews ].reverse()
+			const replicatorViews = worldView.replicatorViews.slice().reverse()
 			
 			const clickedReplicatorView = replicatorViews
 				.filter( v => !v.replicator.dead )
@@ -248,11 +247,8 @@ export default function Visualization( world ) {
 			}
 		} )
 		
-		world.on( 'prey-died predator-died', replicator => {
-			const replicatorView = [
-				...worldView.predatorViews,
-				...worldView.preyViews,
-			].find( v => v.replicator === replicator )
+		world.on( 'replicator-died', replicator => {
+			const replicatorView = worldView.replicatorViews.find( v => v.replicator === replicator )
 			
 			// no views when running in turbo mode
 			if ( !replicatorView ) {
@@ -271,13 +267,7 @@ export default function Visualization( world ) {
 		hud.track( replicator, HudMarker() )
 	}
 	
-	world.on( 'prey-added', trackReplicator )
-	
-	const trackPredator = ( predator ) => {
-		hud.track( predator, HudMarker() )
-	}
-	
-	world.on( 'predator-added', trackPredator )
+	world.on( 'replicator-added', trackReplicator )
 	
 	self.attach = () => {
 		worldView = WorldView( world )
@@ -287,8 +277,10 @@ export default function Visualization( world ) {
 		Object.assign( cameraOp.offset, dummyCameraOp.offset )
 		
 		hud = Hud( camera )
-		for ( const prey of world.preys ) trackReplicator( prey )
-		for ( const predator of world.predators ) trackPredator( predator )
+		
+		for ( const replicator of [ ...world.reds, ...world.greens, ...world.blues ] ) {
+			trackReplicator( replicator )
+		}
 		
 		self.attached = true
 		

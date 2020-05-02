@@ -4,16 +4,18 @@
 
 export default function RingBuffer( length ) {
 	const buffer = []
-	let pointer = 0
+	
+	let pushIndex = 0
+	let nextIndex = 0
 	
 	buffer.push = function ( value ) {
-		buffer[ pointer ] = value
-		pointer = ( pointer + 1 ) % length
+		buffer[ pushIndex ] = value
+		pushIndex = ( pushIndex + 1 ) % length
 	}
 	
-	buffer.current = function () {
-		// mod buffer length because buffer might not be full
-		return buffer[ Math.abs( pointer - 1 ) % buffer.length ]
+	buffer.next = function () {
+		nextIndex = ( nextIndex + 1 ) % length
+		return buffer[ nextIndex ]
 	}
 	
 	return buffer

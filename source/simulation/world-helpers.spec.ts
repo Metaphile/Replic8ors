@@ -83,48 +83,48 @@ describe( 'transferEnergyBetween()', () => {
 	it( 'zero transfer', () => {
 		const startingEnergy = 0.5
 		
-		const food = { type: 'food', energy: startingEnergy, preyValue: 0.0, emit }
-		const prey = { type: 'prey', energy: startingEnergy, foodValue: 0.0, emit }
+		const foo = { type: 'foo', energy: startingEnergy, barValue: 0.0, emit }
+		const bar = { type: 'bar', energy: startingEnergy, fooValue: 0.0, emit }
 		
-		transferEnergyBetween( prey, food )
+		transferEnergyBetween( bar, foo )
 		
-		expect( food.energy ).toBeCloseTo( startingEnergy, precision )
-		expect( prey.energy ).toBeCloseTo( startingEnergy, precision )
+		expect( foo.energy ).toBeCloseTo( startingEnergy, precision )
+		expect( bar.energy ).toBeCloseTo( startingEnergy, precision )
 	} )
 	
-	it( 'food <-> prey', () => {
-		const food = { type: 'food', energy: 0.5, preyValue: -0.1, emit }
-		const prey = { type: 'prey', energy: 0.5, foodValue:  0.1, emit }
+	it( 'foo <-> bar', () => {
+		const foo = { type: 'foo', energy: 0.5, barValue: -0.1, emit }
+		const bar = { type: 'bar', energy: 0.5, fooValue:  0.1, emit }
 		
-		transferEnergyBetween( prey, food )
+		transferEnergyBetween( bar, foo )
 		
-		expect( food.energy ).toBeCloseTo( 0.4, precision )
-		expect( prey.energy ).toBeCloseTo( 0.6, precision )
+		expect( foo.energy ).toBeCloseTo( 0.4, precision )
+		expect( bar.energy ).toBeCloseTo( 0.6, precision )
 	} )
 	
-	it( 'food is depleted', () => {
-		const startingFoodEnergy = 0.0
-		const startingPreyEnergy = 0.5
+	it( 'foo is depleted', () => {
+		const startingFooEnergy = 0.0
+		const startingBarEnergy = 0.5
 		
-		const food = { type: 'food', energy: startingFoodEnergy, preyValue: -0.1, emit }
-		const prey = { type: 'prey', energy: startingPreyEnergy, foodValue:  0.1, emit }
+		const foo = { type: 'foo', energy: startingFooEnergy, barValue: -0.1, emit }
+		const bar = { type: 'bar', energy: startingBarEnergy, fooValue:  0.1, emit }
 		
-		transferEnergyBetween( prey, food )
+		transferEnergyBetween( bar, foo )
 		
-		expect( food.energy ).toBeCloseTo( startingFoodEnergy, precision )
-		expect( prey.energy ).toBeCloseTo( startingPreyEnergy, precision )
+		expect( foo.energy ).toBeCloseTo( startingFooEnergy, precision )
+		expect( bar.energy ).toBeCloseTo( startingBarEnergy, precision )
 	} )
 	
-	it( 'prey is depleted', () => {
-		const startingFoodEnergy = 0.5
-		const startingPreyEnergy = 0.0
+	it( 'bar is depleted', () => {
+		const startingFooEnergy = 0.5
+		const startingBarEnergy = 0.0
 		
-		const food = { type: 'food', energy: startingFoodEnergy, preyValue: -0.1, emit }
-		const prey = { type: 'prey', energy: startingPreyEnergy, foodValue:  0.1, emit }
+		const foo = { type: 'foo', energy: startingFooEnergy, barValue: -0.1, emit }
+		const bar = { type: 'bar', energy: startingBarEnergy, fooValue:  0.1, emit }
 		
-		transferEnergyBetween( prey, food )
+		transferEnergyBetween( bar, foo )
 		
-		expect( food.energy ).toBeCloseTo( startingFoodEnergy, precision )
-		expect( prey.energy ).toBeCloseTo( startingPreyEnergy, precision )
+		expect( foo.energy ).toBeCloseTo( startingFooEnergy, precision )
+		expect( bar.energy ).toBeCloseTo( startingBarEnergy, precision )
 	} )
 } )

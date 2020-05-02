@@ -1,5 +1,3 @@
-// assets common to predators/preys
-
 import faceImageSrc from './replicator-face.png'
 
 const ctx = document.createElement( 'canvas' ).getContext( '2d' )

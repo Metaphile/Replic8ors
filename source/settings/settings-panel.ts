@@ -6,7 +6,7 @@ import settings, { defaultSettings } from './settings'
 export default function SettingsPanel() {
 	const predatorFields = []
 	const preyFields = []
-	const foodFields = []
+	const blueFields = []
 	
 	const replicatorFieldDefs = [
 		{
@@ -56,7 +56,16 @@ export default function SettingsPanel() {
 		) ),
 		{
 			section: 'scenario',
-			settingsKey: 'maxPredators',
+			settingsKey: 'minReds',
+			fieldLabel: 'Min Population',
+			step: 1,
+			rangeInputMinValue: 0,
+			rangeInputMaxValue: 32,
+			validator: helpers.isNonNegativeInt,
+		},
+		{
+			section: 'scenario',
+			settingsKey: 'maxReds',
 			fieldLabel: 'Max Population',
 			step: 1,
 			rangeInputMinValue: 0,
@@ -70,7 +79,7 @@ export default function SettingsPanel() {
 		{
 			section: 'predator',
 			settingsKey: 'predatorValue',
-			fieldLabel: 'Other Black Replicators',
+			fieldLabel: 'Reds',
 			step: 0.001,
 			rangeInputMinValue: -1,
 			rangeInputMaxValue: 1,
@@ -79,7 +88,7 @@ export default function SettingsPanel() {
 		{
 			section: 'predator',
 			settingsKey: 'preyValue',
-			fieldLabel: 'White Replicators',
+			fieldLabel: 'Greens',
 			step: 0.001,
 			rangeInputMinValue: -1,
 			rangeInputMaxValue: 1,
@@ -87,8 +96,8 @@ export default function SettingsPanel() {
 		},
 		{
 			section: 'predator',
-			settingsKey: 'foodValue',
-			fieldLabel: 'Food Particles',
+			settingsKey: 'blueValue',
+			fieldLabel: 'Blues',
 			step: 0.001,
 			rangeInputMinValue: -1,
 			rangeInputMaxValue: 1,
@@ -105,7 +114,16 @@ export default function SettingsPanel() {
 		) ),
 		{
 			section: 'scenario',
-			settingsKey: 'maxPreys',
+			settingsKey: 'minGreens',
+			fieldLabel: 'Min Population',
+			step: 1,
+			rangeInputMinValue: 0,
+			rangeInputMaxValue: 32,
+			validator: helpers.isNonNegativeInt,
+		},
+		{
+			section: 'scenario',
+			settingsKey: 'maxGreens',
 			fieldLabel: 'Max Population',
 			step: 1,
 			rangeInputMinValue: 0,
@@ -119,7 +137,7 @@ export default function SettingsPanel() {
 		{
 			section: 'prey',
 			settingsKey: 'predatorValue',
-			fieldLabel: 'Black Replicators',
+			fieldLabel: 'Reds',
 			step: 0.001,
 			rangeInputMinValue: -1,
 			rangeInputMaxValue: 1,
@@ -128,7 +146,7 @@ export default function SettingsPanel() {
 		{
 			section: 'prey',
 			settingsKey: 'preyValue',
-			fieldLabel: 'Other White Replicators',
+			fieldLabel: 'Greens',
 			step: 0.001,
 			rangeInputMinValue: -1,
 			rangeInputMaxValue: 1,
@@ -136,8 +154,8 @@ export default function SettingsPanel() {
 		},
 		{
 			section: 'prey',
-			settingsKey: 'foodValue',
-			fieldLabel: 'Food Particles',
+			settingsKey: 'blueValue',
+			fieldLabel: 'Blues',
 			step: 0.001,
 			rangeInputMinValue: -1,
 			rangeInputMaxValue: 1,
@@ -145,32 +163,29 @@ export default function SettingsPanel() {
 		},
 	]
 	
-	const foodFieldDefs = [
+	const blueFieldDefs = [
+		...replicatorFieldDefs.map( fieldDef => (
+			{
+				...fieldDef,
+				section: 'blue',
+			}
+		) ),
 		{
-			section: 'food',
-			settingsKey: 'radius',
-			fieldLabel: 'Size',
+			section: 'scenario',
+			settingsKey: 'minBlues',
+			fieldLabel: 'Min Population',
 			step: 1,
-			rangeInputMinValue: 1,
-			rangeInputMaxValue: 16,
-			validator: helpers.isPositiveFloat,
-		},
-		{
-			section: 'food',
-			settingsKey: 'shelfLife',
-			fieldLabel: 'Lifespan',
-			step: 1,
-			rangeInputMinValue: 1,
-			rangeInputMaxValue: 600,
-			validator: helpers.isNonNegativeFloat,
+			rangeInputMinValue: 0,
+			rangeInputMaxValue: 32,
+			validator: helpers.isNonNegativeInt,
 		},
 		{
 			section: 'scenario',
-			settingsKey: 'maxFoods',
-			fieldLabel: 'Max Food Particles',
+			settingsKey: 'maxBlues',
+			fieldLabel: 'Max Population',
 			step: 1,
 			rangeInputMinValue: 0,
-			rangeInputMaxValue: 256,
+			rangeInputMaxValue: 32,
 			validator: helpers.isNonNegativeInt,
 		},
 		{
@@ -178,27 +193,27 @@ export default function SettingsPanel() {
 			fieldLabel: 'Collision Values',
 		},
 		{
-			section: 'food',
+			section: 'blue',
 			settingsKey: 'predatorValue',
-			fieldLabel: 'Black Replicators',
+			fieldLabel: 'Reds',
 			step: 0.001,
 			rangeInputMinValue: -1,
 			rangeInputMaxValue: 1,
 			validator: helpers.isFloat,
 		},
 		{
-			section: 'food',
+			section: 'blue',
 			settingsKey: 'preyValue',
-			fieldLabel: 'White Replicators',
+			fieldLabel: 'Greens',
 			step: 0.001,
 			rangeInputMinValue: -1,
 			rangeInputMaxValue: 1,
 			validator: helpers.isFloat,
 		},
 		{
-			section: 'food',
-			settingsKey: 'foodValue',
-			fieldLabel: 'Other Food Particles',
+			section: 'blue',
+			settingsKey: 'blueValue',
+			fieldLabel: 'Blues',
 			step: 0.001,
 			rangeInputMinValue: -1,
 			rangeInputMaxValue: 1,
@@ -230,25 +245,25 @@ export default function SettingsPanel() {
 		}
 	}
 	
-	for ( const fieldDef of foodFieldDefs ) {
+	for ( const fieldDef of blueFieldDefs ) {
 		if ( fieldDef.section ) {
-			foodFields.push( helpers.populateFieldTemplate(
+			blueFields.push( helpers.populateFieldTemplate(
 				fieldDef,
 				settings,
 				defaultSettings,
 			) )
 		} else {
-			foodFields.push( `<h3>${ fieldDef.fieldLabel }</h3>` )
+			blueFields.push( `<h3>${ fieldDef.fieldLabel }</h3>` )
 		}
 	}
 	
 	const $element = $( settingsPanelTemplate( {
 		predatorFields,
 		preyFields,
-		foodFields,
+		blueFields,
 	} ) )
 	
-	for ( const fieldDef of [ ...predatorFieldDefs, ...preyFieldDefs, ...foodFieldDefs ] ) {
+	for ( const fieldDef of [ ...predatorFieldDefs, ...preyFieldDefs, ...blueFieldDefs ] ) {
 		if ( fieldDef.section ) {
 			helpers.attachInputHandler( fieldDef, $element )
 		}

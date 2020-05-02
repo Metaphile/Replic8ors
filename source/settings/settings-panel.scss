@@ -17,13 +17,13 @@ $blue: rgb(90, 195, 255);
 	
 	background: fade-out( black, 0.2 );
 	bottom: 43px; // touch top of control bar
-	max-width: 66.7%;
+	max-width: 50%;
 	overflow-y: scroll;
 	padding: 0 1rem;
 	position: absolute;
 	right: 0;
 	top: 0;
-	width: 66.7%;
+	width: 50%;
 	
 	&, input {
 		color: silver;

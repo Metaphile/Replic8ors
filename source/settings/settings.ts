@@ -12,12 +12,17 @@ export const setSetting = ( section, key, value ) => {
 export const settingsEvents = Events()
 
 const scenario = {
-	maxPredators: 11,
-	maxPreys: 13,
-	maxFoods: 21,
+	minReds:    3,
+	maxReds:   21,
+	minGreens: 10,
+	maxGreens: 52,
+	minBlues:   4,
+	maxBlues:  17,
 }
 
 const replicator = {
+	type: 'replicator',
+	
 	radius: 32,
 	mass: 90,
 	drag: 260,
@@ -33,44 +38,60 @@ const replicator = {
 	
 	numBodySegments: 3,
 	numInternalNeurons: 0,
-	potentialDecayRate: 0.0,
+	potentialDecayRate: 0.3,
 	
 	// collision values
 	predatorValue: 0.0,
 	preyValue: 0.0,
-	foodValue: 0.0,
+	blueValue: 0.0,
 }
 
+// reds
 const predator = {
 	...replicator,
 	
+	type: 'predator',
+	
+	radius: 32,
+	mass: 17,
+	metabolism: 0.005,
+	
 	// collision values
-	predatorValue: 0.0,
-	preyValue: 0.667,
-	foodValue: -0.101,
+	predatorValue:  0.0,
+	preyValue:     -0.1,
+	blueValue:      0.67,
 }
 
+// greens
 const prey = {
 	...replicator,
 	
-	// collision values
-	predatorValue: -0.334,
-	preyValue: 0.0,
-	foodValue: 0.334,
-}
-
-const food = {
-	calories: 0.7,
-	shelfLife: 5 * 60,
-	radius: 3,
-	mass: 4,
-	drag: 16,
-	elasticity: 2,
+	type: 'prey',
+	
+	radius: 27,
+	mass: 209,
+	metabolism: 0.003,
 	
 	// collision values
-	predatorValue: 0.0,
-	preyValue: -0.334,
-	foodValue: 0.0,
+	predatorValue: -0.1,
+	preyValue:      0.0,
+	blueValue:     -0.2,
+}
+
+// blues
+const blue = {
+	...replicator,
+	
+	type: 'blue',
+	
+	radius: 41,
+	mass: 152,
+	metabolism: 0.008,
+	
+	// collision values
+	predatorValue: -1.0,
+	preyValue:      0.209,
+	blueValue:      0.0,
 }
 
 const settings = {
@@ -78,7 +99,7 @@ const settings = {
 	replicator,
 	predator,
 	prey,
-	food,
+	blue,
 }
 
 const defaultSettings = {}

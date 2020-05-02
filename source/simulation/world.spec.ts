@@ -1,12 +1,11 @@
-// TODO almost made a breaking change to the foods-replicators loop
-// maybe write a test that fails if this.foods.length isn't checked per iteration
-
 import World from './world'
-import Prey from './prey'
-import Food from './food'
+import Replic8or from './replic8or'
 import Vector2 from '../engine/vector-2'
+import settings from '../settings/settings'
 
 const precision = 9
+
+const Prey = ( customSettings: any = {} ) => Replic8or( { ...settings.prey, ...customSettings } )
 
 describe( 'world', () => {
 	it( 'preys can be added', () => {
@@ -15,17 +14,7 @@ describe( 'world', () => {
 		const prey = Prey()
 		world.addPrey( prey )
 		
-		expect( world.preys.includes( prey ) ).toBe( true )
-	} )
-	
-	it( 'removes expired food', () => {
-		const world = World()
-		
-		const food = Food()
-		world.addFood( food )
-		food.spoil()
-		
-		expect( world.foods.includes( food ) ).toBe( false )
+		expect( world.greens.includes( prey ) ).toBe( true )
 	} )
 	
 	it( 'removes dead preys', () => {
@@ -35,7 +24,7 @@ describe( 'world', () => {
 		world.addPrey( prey )
 		prey.die()
 		
-		expect( world.preys.length ).toBe( 0 )
+		expect( world.greens.length ).toBe( 0 )
 	} )
 	
 	it( 'moves partially overlapping preys apart', () => {
@@ -96,67 +85,29 @@ describe( 'world', () => {
 	} )
 	
 	describe( 'emits events', () => {
-		it( 'prey added', () => {
+		it( 'replicator added', () => {
 			const world = World()
 			
 			const spy = jasmine.createSpy()
-			world.on( 'prey-added', spy )
+			world.on( 'replicator-added', spy )
 			
-			const prey = Prey()
-			world.addPrey( prey )
+			const replicator = Prey()
+			world.addPrey( replicator )
 			
-			expect( spy ).toHaveBeenCalledWith( prey )
+			expect( spy ).toHaveBeenCalledWith( replicator )
 		} )
 		
-		it( 'prey died', () => {
+		it( 'replicator died', () => {
 			const world = World()
 			
 			const spy = jasmine.createSpy()
-			world.on( 'prey-died', spy )
+			world.on( 'replicator-died', spy )
 			
-			const doomedPrey = Prey()
-			world.addPrey( doomedPrey )
-			doomedPrey.die()
+			const doomedReplicator = Prey()
+			world.addPrey( doomedReplicator )
+			doomedReplicator.die()
 			
-			expect( spy ).toHaveBeenCalledWith( doomedPrey )
-		} )
-		
-		it( 'food added', () => {
-			const world = World()
-			
-			const spy = jasmine.createSpy()
-			world.on( 'food-added', spy )
-			
-			const food = Food()
-			world.addFood( food )
-			
-			expect( spy ).toHaveBeenCalledWith( food )
-		} )
-		
-		xit( 'food eaten', () => {
-			const world = World()
-			
-			const spy = jasmine.createSpy()
-			world.on( 'food-eaten', spy )
-			
-			const food = Food()
-			world.addFood( food )
-			food.chomp()
-			
-			expect( spy ).toHaveBeenCalledWith( food )
-		} )
-		
-		it( 'food spoiled', () => {
-			const world = World()
-			
-			const spy = jasmine.createSpy()
-			world.on( 'food-spoiled', spy )
-			
-			const food = Food()
-			world.addFood( food )
-			food.spoil()
-			
-			expect( spy ).toHaveBeenCalledWith( food )
+			expect( spy ).toHaveBeenCalledWith( doomedReplicator )
 		} )
 	} )
 } )

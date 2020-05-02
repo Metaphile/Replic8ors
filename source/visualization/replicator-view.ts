@@ -1,6 +1,7 @@
 import config from '../config'
 import * as preyAssets from './prey-assets'
 import * as predatorAssets from './predator-assets'
+import * as blueAssets from './blue-assets'
 import NeuronView from './neuron-view'
 import Vector2 from '../engine/vector-2'
 
@@ -180,13 +181,17 @@ function anchorNeuronViews() {
 	}
 }
 
-export default function ReplicatorView( replicator, opts = {}, theme = 'prey' ) {
+export default function ReplicatorView( replicator, opts = {} ) {
 	const self = Object.create( ReplicatorView.prototype )
 	self.opts = opts
 	
-	switch ( theme ) {
+	switch ( replicator.type ) {
 		case 'predator':
 			self.assets = predatorAssets
+			break
+		
+		case 'blue':
+			self.assets = blueAssets
 			break
 		
 		default:
@@ -205,14 +210,14 @@ export default function ReplicatorView( replicator, opts = {}, theme = 'prey' ) 
 	for ( const receptor of replicator.receptors ) {
 		let neuron
 		
-		neuron = receptor.neurons.prey
-		self.neuronViews[ neuron.index ] = NeuronView( neuron, 'prey' )
-		
 		neuron = receptor.neurons.predator
 		self.neuronViews[ neuron.index ] = NeuronView( neuron, 'predator' )
 		
-		neuron = receptor.neurons.food
-		self.neuronViews[ neuron.index ] = NeuronView( neuron, 'food' )
+		neuron = receptor.neurons.prey
+		self.neuronViews[ neuron.index ] = NeuronView( neuron, 'prey' )
+		
+		neuron = receptor.neurons.blue
+		self.neuronViews[ neuron.index ] = NeuronView( neuron, 'blue' )
 	}
 	
 	self.neuronViews[ replicator.hungerNeuron.index ] = NeuronView( replicator.hungerNeuron, 'empty' )
@@ -315,19 +320,6 @@ ReplicatorView.prototype = {
 		for ( const effect of this.effects.energyUps ) effect.update( dt_sim )
 		if ( this.effects.damage ) this.effects.damage.update( dt_sim )
 		if ( this.effects.death ) this.effects.death.update( dt_sim )
-		
-		if ( this.replicator.takingDamage ) {
-			// TODO this only works accidentally
-			// the effect is added once and never removed
-			// need new strategy (active flag?) for effects?
-			if ( !this.effects.damage ) {
-				this.doDamageEffect()
-			}
-			
-			// while replicator is actively taking damage, keep damage animation on first frame
-			// when damage stops, allow damage animation to play out (fade out)
-			this.effects.damage.progress = 0
-		}
 		
 		// dead replicators are removed immediately from the world and no longer updated,
 		// but the view persists for a second or two while the death animation plays out
@@ -534,18 +526,17 @@ ReplicatorView.prototype = {
 			
 			this.drawInputSource( ctx, receptorPosition, inputSourceRadius )
 			
-			// food
+			// reds
 			{
-				const neuron = receptor.neurons.food
+				const neuron = receptor.neurons.predator
 				const neuronView = this.neuronViews[ neuron.index ]
 				const ancestorWeight = this.replicator.ancestorWeights[ neuron.index ].weights[ neuron.index ]
 				const weight = neuron.weights[ neuron.index ]
-				// TODO this is very misleading
 				const progress = neuron.sensoryPotential / weight % 1
 				this.drawSignal( ctx, receptorPosition, inputSourceRadius, neuronView.position, neuronView.radius, ancestorWeight, weight, progress, ctx.globalAlpha * ( neuronView.selected ? 1 : neuronView.connectionOpacity ), neuronView.overrideSignalOpacity || neuronView.selected, neuron.firing )
 			}
 			
-			// other replicators
+			// greens
 			{
 				const neuron = receptor.neurons.prey
 				const neuronView = this.neuronViews[ neuron.index ]
@@ -555,9 +546,9 @@ ReplicatorView.prototype = {
 				this.drawSignal( ctx, receptorPosition, inputSourceRadius, neuronView.position, neuronView.radius, ancestorWeight, weight, progress, ctx.globalAlpha * ( neuronView.selected ? 1 : neuronView.connectionOpacity ), neuronView.overrideSignalOpacity || neuronView.selected, neuron.firing )
 			}
 			
-			// predators
+			// blues
 			{
-				const neuron = receptor.neurons.predator
+				const neuron = receptor.neurons.blue
 				const neuronView = this.neuronViews[ neuron.index ]
 				const ancestorWeight = this.replicator.ancestorWeights[ neuron.index ].weights[ neuron.index ]
 				const weight = neuron.weights[ neuron.index ]
@@ -745,9 +736,9 @@ ReplicatorView.prototype = {
 		const speed     =   2.6
 		const amplitude =   0.6
 		
-		const length    =   14.4
-		const lengthMid =   8.4
-		const baseAngle =   0.26 * Math.PI
+		const length    =   9.4
+		const lengthMid =   7.4
+		const baseAngle =   0.36 * Math.PI
 		const tilt      =   0.0
 		
 		const replicator = this.replicator
@@ -778,8 +769,7 @@ ReplicatorView.prototype = {
 				ctx.rotate( flipAngle * 0.5 )
 				ctx.lineTo( length, 0 ) // tip
 				
-				// this isn't necessary
-				// ctx.closePath()
+				ctx.closePath()
 				
 				// manually undo transforms
 				ctx.rotate( -( flipper.angle + tilt + flipAngle ) )

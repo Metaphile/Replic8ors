@@ -1,9 +1,6 @@
-import Food from './food'
-import Timer from '../engine/timer'
-import Predator from './predator'
-import Prey from './prey'
 import RingBuffer from '../engine/ring-buffer'
 import settings, { settingsEvents } from '../settings/settings'
+import Replic8or from './replic8or'
 
 export default function Scenario( world, opts = {} ) {
 	const self = {}
@@ -21,7 +18,7 @@ export default function Scenario( world, opts = {} ) {
 				break
 			
 			case 'predator':
-				const predators = [ ...predatorCryo, ...world.predators ]
+				const predators = [ ...geneBank.predator, ...world.reds ]
 				
 				predators.forEach( predator => predator[ key ] = value )
 				
@@ -38,7 +35,7 @@ export default function Scenario( world, opts = {} ) {
 				break
 			
 			case 'prey':
-				const preys = [ ...preyCryo, ...world.preys ]
+				const preys = [ ...geneBank.prey, ...world.greens ]
 				
 				preys.forEach( prey => prey[ key ] = value )
 				
@@ -54,102 +51,129 @@ export default function Scenario( world, opts = {} ) {
 				
 				break
 			
-			case 'food':
-				const foods = [ ...world.foods ]
+			case 'blue':
+				const blues = [ ...geneBank.blue, ...world.blues ]
 				
-				foods.forEach( food => food[ key ] = value )
+				blues.forEach( blue => blue[ key ] = value )
 				
 				switch ( key ) {
-					// ...
+					case 'potentialDecayRate':
+						for ( const blue of blues ) {
+							for ( const neuron of blue.brain.neurons ) {
+								neuron.potentialDecayRate = value
+							}
+						}
+						break
 				}
 				
 				break
 		}
 	} )
 	
-	// archive
-	const preyCryo = RingBuffer( Math.ceil( self.maxPreys / 2 ) )
-	const predatorCryo = RingBuffer( Math.ceil( self.maxPredators / 2 ) )
-	
-	const timer = Timer()
+	const geneBank = {}
+	const numSpecimensPerReplicatorType = 32
+	for ( const replicatorType of [ 'predator', 'prey', 'blue' ] ) {
+		geneBank[ replicatorType ] = RingBuffer( numSpecimensPerReplicatorType )
+	}
 	
 	self.balancePopulations = function () {
-		const excessPredators = world.predators.length - self.maxPredators
-		const neededPredators = Math.ceil( self.maxPredators / 2 ) - world.predators.length
-		if ( excessPredators > 0 ) {
-			for ( let i = 0; i < excessPredators; i++ ) {
-				// expire oldest predators
-				world.predators[ i ].energy = -Infinity
-			}
-		} else if ( neededPredators > 0 ) {
-			addPredators( neededPredators )
+		const maxReds = Math.max( self.maxReds, self.minReds )
+		const excessReds = world.reds.length - maxReds
+		const neededReds = self.minReds - world.reds.length
+		if ( excessReds > 0 ) {
+			world.reds
+				.slice()
+				// sort oldest to youngest
+				.sort( ( a, b ) => b.age - a.age )
+				.slice( 0, excessReds )
+				.forEach( replicator => replicator.energy = -Infinity )
+		} else if ( neededReds > 0 ) {
+			addNumReds( neededReds )
 		}
 		
-		const excessPreys = world.preys.length - self.maxPreys
-		const neededPreys = Math.ceil( self.maxPreys / 2 ) - world.preys.length
-		if ( excessPreys > 0 ) {
-			for ( let i = 0; i < excessPreys; i++ ) {
-				// expire oldest preys
-				world.preys[ i ].energy = -Infinity
-			}
-		} else if ( neededPreys > 0 ) {
-			addPreys( neededPreys )
+		const maxGreens = Math.max( self.maxGreens, self.minGreens )
+		const excessGreens = world.greens.length - maxGreens
+		const neededGreens = self.minGreens - world.greens.length
+		if ( excessGreens > 0 ) {
+			world.greens
+				.slice()
+				// sort oldest to youngest
+				.sort( ( a, b ) => b.age - a.age )
+				.slice( 0, excessGreens )
+				.forEach( replicator => replicator.energy = -Infinity )
+		} else if ( neededGreens > 0 ) {
+			addNumGreens( neededGreens )
 		}
 		
-		const excessFoods = world.foods.length - self.maxFoods
-		if ( excessFoods > 0 ) {
-			for ( let i = 0; i < excessFoods; i++ ) {
-				// expire oldest foods
-				world.foods[ i ].age = Infinity
-			}
-		} else if ( excessFoods < 0 ) {
-			addFoods( -excessFoods )
+		const maxBlues = Math.max( self.maxBlues, self.minBlues )
+		const excessBlues = world.blues.length - maxBlues
+		const neededBlues = self.minBlues - world.blues.length
+		if ( excessBlues > 0 ) {
+			world.blues
+				.slice()
+				// sort oldest to youngest
+				.sort( ( a, b ) => b.age - a.age )
+				.slice( 0, excessBlues )
+				.forEach( replicator => replicator.energy = -Infinity )
+		} else if ( neededBlues > 0 ) {
+			addNumBlues( neededBlues )
 		}
 	}
 	
 	function createPopulation( howMany, founders, copyMember, createMember ) {
 		const population = []
 		
-		for ( let i = 0; i < howMany; i++ ) {
-			const member = founders[ i ] ? copyMember( founders[ i ] ) : createMember()
-			population.push( member )
+		while ( howMany-- ) {
+			const founder = founders.next()
+			population.push( founder ? copyMember( founder ) : createMember() )
 		}
 		
 		return population
 	}
 	
-	const numEntityTypes = 3
-	const numSpokes = numEntityTypes * 5
+	const replicateReplicator = parent => {
+		const child = parent.replicate( true )
+		child.energy = settings[ child.type ].energy
+		return child
+	}
 	
-	let foodSpokeIndex = 0
-	function addFoods( howMany ) {
+	const createReplicator = type => {
+		const replicator = Replic8or( settings[ type ] ).replicate()
+		replicator.energy = settings[ type ].energy
+		replicator.ancestorWeights = replicator.getOwnWeights()
+		return replicator
+	}
+	
+	const numReplicatorTypes = 3
+	const numSpokes = numReplicatorTypes * 3
+	
+	let blueSpokeIndex = 0
+	function addNumBlues( howMany ) {
 		const ownSpokeOffset = 0
 		
-		for ( ; howMany > 0; howMany-- ) {
-			const food = Food()
-			
+		createPopulation( howMany, geneBank.blue, replicateReplicator, () => createReplicator( 'blue' ) ).forEach( blue => {
 			const radiusScale = Math.pow( Math.random(), 1 / Math.PI )
 			const radius = radiusScale * world.radius
 			
 			const tau = Math.PI * 2
-			const minAngle = ( ( ownSpokeOffset + foodSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) - ( tau / numSpokes / 2 )
-			const maxAngle = ( ( ownSpokeOffset + foodSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) + ( tau / numSpokes / 2 )
+			const minAngle = ( ( ownSpokeOffset + blueSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) - ( tau / numSpokes / 2 )
+			const maxAngle = ( ( ownSpokeOffset + blueSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) + ( tau / numSpokes / 2 )
 			const angle = minAngle + ( Math.random() * ( maxAngle - minAngle ) )
 			
-			food.position.x = Math.cos( angle ) * radius
-			food.position.y = Math.sin( angle ) * radius
+			blue.position.x = Math.cos( angle ) * radius
+			blue.position.y = Math.sin( angle ) * radius
 			
-			world.addFood( food )
+			world.addBlue( blue )
 			
-			foodSpokeIndex = ( foodSpokeIndex + numEntityTypes ) % numSpokes
-		}
+			blueSpokeIndex = ( blueSpokeIndex + numReplicatorTypes ) % numSpokes
+		} )
 	}
 	
 	let preySpokeIndex = 0
-	function addPreys( howMany ) {
+	function addNumGreens( howMany ) {
 		const ownSpokeOffset = 1
 		
-		createPopulation( howMany, preyCryo, prey => { prey.energy = 1; return prey.replicate( true ) }, Prey ).forEach( ( prey, i, newPreys ) => {
+		createPopulation( howMany, geneBank.prey, replicateReplicator, () => createReplicator( 'prey' ) ).forEach( prey => {
 			const radiusScale = Math.pow( Math.random(), 1 / Math.PI )
 			const radius = radiusScale * world.radius
 			
@@ -163,15 +187,15 @@ export default function Scenario( world, opts = {} ) {
 			
 			world.addPrey( prey )
 			
-			preySpokeIndex = ( preySpokeIndex + numEntityTypes ) % numSpokes
+			preySpokeIndex = ( preySpokeIndex + numReplicatorTypes ) % numSpokes
 		} )
 	}
 	
 	let predatorSpokeIndex = 0
-	function addPredators( howMany ) {
+	function addNumReds( howMany ) {
 		const ownSpokeOffset = 2
 		
-		createPopulation( howMany, predatorCryo, predator => { predator.energy = 1; return predator.replicate( true ) }, Predator ).forEach( ( predator, i, newPredators ) => {
+		createPopulation( howMany, geneBank.predator, replicateReplicator, () => createReplicator( 'predator' ) ).forEach( predator => {
 			const radiusScale = Math.pow( Math.random(), 1 / Math.PI )
 			const radius = radiusScale * world.radius
 			
@@ -185,28 +209,22 @@ export default function Scenario( world, opts = {} ) {
 			
 			world.addPredator( predator )
 			
-			predatorSpokeIndex = ( predatorSpokeIndex + numEntityTypes ) % numSpokes
+			predatorSpokeIndex = ( predatorSpokeIndex + numReplicatorTypes ) % numSpokes
 		} )
 	}
 	
 	self.reset = function ( hard ) {
-		timer.cancelAllActions()
-		
-		world.foods.slice().forEach( food => food.spoil() )
-		world.preys.slice().forEach( prey => prey.die() )
-		world.predators.slice().forEach( predator => predator.die() )
+		world.reds.slice().forEach( predator => predator.die() )
+		world.greens.slice().forEach( prey => prey.die() )
+		world.blues.slice().forEach( blue => blue.die() )
 	}
 	
-	world.on( 'prey-replicated', ( parent, child ) => {
-		preyCryo.push( parent )
-	} )
-	
-	world.on( 'predator-replicated', ( parent, child ) => {
-		predatorCryo.push( parent )
+	world.on( 'replicator-replicated', parent => {
+		// add exact copy of successful replicator to gene bank
+		geneBank[ parent.type ].push( parent.replicate( true, 0 ) )
 	} )
 	
 	self.update = function ( dt ) {
-		timer.update( dt )
 		world.update( dt )
 		self.balancePopulations()
 	}

@@ -8,10 +8,12 @@ export default function World() {
 	const self = Object.create( World.prototype )
 	Events( self )
 	
-	self.foods = []
-	self.preys = []
-	self.predators = []
-	self.radius = 640
+	self.reds = []
+	self.greens = []
+	self.blues = []
+	
+	self.radius = 460
+	
 	// for sense function with curve height = 700, curve width = 5
 	// strength is pretty close to 0 after 200 units
 	self.maxSenseRadius = 200
@@ -20,111 +22,81 @@ export default function World() {
 }
 
 World.prototype = {
-	addFood: function ( food ) {
-		food.on( 'spoiled', () => {
-			const i = this.foods.indexOf( food )
-			this.foods.splice( i, 1 )
+	addBlue: function ( blue ) {
+		blue.on( 'died', () => {
+			const i = this.blues.indexOf( blue )
+			this.blues.splice( i, 1 )
 			
-			this.emit( 'food-spoiled', food )
+			// notify after removing
+			this.emit( 'replicator-died', blue )
 		} )
 		
-		food.on( 'eaten', () => {
-			const i = this.foods.indexOf( food )
-			this.foods.splice( i, 1 )
+		blue.on( 'replicated', ( parent, child ) => {
+			// propagate replicated event before added
+			this.emit( 'replicator-replicated', parent, child )
 			
-			this.emit( 'food-eaten', food )
+			this.addBlue( child )
 		} )
 		
-		this.foods.push( food )
+		this.blues.push( blue )
 		
-		this.emit( 'food-added', food )
+		this.emit( 'replicator-added', blue )
 	},
 	
 	addPrey: function ( prey ) {
-		// TODO make like food.spoiled
 		prey.on( 'died', () => {
-			const i = this.preys.indexOf( prey )
-			this.preys.splice( i, 1 )
+			const i = this.greens.indexOf( prey )
+			this.greens.splice( i, 1 )
 			
 			// notify after removing
-			this.emit( 'prey-died', prey )
+			this.emit( 'replicator-died', prey )
 		} )
 		
 		prey.on( 'replicated', ( parent, child ) => {
 			// propagate replicated event before added
-			this.emit( 'prey-replicated', parent, child )
+			this.emit( 'replicator-replicated', parent, child )
 			
 			this.addPrey( child )
 		} )
 		
-		this.preys.push( prey )
+		this.greens.push( prey )
 		
-		this.emit( 'prey-added', prey )
+		this.emit( 'replicator-added', prey )
 	},
 	
 	addPredator: function ( predator ) {
 		predator.on( 'died', () => {
-			const i = this.predators.indexOf( predator )
-			this.predators.splice( i, 1 )
+			const i = this.reds.indexOf( predator )
+			this.reds.splice( i, 1 )
 			
 			// notify after removing
-			this.emit( 'predator-died', predator )
+			this.emit( 'replicator-died', predator )
 		} )
 		
 		predator.on( 'replicated', ( parent, child ) => {
 			// propagate replicated event before added
-			this.emit( 'predator-replicated', parent, child )
+			this.emit( 'replicator-replicated', parent, child )
 			
 			this.addPredator( child )
 		} )
 		
-		this.predators.push( predator )
+		this.reds.push( predator )
 		
-		this.emit( 'predator-added', predator )
+		this.emit( 'replicator-added', predator )
 	},
 	
 	update: function ( dt ) {
-		const { foods, preys, predators } = this
+		const replicators = [ ...this.reds, ...this.greens, ...this.blues ]
 		
-		// interactions / collisions
-		
-		// predators-predators / preys-preys / predators-preys / preys-predators
-		{
-			const entities = [ ...predators, ...preys ]
+		for ( let i = 0, n = replicators.length; i < n; i++ ) {
+			const a = replicators[ i ]
 			
-			for ( let i = 0, n = entities.length; i < n; i++ ) {
-				const a = entities[ i ]
+			for ( let j = i + 1; j < n; j++ ) {
+				const b = replicators[ j ]
 				
-				for ( let j = i + 1; j < n; j++ ) {
-					const b = entities[ j ]
-					
-					if ( areCloserThan( a, b, this.maxSenseRadius ) ) {
-						a.sense( b, dt )
-						b.sense( a, dt )
-						
-						if ( areCloserThan( a, b, 0 ) ) {
-							// physics
-							a.collideWith( b, dt )
-							
-							a.currentColliders.push( b )
-							b.currentColliders.push( a )
-							
-							if ( !a.previousColliders.includes( b ) ) {
-								transferEnergyBetween( a, b )
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		// foods-foods
-		{
-			for ( let i = 0, n = foods.length; i < n; i++ ) {
-				const a = foods[ i ]
-				
-				for ( let j = i + 1; j < n; j++ ) {
-					const b = foods[ j ]
+				if ( areCloserThan( a, b, this.maxSenseRadius ) ) {
+					a.sense( b, dt )
+					b.sense( a, dt )
 					
 					if ( areCloserThan( a, b, 0 ) ) {
 						// physics
@@ -134,6 +106,7 @@ World.prototype = {
 						b.currentColliders.push( a )
 						
 						if ( !a.previousColliders.includes( b ) ) {
+							this.emit( 'collision', a, b )
 							transferEnergyBetween( a, b )
 						}
 					}
@@ -141,34 +114,12 @@ World.prototype = {
 			}
 		}
 		
-		// predators-foods / preys-foods / foods-predators / foods-preys
-		for ( const replicator of [ ...predators, ...preys ] ) {
-			for ( const food of foods ) {
-				if ( areCloserThan( replicator, food, this.maxSenseRadius ) ) {
-					replicator.sense( food, dt )
-					
-					if ( areCloserThan( replicator, food, 0 ) ) {
-						// physics
-						replicator.collideWith( food, dt )
-						
-						replicator.currentColliders.push( food )
-						food.currentColliders.push( replicator )
-						
-						if ( !replicator.previousColliders.includes( food ) ) {
-							transferEnergyBetween( replicator, food )
-						}
-					}
-				}
-			}
-		}
-		
 		// updates
-		
-		for ( const entity of [ ...predators, ...preys, ...foods ] ) {
-			entity.previousColliders = [ ...entity.currentColliders ]
-			entity.currentColliders = []
+		for ( const replicator of replicators ) {
+			replicator.previousColliders = [ ...replicator.currentColliders ]
+			replicator.currentColliders = []
 			
-			entity.update( dt )
+			replicator.update( dt )
 		}
 	},
 }

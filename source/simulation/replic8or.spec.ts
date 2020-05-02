@@ -205,6 +205,13 @@ describe( 'replicator', () => {
 		// expect( replicator.dead ).toBe( true )
 	} )
 	
+	it( 'keeps track of its age', () => {
+		const replicator = Replic8or()
+		expect( replicator.age ).toBe( 0 )
+		replicator.update( 1/60 )
+		expect( replicator.age ).toBe( 1/60 )
+	} )
+	
 	xit( 'flagella push replicator in opposite direction', () => {
 		const replicator = Replic8or( {
 			metabolism:  0,

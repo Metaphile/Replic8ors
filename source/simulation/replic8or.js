@@ -7,8 +7,6 @@ import Math2   from '../engine/math-2'
 import Vector2 from '../engine/vector-2'
 // import { formatWeight } from '../helpers'
 import settings from '../settings/settings'
-import Predator from './predator'
-import Prey from './prey'
 
 function createSymmetricSegments() {
 	this.flippers  = []
@@ -46,17 +44,17 @@ function createSymmetricSegments() {
 			const angle = this.receptorOffset + ( i / this.numBodySegments * Math.PI * 2 )
 			const receptor = { angle }
 			
-			const foodNeuron = Neuron( { potentialDecayRate: this.potentialDecayRate } )
-			this.brain.addNeuron( foodNeuron )
-			
-			const predatorNeuron = Neuron( { potentialDecayRate: this.potentialDecayRate } )
-			this.brain.addNeuron( predatorNeuron )
+			const blueNeuron = Neuron( { potentialDecayRate: this.potentialDecayRate } )
+			this.brain.addNeuron( blueNeuron )
 			
 			const preyNeuron = Neuron( { potentialDecayRate: this.potentialDecayRate } )
 			this.brain.addNeuron( preyNeuron )
 			
-			receptor.neurons = [ foodNeuron, predatorNeuron, preyNeuron ]
-			receptor.neurons.food = foodNeuron
+			const predatorNeuron = Neuron( { potentialDecayRate: this.potentialDecayRate } )
+			this.brain.addNeuron( predatorNeuron )
+			
+			receptor.neurons = [ blueNeuron, preyNeuron, predatorNeuron ]
+			receptor.neurons.blue = blueNeuron
 			receptor.neurons.prey = preyNeuron
 			receptor.neurons.predator = predatorNeuron
 			
@@ -144,12 +142,13 @@ export default function Replic8or( opts = {} ) {
 	
 	self.ancestorWeights = opts.ancestorWeights || self.getOwnWeights()
 	
+	self.age = 0
+	
 	return self
 }
 
 Replic8or.prototype = {
 	type: 'replicator',
-	takingDamage: false,
 	
 	getOwnWeights: function () {
 		const pseudoNeurons = []
@@ -163,23 +162,25 @@ Replic8or.prototype = {
 		return pseudoNeurons
 	},
 	
-	update: function ( dt ) {
+	update: function ( dt_sim ) {
+		this.age += dt_sim
+		
 		// stimulate hunger neuron _before_ updating brain
 		// may fix rare issue where neuron has potential == 1 on activation frame
 		// instead of 1 - delta
-		this.hungerNeuron.stimulate( Math.pow( 1 - Math2.clamp( this.energy, 0, 1 ), 2 ) * 30 * dt )
+		this.hungerNeuron.stimulate( Math.pow( 1 - Math2.clamp( this.energy, 0, 1 ), 2 ) * 30 * dt_sim )
 		
-		this.brain.update( dt )
+		this.brain.update( dt_sim )
 		
-		for ( const flipper of this.flippers ) flipper.update( dt )
+		for ( const flipper of this.flippers ) flipper.update( dt_sim )
 		
-		this.updatePhysics( dt )
+		this.updatePhysics( dt_sim )
 		
 		if ( this.energy >= 1 ) {
 			this.replicate()
 		}
 		
-		this.energy -= this.metabolism * dt
+		this.energy -= this.metabolism * dt_sim
 		
 		if ( this.energy <= 0 ) this.die()
 	},
@@ -268,28 +269,22 @@ Replic8or.prototype = {
 		}
 	},
 	
+	getOwnSettings: function () {
+		const ownSettings = {}
+		
+		for ( const key in settings[ this.type ] ) {
+			ownSettings[ key ] = this[ key ]
+		}
+		
+		return ownSettings
+	},
+	
 	// TODO quietly -> emitEvent
 	replicate: function ( quietly, mutationRate = 0.04 ) {
 		const parent = this
-		const child = ( () => {
-			const childOpts = {}
-			Object.keys( settings.replicator ).forEach( key => childOpts[ key ] = parent[ key ] )
-			childOpts.ancestorWeights = parent.ancestorWeights
-			
-			switch ( parent.type ) {
-				case 'replicator':
-					return Replic8or( childOpts )
-				
-				case 'predator':
-					return Predator( childOpts )
-				
-				case 'prey':
-					return Prey( childOpts )
-				
-				default:
-					throw `can't replicate unknown replicator type ${ parent.type }`
-			}
-		} )()
+		const child = Replic8or( parent.getOwnSettings() )
+		
+		child.ancestorWeights = parent.ancestorWeights
 		
 		this.copyWeights( parent.brain.neurons, child.brain.neurons )
 		this.mutateWeights( child.brain.neurons, mutationRate )
@@ -306,8 +301,8 @@ Replic8or.prototype = {
 		// divide parent energy between parent and child (parent energy might be > 1)
 		parent.energy = child.energy = ( parent.energy / 2 )
 		
-		Vector2.set( child.position, parent.position )
-		Vector2.set( child.velocity, parent.velocity )
+		child.position = { ...parent.position }
+		child.velocity = { ...parent.velocity }
 		
 		// activate all flippers simultaneously when a replicator is born
 		// because it looks cool

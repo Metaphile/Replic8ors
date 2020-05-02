@@ -16,10 +16,10 @@ const energyGradient = ( () => {
 	
 	const gradient = ctx.createLinearGradient( 0, -1, 0, 1 )
 	
-	gradient.addColorStop( 0.50, 'rgba(  13, 255, 112, 0.00 )' ) // transparent green
-	gradient.addColorStop( 0.50, 'rgba(  13, 255, 112, 0.50 )' ) // green
-	gradient.addColorStop( 0.51, 'rgba(   1,  26,  11, 0.85 )' ) // dark green
-	gradient.addColorStop( 1.00, 'rgba(   7, 141,  62, 0.88 )' ) // green
+	gradient.addColorStop( 0.50, 'rgba(  13, 255, 112, 0.00 )' )
+	gradient.addColorStop( 0.50, 'rgba(  13, 255, 112, 0.50 )' )
+	gradient.addColorStop( 0.51, 'rgba(   1,  26,  11, 0.85 )' )
+	gradient.addColorStop( 1.00, 'rgba(   7, 141,  62, 0.88 )' )
 	
 	return gradient
 } )()
@@ -37,7 +37,7 @@ const energyUpGradient = ( () => {
 
 const EnergyUpEffect = EnergyUpEffectFactory( energyUpGradient )
 
-const skinColor = 'rgba( 230, 240, 250, 1.0 )'
+const skinColor = 'rgba( 0, 13, 11, 0.7 )'
 
 export {
 	DamageEffect,
