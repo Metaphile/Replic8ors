@@ -73,33 +73,6 @@ function createSymmetricSegments() {
 	}
 }
 
-function programBasicInstincts( replicator ) {
-	const { numBodySegments: numSegments, receptors, flippers } = replicator
-	
-	// make all sensory input excitatory
-	for ( const neuron of replicator.brain.neurons ) {
-		neuron.weights = neuron.weights.map( ( weight, weightIndex ) => {
-			return weightIndex === neuron.index ? 0.9 : weight
-		} )
-	}
-	
-	for ( let segmentIndex = 0; segmentIndex < numSegments; segmentIndex++ ) {
-		// start at current segment, add half rotation, wrap overflow
-		const oppositeSegmentIndex = ( segmentIndex + Math.floor( numSegments / 2 ) ) % numSegments
-		
-		const foodNeuron = receptors[ segmentIndex ].neurons.food
-		const oppositeFlipper = flippers[ segmentIndex ]
-		
-		oppositeFlipper.neuron.weights[ foodNeuron.index ] = 0.9
-		
-		const otherFoodNeurons = receptors
-			.filter( ( receptor, i ) => i !== segmentIndex ) // other receptors
-			.map( receptor => receptor.neurons.food ) // other food neurons
-		
-		otherFoodNeurons.forEach( otherFoodNeuron => otherFoodNeuron.weights[ foodNeuron.index ] = -0.9 )
-	}
-}
-
 function programNonsense( replicator ) {
 	for ( const neuron of replicator.brain.neurons ) {
 		neuron.weights = neuron.weights.map( weight => Math2.randRange( -1.0, 1.0 ) )
@@ -107,12 +80,6 @@ function programNonsense( replicator ) {
 	
 	const neuronsPerSegment = 4
 	Replic8or.syncSymmetricWeights( replicator.brain.neurons, replicator.numBodySegments, neuronsPerSegment )
-}
-
-function programExcitatorySenses( replicator ) {
-	for ( const neuron of replicator.brain.neurons ) {
-		neuron.weights[ neuron.index ] = 0.2
-	}
 }
 
 export default function Replic8or( opts = {} ) {
@@ -128,10 +95,7 @@ export default function Replic8or( opts = {} ) {
 	self.brain = Network()
 	createSymmetricSegments.call( self )
 	
-	// programBasicInstincts( self )
 	programNonsense( self )
-	// programExcitatorySenses( self )
-	self.makeSensoryWeightsExcitatory( self.brain.neurons )
 	
 	// add metabolic cost to neuron activation
 	self.brain.neurons.forEach( neuron => {
@@ -257,18 +221,6 @@ Replic8or.prototype = {
 		}
 	},
 	
-	makeSensoryWeightsExcitatory: function ( neurons ) {
-		for ( const neuron of neurons ) {
-			neuron.weights = neuron.weights.map( ( weight, weightIndex ) => {
-				if ( weightIndex === neuron.index ) {
-					return Math.abs( weight )
-				} else {
-					return weight
-				}
-			} )
-		}
-	},
-	
 	getOwnSettings: function () {
 		const ownSettings = {}
 		
@@ -288,7 +240,6 @@ Replic8or.prototype = {
 		
 		this.copyWeights( parent.brain.neurons, child.brain.neurons )
 		this.mutateWeights( child.brain.neurons, mutationRate )
-		this.makeSensoryWeightsExcitatory( child.brain.neurons )
 		
 		for ( let i = 0; i < parent.brain.neurons.length; i++ ) {
 			child.brain.neurons[ i ].potentialDecayRate = parent.brain.neurons[ i ].potentialDecayRate
