@@ -63,14 +63,11 @@ export default function CameraOperator( camera, canvas ) {
 		const viewCenter = camera.viewCenter( canvas )
 		
 		// pseudo-random camera bob
-		// pauses with simulation
-		if ( dt_sim > 0 ) {
-			bobAngle = ( bobAngle + 0.21 * dt_sim ) % ( Math.PI * 2 )
-			
-			var m = 1.875 * dt_sim
-			self.offset.x += Math.cos( bobAngle *  7 ) * m
-			self.offset.y += Math.sin( bobAngle * 13 ) * m
-		}
+		const dt_bob = dt_sim || dt_real
+		bobAngle = ( bobAngle + 0.21 * dt_bob ) % ( Math.PI * 2 )
+		var m = 1.6 * dt_bob
+		self.offset.x += Math.cos( bobAngle *  7 ) * m
+		self.offset.y += Math.sin( bobAngle * 13 ) * m
 		
 		// move camera toward target + offset
 		if ( true ) {

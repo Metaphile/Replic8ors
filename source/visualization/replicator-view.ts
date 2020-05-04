@@ -318,13 +318,13 @@ ReplicatorView.prototype = {
 			confineNeuronView( neuronView, p0, confinementRadius - neuronView.radius )
 		}
 		
-		this._apparentEnergy += ( this.replicator.energy - this._apparentEnergy ) * 9 * dt_sim
-		this._slosh = ( this._slosh + ( 0.51 * dt_sim ) ) % ( Math.PI * 2 )
+		this._apparentEnergy += ( this.replicator.energy - this._apparentEnergy ) * 9 * Math.min( dt_sim, dt_real )
+		this._slosh = ( this._slosh + ( 0.51 * Math.min( dt_sim, dt_real ) ) ) % ( Math.PI * 2 )
 		
-		if ( this.effects.spawn ) this.effects.spawn.update( dt_real )
-		for ( const effect of this.effects.energyUps ) effect.update( dt_sim )
-		if ( this.effects.damage ) this.effects.damage.update( dt_sim )
-		if ( this.effects.death ) this.effects.death.update( dt_sim )
+		if ( this.effects.spawn ) this.effects.spawn.update( Math.min( dt_sim, dt_real ) )
+		for ( const effect of this.effects.energyUps ) effect.update( Math.min( dt_sim, dt_real ) )
+		if ( this.effects.damage ) this.effects.damage.update( Math.min( dt_sim, dt_real ) )
+		if ( this.effects.death ) this.effects.death.update( Math.min( dt_sim, dt_real ) )
 		
 		// dead replicators are removed immediately from the world and no longer updated,
 		// but the view persists for a second or two while the death animation plays out

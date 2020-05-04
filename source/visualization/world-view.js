@@ -55,7 +55,7 @@ export default function WorldView( world ) {
 			
 			update( dt_real, dt_sim ) {
 				if ( this.progress < 1 ) {
-					this.progress += 1 / this.duration * dt_real
+					this.progress += 1 / this.duration * Math.min( dt_sim, dt_real )
 				}
 				
 				if ( this.progress >= 1 ) {
