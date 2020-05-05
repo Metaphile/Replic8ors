@@ -12,12 +12,12 @@ export const setSetting = ( section, key, value ) => {
 export const settingsEvents = Events()
 
 const scenario = {
-	minReds:    3,
-	maxReds:   21,
-	minGreens: 10,
-	maxGreens: 52,
-	minBlues:   4,
-	maxBlues:  17,
+	minReds:   12,
+	maxReds:   32,
+	minGreens: 12,
+	maxGreens: 32,
+	minBlues:  12,
+	maxBlues:  32,
 }
 
 const replicator = {
@@ -38,7 +38,7 @@ const replicator = {
 	
 	numBodySegments: 3,
 	numInternalNeurons: 0,
-	potentialDecayRate: 0.3,
+	potentialDecayRate: 0.1,
 	
 	// collision values
 	predatorValue: 0.0,
@@ -57,9 +57,9 @@ const predator = {
 	metabolism: 0.005,
 	
 	// collision values
-	predatorValue:  0.0,
+	predatorValue: -0.1,
 	preyValue:     -0.1,
-	blueValue:      0.67,
+	blueValue:      0.3,
 }
 
 // greens
@@ -68,14 +68,16 @@ const prey = {
 	
 	type: 'prey',
 	
-	radius: 27,
+	radius: 26,
 	mass: 209,
-	metabolism: 0.003,
+	metabolism: 0.005,
+	
+	potentialDecayRate: 0.0,
 	
 	// collision values
-	predatorValue: -0.1,
-	preyValue:      0.0,
-	blueValue:     -0.2,
+	predatorValue:  0.0,
+	preyValue:      0.05,
+	blueValue:     -0.1,
 }
 
 // blues
@@ -84,13 +86,13 @@ const blue = {
 	
 	type: 'blue',
 	
-	radius: 41,
+	radius: 26,
 	mass: 152,
-	metabolism: 0.008,
+	metabolism: 0.005,
 	
 	// collision values
-	predatorValue: -1.0,
-	preyValue:      0.209,
+	predatorValue: -0.3,
+	preyValue:      0.2,
 	blueValue:      0.0,
 }
 

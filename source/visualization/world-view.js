@@ -49,7 +49,7 @@ export default function WorldView( world ) {
 		}
 		
 		self.collisionEffects.push( {
-			duration: 0.4,
+			duration: 0.333,
 			progress: 0,
 			position: Vector2.add( a.position, offset, {} ),
 			

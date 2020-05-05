@@ -34,7 +34,7 @@ DamageEffect.prototype = {
 			
 			ctx.globalCompositeOperation = 'overlay'
 			ctx.globalAlpha *= 0.0 + ( 0.5 - 0.0 ) * ( 1 + Math.cos( this.progress * Math.PI ) ) / 2
-			ctx.fillStyle = 'rgba( 159, 0, 0, 1.0 )'
+			ctx.fillStyle = 'rgba( 255, 0, 0, 1.0 )'
 			ctx.fill()
 			
 			ctx.scale( 1 / radius, 1 / radius )
@@ -120,7 +120,7 @@ const SpawnEffect = ( onDone ) => {
 }
 
 SpawnEffect.prototype = {
-	duration: 1/5,
+	duration: 0.4,
 	progress: 0,
 	
 	update( dt ) {
