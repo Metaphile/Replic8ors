@@ -38,9 +38,61 @@ export default function WorldView( world ) {
 	// add views for future replicator
 	eventSubscriptions.push( world.on( 'replicator-added', addReplicatorView ) )
 	
+	eventSubscriptions.push( world.on( 'collision', ( a, b ) => {
+		const offset = Vector2.subtract( b.position, a.position, {} )
+		const distance = Vector2.getLength( offset )
+		// distance between center points, not edges
+		// we don't want to setLength() on a zero vector
+		if ( distance > 0 ) {
+			const overlap = distance - a.radius - b.radius
+			Vector2.setLength( offset, a.radius - ( overlap / 2 ) )
+		}
+		
+		self.collisionEffects.push( {
+			duration: 0.4,
+			progress: 0,
+			position: Vector2.add( a.position, offset, {} ),
+			
+			update( dt_real, dt_sim ) {
+				if ( this.progress < 1 ) {
+					this.progress += 1 / this.duration * dt_real
+				}
+				
+				if ( this.progress >= 1 ) {
+					const i = self.collisionEffects.indexOf( this )
+					self.collisionEffects.splice( i, 1 )
+				}
+			},
+			
+			draw( ctx ) {
+				const p = this.position
+				const minRadius = 1
+				const maxRadius = 7
+				const r = minRadius + ( Math.pow( this.progress, 1 / 4 ) * ( maxRadius - minRadius ) )
+				
+				ctx.savePartial( 'fillStyle', 'globalAlpha' )
+				
+				ctx.beginPath()
+					ctx.arc( p.x, p.y, r - ( r * 0.7 * ( 1 - this.progress ) ), 0, Math.PI * 2 )
+					ctx.arc( p.x, p.y, r, 0, Math.PI * 2, true )
+					ctx.fillStyle = 'white'
+					ctx.globalAlpha = 1 - Math.pow( this.progress, 1 / 2 )
+					ctx.fill()
+				
+				ctx.restorePartial()
+			},
+		} )
+	} ) )
+	
+	self.collisionEffects = []
+	
 	self.update = ( dt_real, dt_sim ) => {
 		for ( const view of self.replicatorViews ) {
 			view.update( dt_real, dt_sim )
+		}
+		
+		for ( const effect of self.collisionEffects ) {
+			effect.update( dt_real, dt_sim )
 		}
 	}
 	
@@ -80,6 +132,10 @@ export default function WorldView( world ) {
 				view.draw( ctx, camera, detail )
 			}
 		}
+		
+		for ( const effect of self.collisionEffects ) {
+			effect.draw( ctx )
+		}
 	}
 	
 	self.destroy = () => {
@@ -88,6 +144,8 @@ export default function WorldView( world ) {
 		}
 		
 		eventSubscriptions.length = 0
+		
+		self.collisionEffects.length = 0
 	}
 	
 	return self
