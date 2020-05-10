@@ -427,42 +427,6 @@ ReplicatorView.prototype = {
 		ctx.restorePartial()
 	},
 	
-	// indicate symmetric/free sections
-	drawSeparators( ctx ) {
-		const separatorDistance = 0.365 // distance from center
-		const numTines = 3
-		const tineLength = 0.1
-		
-		const replicator = this.replicator
-		
-		ctx.savePartial( 'lineWidth', 'strokeStyle' )
-		
-		ctx.beginPath()
-			ctx.translate( replicator.position.x, replicator.position.y )
-			ctx.scale( replicator.radius, replicator.radius )
-			
-			for ( let i = 0; i < replicator.numBodySegments; i++ ) {
-				const separatorAngle = replicator.flipperOffset + ( i / replicator.numBodySegments * Math.PI * 2 )
-				const separatorX = Math.cos( separatorAngle ) * separatorDistance
-				const separatorY = Math.sin( separatorAngle ) * separatorDistance
-				
-				for ( let j = 0; j < numTines; j++ ) {
-					const tineAngle = separatorAngle + ( j / numTines * Math.PI * 2 )
-					ctx.moveTo( separatorX, separatorY )
-					ctx.lineTo( separatorX + Math.cos( tineAngle ) * tineLength, separatorY + Math.sin( tineAngle ) * tineLength )
-				}
-			}
-			
-			ctx.lineWidth = 0.27 / replicator.radius
-			ctx.strokeStyle = 'rgba( 90, 195, 255, 0.18 )'
-			ctx.stroke()
-			
-			ctx.scale( 1 / replicator.radius, 1 / replicator.radius )
-			ctx.translate( -replicator.position.x, -replicator.position.y )
-		
-		ctx.restorePartial()
-	},
-	
 	drawPseudoNeurons( ctx, detail ) {
 		const beginSignalLod = 2.5
 		const endSignalLod   = 5.8
