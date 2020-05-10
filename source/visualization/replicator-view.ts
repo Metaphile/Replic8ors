@@ -130,30 +130,32 @@ function anchorNeuronViews() {
 	const p0 = this.replicator.position
 	const r0 = this.replicator.radius
 	
+	const rPct1 = 0.75
+	const rPct2 = 1 - rPct1
+	
+	const deltaAngle = Math.PI / this.replicator.receptors.length
+	
 	// anchor flipper neurons
 	for ( const flipper of this.replicator.flippers ) {
 		const neuronView = this.neuronViews[ flipper.neuron.index ]
-		const r1 = r0 * 0.73
+		const r1 = r0 * rPct1
 		const a1 = flipper.angle
 		neuronView.anchor.x = p0.x + Math.cos( a1 ) * r1
 		neuronView.anchor.y = p0.y + Math.sin( a1 ) * r1
 	}
 	
 	// anchor receptor neurons
-	for ( let j = 0, jn = this.replicator.receptors.length; j < jn; j++ ) {
-		const receptor = this.replicator.receptors[ j ]
+	for ( const receptor of this.replicator.receptors ) {
+		const x = p0.x + Math.cos( receptor.angle ) * r0 * ( rPct1 - rPct2 )
+		const y = p0.y + Math.sin( receptor.angle ) * r0 * ( rPct1 - rPct2 )
 		
-		const deltaAngle = 0.37
-		const radius = r0 * 0.73
-		
-		const startAngle = receptor.angle + ( ( receptor.neurons.length - 1 ) * deltaAngle / 2 )
+		const startAngle = receptor.angle + deltaAngle
 		
 		for ( let i = 0, n = receptor.neurons.length; i < n; i++ ) {
-			const neuron = receptor.neurons[ i ]
-			const neuronView = this.neuronViews[ neuron.index ]
+			const neuronView = this.neuronViews[ receptor.neurons[ i ].index ]
 			
-			neuronView.anchor.x = p0.x + Math.cos( startAngle - ( i * deltaAngle ) ) * radius
-			neuronView.anchor.y = p0.y + Math.sin( startAngle - ( i * deltaAngle ) ) * radius
+			neuronView.anchor.x = x + Math.cos( startAngle - ( i * deltaAngle ) ) * r0 * rPct2
+			neuronView.anchor.y = y + Math.sin( startAngle - ( i * deltaAngle ) ) * r0 * rPct2
 		}
 	}
 	
@@ -161,15 +163,13 @@ function anchorNeuronViews() {
 	{
 		const hungerView = this.neuronViews[ this.replicator.hungerNeuron.index ]
 		
-		const r1 = r0 * 0
-		
-		hungerView.anchor.x = p0.x + Math.cos( Math.PI / 2 ) * r1
-		hungerView.anchor.y = p0.y + Math.sin( Math.PI / 2 ) * r1
+		hungerView.anchor.x = p0.x
+		hungerView.anchor.y = p0.y
 	}
 	
 	// think neurons
 	{
-		const r1 = r0 * 0.3
+		const r1 = r0 * rPct2
 		const { numInternalNeurons } = this.replicator
 		let angle = ( numInternalNeurons % 2 === 0 ) ? 0 : Math.PI/2
 		for ( const thinkNeuron of this.replicator.thinkNeurons ) {
