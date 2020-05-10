@@ -4,6 +4,9 @@ import * as predatorAssets from './predator-assets'
 import * as blueAssets from './blue-assets'
 import NeuronView from './neuron-view'
 import Vector2 from '../engine/vector-2'
+import { areCloserThan } from '../simulation/world-helpers'
+
+const pseudoNeuronRadius = 0.3
 
 export enum SignalPartType {
 	ExcitatoryUnchanged = 'ExcitatoryUnchanged',
@@ -114,6 +117,8 @@ export const getSignalParts = ( origWeight: number, currWeight: number ): Signal
 		}
 	}
 }
+
+const dimmedSignalOpacityPct = 0.09
 
 function confineNeuronView( neuronView, replicatorPosition, adjustedConfinementRadius ) {
 	const deltaP = Vector2.subtract( neuronView.position, replicatorPosition, {} )
@@ -458,209 +463,273 @@ ReplicatorView.prototype = {
 		ctx.restorePartial()
 	},
 	
-	drawSignals( ctx ) {
-		const numNeuronViews = this.neuronViews.length
+	drawPseudoNeurons( ctx, detail ) {
+		const beginSignalLod = 2.5
+		const endSignalLod   = 5.8
 		
-		for ( let i = 0; i < numNeuronViews; i++ ) {
-			const neuronViewI = this.neuronViews[ i ]
-			
-			for ( let j = i + 1; j < numNeuronViews; j++ ) {
-				const neuronViewJ = this.neuronViews[ j ]
-				
-				if ( neuronViewI.neuron.firing ) {
-					// signal from i to j
-					this.drawSignal(
-						ctx,
-						neuronViewI.position,
-						neuronViewI.radius,
-						neuronViewJ.position,
-						neuronViewJ.radius,
-						this.replicator.ancestorWeights[ j ].weights[ i ],
-						neuronViewJ.neuron.weights[ neuronViewI.neuron.index ],
-						1 - neuronViewI.neuron.potential,
-						ctx.globalAlpha * Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity, neuronViewI.selected ? 1 : 0, neuronViewJ.selected ? 1 : 0 ),
-						neuronViewI.overrideSignalOpacity || neuronViewJ.overrideSignalOpacity || neuronViewI.selected || neuronViewJ.selected,
-						neuronViewJ.neuron.firing )
-				}
-				
-				if ( neuronViewJ.neuron.firing ) {
-					// signal from j to i
-					this.drawSignal(
-						ctx,
-						neuronViewJ.position,
-						neuronViewJ.radius,
-						neuronViewI.position,
-						neuronViewI.radius,
-						this.replicator.ancestorWeights[ i ].weights[ j ],
-						neuronViewI.neuron.weights[ neuronViewJ.neuron.index ],
-						1 - neuronViewJ.neuron.potential,
-						ctx.globalAlpha * Math.max( neuronViewI.connectionOpacity, neuronViewJ.connectionOpacity, neuronViewI.selected ? 1 : 0, neuronViewJ.selected ? 1 : 0 ),
-						neuronViewI.overrideSignalOpacity || neuronViewJ.overrideSignalOpacity || neuronViewI.selected || neuronViewJ.selected,
-						neuronViewI.neuron.firing )
-				}
-			}
+		if ( detail < beginSignalLod ) {
+			return
 		}
 		
-		// flipper signals
-		for ( const flipper of this.replicator.flippers ) {
-			if ( flipper.neuron.firing ) {
-				const neuronView = this.neuronViews[ flipper.neuron.index ]
-				const r1 = this.replicator.radius
-				const a1 = flipper.angle
-				const flipperPosition = {
-					x: this.replicator.position.x + Math.cos( a1 ) * r1,
-					y: this.replicator.position.y + Math.sin( a1 ) * r1,
-				}
-				
-				this.drawSignal( ctx, neuronView.position, neuronView.radius, flipperPosition, 3, 1, 1, 1 - flipper.neuron.potential, ctx.globalAlpha * ( neuronView.selected ? 1 : neuronView.connectionOpacity ), neuronView.overrideSignalOpacity  || neuronView.selected)
-			}
+		ctx.savePartial( 'fillStyle', 'globalAlpha', 'globalCompositeOperation' )
+		ctx.globalAlpha *= Math.min( ( detail - beginSignalLod ) / ( endSignalLod - beginSignalLod ), 1.0 )
+		
+		const { x: x0, y: y0 } = this.replicator.position
+		const r0 = this.replicator.radius
+		
+		// to be reused for each pseudo neuron
+		const pseudoNeuron = {
+			position: { x: 0, y: 0 },
+			radius: pseudoNeuronRadius,
 		}
 		
-		const inputSourceRadius = 0.26
-		
-		// receptor signals
+		// receptors
 		for ( const receptor of this.replicator.receptors ) {
-			const receptorPosition = { x: 0, y: 0 }
-			receptorPosition.x = this.replicator.position.x + Math.cos( receptor.angle ) * this.replicator.radius * 0.9
-			receptorPosition.y = this.replicator.position.y + Math.sin( receptor.angle ) * this.replicator.radius * 0.9
-			
-			this.drawInputSource( ctx, receptorPosition, inputSourceRadius )
-			
-			// reds
-			{
-				const neuron = receptor.neurons.predator
-				const neuronView = this.neuronViews[ neuron.index ]
-				const ancestorWeight = this.replicator.ancestorWeights[ neuron.index ].weights[ neuron.index ]
-				const weight = neuron.weights[ neuron.index ]
-				const progress = neuron.sensoryPotential / weight % 1
-				this.drawSignal( ctx, receptorPosition, inputSourceRadius, neuronView.position, neuronView.radius, ancestorWeight, weight, progress, ctx.globalAlpha * ( neuronView.selected ? 1 : neuronView.connectionOpacity ), neuronView.overrideSignalOpacity || neuronView.selected, neuron.firing )
-			}
-			
-			// greens
-			{
-				const neuron = receptor.neurons.prey
-				const neuronView = this.neuronViews[ neuron.index ]
-				const ancestorWeight = this.replicator.ancestorWeights[ neuron.index ].weights[ neuron.index ]
-				const weight = neuron.weights[ neuron.index ]
-				const progress = neuron.sensoryPotential / weight % 1
-				this.drawSignal( ctx, receptorPosition, inputSourceRadius, neuronView.position, neuronView.radius, ancestorWeight, weight, progress, ctx.globalAlpha * ( neuronView.selected ? 1 : neuronView.connectionOpacity ), neuronView.overrideSignalOpacity || neuronView.selected, neuron.firing )
-			}
-			
-			// blues
-			{
-				const neuron = receptor.neurons.blue
-				const neuronView = this.neuronViews[ neuron.index ]
-				const ancestorWeight = this.replicator.ancestorWeights[ neuron.index ].weights[ neuron.index ]
-				const weight = neuron.weights[ neuron.index ]
-				const progress = neuron.sensoryPotential / weight % 1
-				this.drawSignal( ctx, receptorPosition, inputSourceRadius, neuronView.position, neuronView.radius, ancestorWeight, weight, progress, ctx.globalAlpha * ( neuronView.selected ? 1 : neuronView.connectionOpacity ), neuronView.overrideSignalOpacity || neuronView.selected, neuron.firing )
-			}
+			pseudoNeuron.position.x = x0 + Math.cos( receptor.angle ) * r0 * 0.9
+			pseudoNeuron.position.y = y0 + Math.sin( receptor.angle ) * r0 * 0.9
+			this.drawPseudoNeuron( ctx, pseudoNeuron.position, pseudoNeuron.radius )
 		}
 		
-		// hunger neuron signal
-		{
-			const neuron = this.replicator.hungerNeuron
-			const neuronView = this.neuronViews[ neuron.index ]
-			const ancestorWeight = this.replicator.ancestorWeights[ neuron.index ].weights[ neuron.index ]
-			const weight = neuron.weights[ neuron.index ]
-			const progress = neuron.sensoryPotential / weight % 1
-			
-			const r = this.replicator
-			
-			const sourcePos = { x: r.position.x, y: 0 } // y set below
-			sourcePos.y = r.position.y + r.radius - r.energy * r.radius * 2
-			
-			this.drawInputSource( ctx, sourcePos, inputSourceRadius )
-			
-			this.drawSignal( ctx, sourcePos, inputSourceRadius, neuronView.position, neuronView.radius, ancestorWeight, weight, progress, ctx.globalAlpha * ( neuronView.selected ? 1 : neuronView.connectionOpacity ), neuronView.overrideSignalOpacity || neuronView.selected, neuron.firing )
+		// hunger / energy
+		pseudoNeuron.position.x = x0,
+		pseudoNeuron.position.y = y0 + r0 - ( this.replicator.energy * r0 * 2 )
+		this.drawPseudoNeuron( ctx, pseudoNeuron.position, pseudoNeuron.radius )
+		
+		// flippers
+		for ( const flipper of this.replicator.flippers ) {
+			pseudoNeuron.position.x = x0 + Math.cos( flipper.angle ) * r0 * 0.9
+			pseudoNeuron.position.y = y0 + Math.sin( flipper.angle ) * r0 * 0.9
+			this.drawPseudoNeuron( ctx, pseudoNeuron.position, pseudoNeuron.radius )
 		}
+		
+		ctx.restorePartial()
 	},
 	
-	drawInputSource( ctx, center, radius ) {
-		ctx.savePartial( 'fillStyle', 'globalCompositeOperation' )
-		
+	drawPseudoNeuron( ctx, center, radius ) {
 		ctx.beginPath()
 			ctx.arc( center.x, center.y, radius, 0, Math.PI * 2 )
 			ctx.fillStyle = config.excitatoryColor
 			ctx.globalCompositeOperation = config.excitatoryCompositeOperation
 			ctx.fill()
+	},
+	
+	drawSignals( ctx, detail ) {
+		const beginSignalLod = 2.5
+		const endSignalLod   = 5.8
+		
+		if ( detail < beginSignalLod ) {
+			return
+		}
+		
+		ctx.savePartial( 'lineWidth', 'globalAlpha', 'globalCompositeOperation', 'strokeStyle' )
+		ctx.globalAlpha *= Math.min( ( detail - beginSignalLod ) / ( endSignalLod - beginSignalLod ), 1.0 )
+		
+		const drawAllSignals = !this.neuronViews.some( v => v.active || v.selected )
+		
+		this.drawInputSignals( ctx, drawAllSignals )
+		this.drawInternalSignals( ctx, drawAllSignals )
+		this.drawOutputSignals( ctx, drawAllSignals )
 		
 		ctx.restorePartial()
 	},
 	
-	drawSignal( ctx, a_center, a_radius, b_center, b_radius, ancestorWeight, weight, txProgress, baseOpacity, hoverOverride, isIgnored ) {
-		const connSep     = 0.040 // how much to separate opposing connections
+	drawInputSignals( ctx, drawAllSignals ) {
+		const { x: x0, y: y0 } = this.replicator.position
+		const r0 = this.replicator.radius
+		
+		// to be reused for each input node
+		const inputNode = {
+			position: { x: 0, y: 0 },
+			radius: pseudoNeuronRadius,
+		}
+		
+		// receptor signals
+		for ( const receptor of this.replicator.receptors ) {
+			inputNode.position.x = x0 + Math.cos( receptor.angle ) * r0 * 0.9
+			inputNode.position.y = y0 + Math.sin( receptor.angle ) * r0 * 0.9
+			
+			for ( const neuron of receptor.neurons ) {
+				const neuronView = this.neuronViews[ neuron.index ]
+				const drawThisSignal = neuronView.active || neuronView.selected
+				
+				if ( drawAllSignals || drawThisSignal ) {
+					this.drawInputSignal( ctx, inputNode, neuronView )
+				}
+			}
+		}
+		
+		// hunger signal
+		{
+			inputNode.position.x = x0,
+			inputNode.position.y = y0 + r0 - ( this.replicator.energy * r0 * 2 )
+			
+			const neuronView = this.neuronViews[ this.replicator.hungerNeuron.index ]
+			const drawThisSignal = neuronView.active || neuronView.selected
+			
+			if ( drawAllSignals || drawThisSignal ) {
+				this.drawInputSignal( ctx, inputNode, neuronView )
+			}
+		}
+	},
+	
+	drawInputSignal( ctx, inputNode, neuronView ) {
+		const origWeight = this.replicator.ancestorWeights[ neuronView.neuron.index ].weights[ neuronView.neuron.index ]
+		const currWeight = neuronView.neuron.weights[ neuronView.neuron.index ]
+		const signalParts = getSignalParts( origWeight, currWeight )
+		const txProgress = neuronView.neuron.sensoryPotential / currWeight % 1
+		
+		const dimIgnoredSignal = neuronView.neuron.firing && !neuronView.active
+		
+		if ( dimIgnoredSignal ) {
+			ctx.savePartial( 'globalAlpha' )
+			ctx.globalAlpha *= dimmedSignalOpacityPct
+		}
+		
+		this.drawSignal( ctx, inputNode, neuronView, signalParts, txProgress, false )
+		
+		if ( dimIgnoredSignal ) {
+			ctx.restorePartial()
+		}
+	},
+	
+	// signals between neurons
+	drawInternalSignals( ctx, drawAllSignals ) {
+		const numViews = this.neuronViews.length
+		
+		for ( let i = 0; i < numViews; i++ ) {
+			const leftView = this.neuronViews[ i ]
+			const leftViewIsHighlighted = leftView.active || leftView.selected
+			
+			for ( let j = i + 1; j < numViews; j++ ) {
+				const rightView = this.neuronViews[ j ]
+				const rightViewIsHighlighted = rightView.active || rightView.selected
+				const drawTheseSignals = leftViewIsHighlighted || rightViewIsHighlighted
+				
+				if ( drawAllSignals || drawTheseSignals ) {
+					if ( leftView.neuron.firing ) {
+						const dimIgnoredSignal = rightView.neuron.firing && !leftView.active && !rightView.active
+						
+						if ( dimIgnoredSignal ) {
+							ctx.savePartial( 'globalAlpha' )
+							ctx.globalAlpha *= dimmedSignalOpacityPct
+						}
+						
+						this.drawInternalSignal( ctx, leftView, rightView )
+						
+						if ( dimIgnoredSignal ) {
+							ctx.restorePartial()
+						}
+					}
+					
+					if ( rightView.neuron.firing ) {
+						const dimIgnoredSignal = leftView.neuron.firing && !leftView.active && !rightView.active
+						
+						if ( dimIgnoredSignal ) {
+							ctx.savePartial( 'globalAlpha' )
+							ctx.globalAlpha *= dimmedSignalOpacityPct
+						}
+						
+						this.drawInternalSignal( ctx, rightView, leftView )
+						
+						if ( dimIgnoredSignal ) {
+							ctx.restorePartial()
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	drawInternalSignal( ctx, sourceView, targetView ) {
+		const origWeight = this.replicator.ancestorWeights[ targetView.neuron.index ].weights[ sourceView.neuron.index ]
+		const currWeight = targetView.neuron.weights[ sourceView.neuron.index ]
+		const signalParts = getSignalParts( origWeight, currWeight )
+		const txProgress = 1 - sourceView.neuron.potential
+		
+		this.drawSignal( ctx, sourceView, targetView, signalParts, txProgress )
+	},
+	
+	drawOutputSignals( ctx, drawAllSignals ) {
+		const { x: x0, y: y0 } = this.replicator.position
+		const r0 = this.replicator.radius
+		
+		// to be reused for each output node
+		const outputNode = {
+			position: { x: 0, y: 0 },
+			radius: pseudoNeuronRadius,
+		}
+		
+		const signalParts = getSignalParts( 1, 1 )
+		
+		// flipper signals
+		for ( const flipper of this.replicator.flippers ) {
+			outputNode.position.x = x0 + Math.cos( flipper.angle ) * r0 * 0.9
+			outputNode.position.y = y0 + Math.sin( flipper.angle ) * r0 * 0.9
+			
+			if ( flipper.neuron.firing ) {
+				const neuronView = this.neuronViews[ flipper.neuron.index ]
+				const drawThisSignal = neuronView.active || neuronView.selected
+				
+				if ( drawAllSignals || drawThisSignal ) {
+					const txProgress = 1 - flipper.neuron.potential
+					this.drawSignal( ctx, neuronView, outputNode, signalParts, txProgress, false )
+				}
+			}
+		}
+	},
+	
+	drawSignal( ctx, sourceNode, targetNode, signalParts, txProgress, offsetEndpoints = true ) {
+		const connSep = offsetEndpoints ? 0.04 : 0
 		const guideWidth  = 0.015
 		const signalWidth = 0.140
 		
-		const signalParts = getSignalParts( ancestorWeight, weight )
+		// cache properties
+		const { x: sourceX, y: sourceY } = sourceNode.position
+		const { x: targetX, y: targetY } = targetNode.position
+		const sourceRadius = sourceNode.radius
+		const targetRadius = targetNode.radius
 		
-		const vectorAB = Vector2.subtract( b_center, a_center, {} )
-		const edgeDistance = Vector2.getLength( vectorAB ) - ( a_radius + b_radius )
-		// angle of vector from a to b
-		const angleAB = Vector2.angle( vectorAB )
-		// angle of vector from b to a
-		const angleBA = angleAB + Math.PI
+		const angleToTarget = Math.atan2( targetY - sourceY, targetX - sourceX )
+		const angleToSource = angleToTarget + Math.PI
 		
-		const connStartPoint = {
-			x: a_center.x + Math.cos( angleAB - connSep ) * a_radius,
-			y: a_center.y + Math.sin( angleAB - connSep ) * a_radius,
-		}
+		const connStartX = sourceX + Math.cos( angleToTarget - connSep ) * sourceRadius
+		const connStartY = sourceY + Math.sin( angleToTarget - connSep ) * sourceRadius
+		const connEndX   = targetX + Math.cos( angleToSource + connSep ) * targetRadius
+		const connEndY   = targetY + Math.sin( angleToSource + connSep ) * targetRadius
+		const connDeltaX = connEndX - connStartX
+		const connDeltaY = connEndY - connStartY
+		const connDir = areCloserThan( sourceNode, targetNode, 0 ) ? -1 : 1
+		const connLength = connDir * Math.sqrt( ( connDeltaX * connDeltaX ) + ( connDeltaY * connDeltaY ) )
 		
-		const connEndPoint = {
-			x: b_center.x + Math.cos( angleBA + connSep ) * b_radius,
-			y: b_center.y + Math.sin( angleBA + connSep ) * b_radius,
-		}
+		const txProgress2 = Math.pow( txProgress, 1/2 )
 		
-		const connectionLength = Math.sign( edgeDistance ) * Vector2.distance( connEndPoint, connStartPoint )
+		// draw guideline from connection start to signal start
 		
-		const txProgressRescaled = 1 - Math.pow( txProgress, 1/2 )
-		
-		const x0 = connStartPoint.x
-		const y0 = connStartPoint.y
-		
-		const start = 1 - ( ( 1 - signalParts[ 0 ].start ) * txProgressRescaled )
-		const end = 1 - ( ( 1 - signalParts[ 0 ].end ) * txProgressRescaled )
-		const x1 = x0 +
-			Math.cos( angleAB ) * start * connectionLength
-		const y1 = y0 +
-			Math.sin( angleAB ) * start * connectionLength
-		
-		ctx.savePartial( 'lineWidth', 'globalAlpha', 'globalCompositeOperation', 'strokeStyle' )
-		
-		ctx.globalAlpha = baseOpacity * ( isIgnored ? 0.09 : 1 )
-		
-		// draw guide
+		const signalStartX = connStartX + Math.cos( angleToTarget ) * connLength * txProgress2
+		const signalStartY = connStartY + Math.sin( angleToTarget ) * connLength * txProgress2
 		
 		ctx.beginPath()
-			ctx.moveTo( x0, y0 )
-			ctx.lineTo( x1, y1 )
+			ctx.moveTo( connStartX, connStartY )
+			ctx.lineTo( signalStartX, signalStartY )
 			ctx.lineWidth = guideWidth
 			ctx.strokeStyle = 'rgba(  90, 195, 255, 0.6 )'
-			ctx.globalCompositeOperation = config.excitatoryCompositeOperation
+			ctx.globalCompositeOperation = 'screen'
 			ctx.stroke()
 		
-		// draw signal from parts
+		// draw signal parts (inhibitory, delta, excitatory)
 		
 		for ( const part of signalParts ) {
-			const start = 1 - ( ( 1 - part.start ) * txProgressRescaled )
-			const end = 1 - ( ( 1 - part.end ) * txProgressRescaled )
+			const partStartLength = ( connLength * txProgress2 ) + ( part.start * connLength * ( 1 - txProgress2 ) )
+			const partEndLength   = ( connLength * txProgress2 ) + ( part.end   * connLength * ( 1 - txProgress2 ) )
 			
-			const x1 = x0 +
-				Math.cos( angleAB ) * start * connectionLength
-			
-			const y1 = y0 +
-				Math.sin( angleAB ) * start * connectionLength
-			
-			const x2 = x0 +
-				Math.cos( angleAB ) * end * connectionLength
-			
-			const y2 = y0 +
-				Math.sin( angleAB ) * end * connectionLength
+			const partStartX = connStartX + Math.cos( angleToTarget ) * partStartLength
+			const partStartY = connStartY + Math.sin( angleToTarget ) * partStartLength
+			const partEndX   = connStartX + Math.cos( angleToTarget ) * partEndLength
+			const partEndY   = connStartY + Math.sin( angleToTarget ) * partEndLength
 			
 			ctx.beginPath()
-				ctx.moveTo( x1, y1 )
-				ctx.lineTo( x2, y2 )
+				ctx.moveTo( partStartX, partStartY )
+				ctx.lineTo( partEndX, partEndY )
 				
 				ctx.lineWidth = signalWidth
 				
@@ -687,12 +756,11 @@ ReplicatorView.prototype = {
 					
 					default:
 						ctx.strokeStyle = 'magenta'
+						break
 				}
 				
 				ctx.stroke()
 		}
-		
-		ctx.restorePartial()
 	},
 	
 	drawEnergy( ctx ) {
@@ -841,22 +909,14 @@ ReplicatorView.prototype = {
 		
 		this.drawBackside( ctx )
 		
-		// this.drawSeparators( ctx )
-		
 		if ( this.effects.damage ) {
 			this.effects.damage.draw( ctx, this.replicator.position, this.replicator.radius )
 		}
 		
-		const beginSignalLod = 2.5
-		const endSignalLod   = 5.8
+		this.drawPseudoNeurons( ctx, detail )
 		
-		if ( ( this.selected || keepHoverOverride ) && detail >= beginSignalLod ) {
-			ctx.savePartial( 'globalAlpha' )
-			ctx.globalAlpha *= Math.min( ( detail - beginSignalLod ) / ( endSignalLod - beginSignalLod ), 1.0 )
-			
-			this.drawSignals( ctx )
-			
-			ctx.restorePartial()
+		if ( this.selected || keepHoverOverride ) {
+			this.drawSignals( ctx, detail )
 		}
 		
 		// draw neurons
