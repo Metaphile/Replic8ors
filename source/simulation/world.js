@@ -38,6 +38,7 @@ World.prototype = {
 			this.addBlue( child )
 		} )
 		
+		this.setInitialColliders( blue )
 		this.blues.push( blue )
 		
 		this.emit( 'replicator-added', blue )
@@ -59,6 +60,7 @@ World.prototype = {
 			this.addPrey( child )
 		} )
 		
+		this.setInitialColliders( prey )
 		this.greens.push( prey )
 		
 		this.emit( 'replicator-added', prey )
@@ -80,9 +82,19 @@ World.prototype = {
 			this.addPredator( child )
 		} )
 		
+		this.setInitialColliders( predator )
 		this.reds.push( predator )
 		
 		this.emit( 'replicator-added', predator )
+	},
+	
+	setInitialColliders: function ( newReplicator ) {
+		for ( const existingReplicator of [ ...this.reds, ...this.greens, ...this.blues ] ) {
+			if ( areCloserThan( newReplicator, existingReplicator, 0 ) ) {
+				newReplicator.previousColliders.push( existingReplicator )
+				existingReplicator.previousColliders.push( newReplicator )
+			}
+		}
 	},
 	
 	update: function ( dt ) {
