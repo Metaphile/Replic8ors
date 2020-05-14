@@ -119,6 +119,11 @@ const SpawnEffect = ( onDone ) => {
 	return self
 }
 
+// valid for x === 0..1
+function jiggle( x ) {
+	return 1 - ( -1 * ( 1 - x ) * Math.sin( 2.5 * ( 1 - x ) * Math.PI ) )
+}
+
 SpawnEffect.prototype = {
 	duration: 0.4,
 	progress: 0,
@@ -144,13 +149,13 @@ SpawnEffect.prototype = {
 		
 		ctx.translate( position.x, position.y )
 		
-		const xScale = Math.pow( this.progress, 4 )
+		const xScale = jiggle( this.progress )
 		const yScale = 1 / xScale
 		ctx.scale( xScale, yScale )
 		
 		ctx.translate( -position.x, -position.y )
 		
-		ctx.globalAlpha *= this.progress
+		ctx.globalAlpha *= Math.pow( this.progress, 1/2 )
 	},
 	
 	endDraw( ctx ) {
