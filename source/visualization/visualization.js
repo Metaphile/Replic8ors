@@ -195,7 +195,8 @@ export default function Visualization( world ) {
 			const replicatorViews = worldView.replicatorViews.slice().reverse()
 			
 			const clickedReplicatorView = replicatorViews
-				.filter( v => !v.replicator.dead )
+				// don't allow selecting replicators that are dead or spawning
+				.filter( v => !v.replicator.dead && !v.effects.spawn )
 				.find( v => pointIsInCircle( clickPos_world, v.replicator ) )
 			
 			if ( !clickedReplicatorView ) {
