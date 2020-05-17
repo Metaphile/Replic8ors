@@ -77,9 +77,8 @@ export default function Scenario( world, opts = {} ) {
 	}
 	
 	self.balancePopulations = function () {
-		const maxReds = Math.max( self.maxReds, self.minReds )
-		const excessReds = world.reds.length - maxReds
-		const neededReds = self.minReds - world.reds.length
+		const excessReds = world.reds.length - self.maxReds
+		const neededReds = Math.min( self.minReds, self.maxReds ) - world.reds.length
 		if ( excessReds > 0 ) {
 			world.reds
 				.slice()
@@ -91,9 +90,8 @@ export default function Scenario( world, opts = {} ) {
 			addNumReds( neededReds )
 		}
 		
-		const maxGreens = Math.max( self.maxGreens, self.minGreens )
-		const excessGreens = world.greens.length - maxGreens
-		const neededGreens = self.minGreens - world.greens.length
+		const excessGreens = world.greens.length - self.maxGreens
+		const neededGreens = Math.min( self.minGreens, self.maxGreens ) - world.greens.length
 		if ( excessGreens > 0 ) {
 			world.greens
 				.slice()
@@ -105,9 +103,8 @@ export default function Scenario( world, opts = {} ) {
 			addNumGreens( neededGreens )
 		}
 		
-		const maxBlues = Math.max( self.maxBlues, self.minBlues )
-		const excessBlues = world.blues.length - maxBlues
-		const neededBlues = self.minBlues - world.blues.length
+		const excessBlues = world.blues.length - self.maxBlues
+		const neededBlues = Math.min( self.minBlues, self.maxBlues ) - world.blues.length
 		if ( excessBlues > 0 ) {
 			world.blues
 				.slice()

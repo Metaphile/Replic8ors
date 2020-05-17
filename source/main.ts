@@ -61,25 +61,6 @@ $( () => {
 	
 	const controlBar = ControlBar( scenarioLoop, visualization )
 	$( '#control-bar' ).append( controlBar.$element )
-	
-	// show info box on first load
-	{
-		const cookieName = 'hideInfo'
-		const cookieValue = '1'
-		
-		// adapted from https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
-		const magic = new RegExp( '(?:(?:^|.*;\s*)' + cookieName + '\s*\=\s*([^;]*).*$)|^.*$' )
-		const cookieIsSet = ( document.cookie.replace( magic, '$1' ) === cookieValue )
-		
-		// except on localhost
-		if ( !cookieIsSet && location.host !== 'localhost:8080' ) {
-			// no cookie? show info box
-			controlBar.showInfo()
-			
-			// set cookie so info box isn't shown automatically next time
-			document.cookie = `${cookieName}=${cookieValue}; expires=Fri, 31 Dec 9999 23:59:59 GMT`
-		}
-	}
 } )
 
 // prevent accidental navigation, except on localhost

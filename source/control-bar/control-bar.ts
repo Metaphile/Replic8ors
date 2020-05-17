@@ -136,6 +136,12 @@ export default function ControlBar( scenarioLoop, visualization ) {
 			}
 		},
 		
+		showSettings() {
+			settingsPanel.$element.show()
+			
+			activate( '[name=settings]' )
+		},
+		
 		toggleSettings() {
 			settingsPanel.$element.toggle()
 			
@@ -227,10 +233,6 @@ export default function ControlBar( scenarioLoop, visualization ) {
 				}
 				break
 			
-			case keys.ESCAPE:
-				self.toggleInfo()
-				break
-			
 			case keys.SPACEBAR:
 				if ( stepButtonHasFocus() ) {
 					self.beginStep()
@@ -306,6 +308,7 @@ export default function ControlBar( scenarioLoop, visualization ) {
 	() => {},
 	{ timestep: 1/60 } )
 	
+	self.showSettings()
 	self.setState( State.play )
 	
 	return self

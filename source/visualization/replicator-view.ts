@@ -921,7 +921,7 @@ ReplicatorView.prototype = {
 		
 		if ( this.effects.death ) {
 			ctx.beginPath()
-				ctx.arc( this.replicator.position.x, this.replicator.position.y, this.replicator.radius - 2.9/2, 0, Math.PI * 2 )
+				ctx.arc( this.replicator.position.x, this.replicator.position.y, this.replicator.radius, 0, Math.PI * 2 )
 				ctx.fillStyle = 'orange'
 				ctx.fill()
 		}

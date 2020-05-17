@@ -1,6 +1,6 @@
 import * as $ from 'jquery'
 import settingsPanelFieldTemplate from './settings-panel-field.ejs'
-import { setSetting } from './settings'
+import { setSetting, defaultSettings } from './settings'
 
 export function round( number, precision = 3 ) {
 	number *= Math.pow( 10, precision )
@@ -77,21 +77,24 @@ export function attachInputHandler( fieldDef, $element ) {
 			const $self = $( this )
 			const $other = $( otherInputSelector )
 			
-			if ( !fieldDef.validator( <string>$self.val() ) ) {
-				$self.addClass( 'invalid' )
-				$other.addClass( 'invalid' )
-				
-				return
+			if ( $self.val() != defaultSettings[ fieldDef.section ][ fieldDef.settingsKey ] ) {
+				$self.closest( 'label' ).addClass( 'modified' )
 			} else {
-				$self.removeClass( 'invalid' )
-				$other.removeClass( 'invalid' )
+				$self.closest( 'label' ).removeClass( 'modified' )
 			}
 			
 			const value = round( $self.val() )
-			
-			setSetting( fieldDef.section, fieldDef.settingsKey, value )
-			
 			$other.val( value )
+			
+			if ( !fieldDef.validator( <string>$self.val() ) ) {
+				$self.addClass( 'invalid' )
+				$other.addClass( 'invalid' )
+			} else {
+				$self.removeClass( 'invalid' )
+				$other.removeClass( 'invalid' )
+				
+				setSetting( fieldDef.section, fieldDef.settingsKey, value )
+			}
 		}
 	}
 	

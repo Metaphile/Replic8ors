@@ -8,13 +8,60 @@ export default function SettingsPanel() {
 	const preyFields = []
 	const blueFields = []
 	
-	const replicatorFieldDefs = [
+	const replicatorFieldDefs1 = [
+		{
+			section: 'PLACEHOLDER',
+			settingsKey: 'predatorValue',
+			fieldLabel: 'Red Calories',
+			description: 'Energy gained/lost from bumping into red replicators',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
+		},
+		{
+			section: 'PLACEHOLDER',
+			settingsKey: 'preyValue',
+			fieldLabel: 'Green Calories',
+			description: 'Energy gained/lost from bumping into green replicators',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
+		},
+		{
+			section: 'PLACEHOLDER',
+			settingsKey: 'blueValue',
+			fieldLabel: 'Blue Calories',
+			description: 'Energy gained/lost from bumping into blue replicators',
+			step: 0.001,
+			rangeInputMinValue: -1,
+			rangeInputMaxValue: 1,
+			validator: helpers.isFloat,
+		},
+		{
+			fieldLabel: undefined,
+		},
+		{
+			section: 'PLACEHOLDER',
+			settingsKey: 'metabolism',
+			fieldLabel: 'Metabolism',
+			description: 'Energy cost per second of being alive',
+			step: 0.001,
+			rangeInputMinValue: -0.5,
+			rangeInputMaxValue: 0.5,
+			validator: helpers.isFloat,
+		},
+	]
+	
+	const replicatorFieldDefs2 = [
 		{
 			section: 'PLACEHOLDER',
 			settingsKey: 'radius',
 			fieldLabel: 'Size',
+			description: 'Radius',
 			step: 1,
-			rangeInputMinValue: 16,
+			rangeInputMinValue: 0,
 			rangeInputMaxValue: 96,
 			validator: helpers.isPositiveFloat,
 		},
@@ -22,24 +69,17 @@ export default function SettingsPanel() {
 			section: 'PLACEHOLDER',
 			settingsKey: 'mass',
 			fieldLabel: 'Mass',
+			description: 'Mass',
 			step: 1,
-			rangeInputMinValue: 1,
+			rangeInputMinValue: 0,
 			rangeInputMaxValue: 512,
 			validator: helpers.isPositiveFloat,
 		},
 		{
 			section: 'PLACEHOLDER',
-			settingsKey: 'metabolism',
-			fieldLabel: 'Metabolism',
-			step: 0.001,
-			rangeInputMinValue: -0.5,
-			rangeInputMaxValue: 0.5,
-			validator: helpers.isFloat,
-		},
-		{
-			section: 'PLACEHOLDER',
 			settingsKey: 'potentialDecayRate',
-			fieldLabel: 'Neuron Potential Decay',
+			fieldLabel: 'Neuron Decay',
+			description: 'How quickly neurons lose accumulated potential',
 			step: 0.001,
 			rangeInputMinValue: -1,
 			rangeInputMaxValue: 1,
@@ -47,213 +87,157 @@ export default function SettingsPanel() {
 		},
 	]
 	
+	const minReplicatorsFieldDef = {
+		section: 'scenario',
+		settingsKey: 'PLACEHOLDER',
+		fieldLabel: 'Min Population',
+		description: 'If population falls below this number, clones of past members will be added (max population takes precedence)',
+		step: 1,
+		rangeInputMinValue: 0,
+		rangeInputMaxValue: 32,
+		validator: helpers.isNonNegativeInt,
+	}
+	
+	const maxReplicatorsFieldDef = {
+		section: 'scenario',
+		settingsKey: 'PLACEHOLDER',
+		fieldLabel: 'Max Population',
+		description: 'If population exceeds this number, oldest members will be removed',
+		step: 1,
+		rangeInputMinValue: 0,
+		rangeInputMaxValue: 32,
+		validator: helpers.isNonNegativeInt,
+	}
+	
 	const predatorFieldDefs = [
-		...replicatorFieldDefs.map( fieldDef => (
+		{
+			fieldLabel: undefined,
+		},
+		...replicatorFieldDefs1.map( fieldDef => (
 			{
 				...fieldDef,
 				section: 'predator',
 			}
 		) ),
 		{
-			section: 'scenario',
+			fieldLabel: undefined,
+		},
+		{
+			...minReplicatorsFieldDef,
 			settingsKey: 'minReds',
-			fieldLabel: 'Min Population',
-			step: 1,
-			rangeInputMinValue: 0,
-			rangeInputMaxValue: 32,
-			validator: helpers.isNonNegativeInt,
 		},
 		{
-			section: 'scenario',
+			...maxReplicatorsFieldDef,
 			settingsKey: 'maxReds',
-			fieldLabel: 'Max Population',
-			step: 1,
-			rangeInputMinValue: 0,
-			rangeInputMaxValue: 32,
-			validator: helpers.isNonNegativeInt,
 		},
 		{
-			section: undefined,
-			fieldLabel: 'Collision Values',
+			fieldLabel: undefined,
 		},
-		{
-			section: 'predator',
-			settingsKey: 'predatorValue',
-			fieldLabel: 'Reds',
-			step: 0.001,
-			rangeInputMinValue: -1,
-			rangeInputMaxValue: 1,
-			validator: helpers.isFloat,
-		},
-		{
-			section: 'predator',
-			settingsKey: 'preyValue',
-			fieldLabel: 'Greens',
-			step: 0.001,
-			rangeInputMinValue: -1,
-			rangeInputMaxValue: 1,
-			validator: helpers.isFloat,
-		},
-		{
-			section: 'predator',
-			settingsKey: 'blueValue',
-			fieldLabel: 'Blues',
-			step: 0.001,
-			rangeInputMinValue: -1,
-			rangeInputMaxValue: 1,
-			validator: helpers.isFloat,
-		},
+		...replicatorFieldDefs2.map( fieldDef => (
+			{
+				...fieldDef,
+				section: 'predator',
+			}
+		) ),
 	]
 	
 	const preyFieldDefs = [
-		...replicatorFieldDefs.map( fieldDef => (
+		{
+			fieldLabel: undefined,
+		},
+		...replicatorFieldDefs1.map( fieldDef => (
 			{
 				...fieldDef,
 				section: 'prey',
 			}
 		) ),
 		{
-			section: 'scenario',
+			fieldLabel: undefined,
+		},
+		{
+			...minReplicatorsFieldDef,
 			settingsKey: 'minGreens',
-			fieldLabel: 'Min Population',
-			step: 1,
-			rangeInputMinValue: 0,
-			rangeInputMaxValue: 32,
-			validator: helpers.isNonNegativeInt,
 		},
 		{
-			section: 'scenario',
+			...maxReplicatorsFieldDef,
 			settingsKey: 'maxGreens',
-			fieldLabel: 'Max Population',
-			step: 1,
-			rangeInputMinValue: 0,
-			rangeInputMaxValue: 32,
-			validator: helpers.isNonNegativeInt,
 		},
 		{
-			section: undefined,
-			fieldLabel: 'Collision Values',
+			fieldLabel: undefined,
 		},
-		{
-			section: 'prey',
-			settingsKey: 'predatorValue',
-			fieldLabel: 'Reds',
-			step: 0.001,
-			rangeInputMinValue: -1,
-			rangeInputMaxValue: 1,
-			validator: helpers.isFloat,
-		},
-		{
-			section: 'prey',
-			settingsKey: 'preyValue',
-			fieldLabel: 'Greens',
-			step: 0.001,
-			rangeInputMinValue: -1,
-			rangeInputMaxValue: 1,
-			validator: helpers.isFloat,
-		},
-		{
-			section: 'prey',
-			settingsKey: 'blueValue',
-			fieldLabel: 'Blues',
-			step: 0.001,
-			rangeInputMinValue: -1,
-			rangeInputMaxValue: 1,
-			validator: helpers.isFloat,
-		},
+		...replicatorFieldDefs2.map( fieldDef => (
+			{
+				...fieldDef,
+				section: 'prey',
+			}
+		) ),
 	]
 	
 	const blueFieldDefs = [
-		...replicatorFieldDefs.map( fieldDef => (
+		{
+			fieldLabel: undefined,
+		},
+		...replicatorFieldDefs1.map( fieldDef => (
 			{
 				...fieldDef,
 				section: 'blue',
 			}
 		) ),
 		{
-			section: 'scenario',
+			fieldLabel: undefined,
+		},
+		{
+			...minReplicatorsFieldDef,
 			settingsKey: 'minBlues',
-			fieldLabel: 'Min Population',
-			step: 1,
-			rangeInputMinValue: 0,
-			rangeInputMaxValue: 32,
-			validator: helpers.isNonNegativeInt,
 		},
 		{
-			section: 'scenario',
+			...maxReplicatorsFieldDef,
 			settingsKey: 'maxBlues',
-			fieldLabel: 'Max Population',
-			step: 1,
-			rangeInputMinValue: 0,
-			rangeInputMaxValue: 32,
-			validator: helpers.isNonNegativeInt,
 		},
 		{
-			section: undefined,
-			fieldLabel: 'Collision Values',
+			fieldLabel: undefined,
 		},
-		{
-			section: 'blue',
-			settingsKey: 'predatorValue',
-			fieldLabel: 'Reds',
-			step: 0.001,
-			rangeInputMinValue: -1,
-			rangeInputMaxValue: 1,
-			validator: helpers.isFloat,
-		},
-		{
-			section: 'blue',
-			settingsKey: 'preyValue',
-			fieldLabel: 'Greens',
-			step: 0.001,
-			rangeInputMinValue: -1,
-			rangeInputMaxValue: 1,
-			validator: helpers.isFloat,
-		},
-		{
-			section: 'blue',
-			settingsKey: 'blueValue',
-			fieldLabel: 'Blues',
-			step: 0.001,
-			rangeInputMinValue: -1,
-			rangeInputMaxValue: 1,
-			validator: helpers.isFloat,
-		},
+		...replicatorFieldDefs2.map( fieldDef => (
+			{
+				...fieldDef,
+				section: 'blue',
+			}
+		) ),
 	]
 	
 	for ( const fieldDef of predatorFieldDefs ) {
-		if ( fieldDef.section ) {
+		if ( fieldDef.fieldLabel ) {
 			predatorFields.push( helpers.populateFieldTemplate(
 				fieldDef,
 				settings,
 				defaultSettings,
 			) )
 		} else {
-			predatorFields.push( `<h3>${ fieldDef.fieldLabel }</h3>` )
+			predatorFields.push( '<hr>' )
 		}
 	}
 	
 	for ( const fieldDef of preyFieldDefs ) {
-		if ( fieldDef.section ) {
+		if ( fieldDef.fieldLabel ) {
 			preyFields.push( helpers.populateFieldTemplate(
 				fieldDef,
 				settings,
 				defaultSettings,
 			) )
 		} else {
-			preyFields.push( `<h3>${ fieldDef.fieldLabel }</h3>` )
+			preyFields.push( '<hr>' )
 		}
 	}
 	
 	for ( const fieldDef of blueFieldDefs ) {
-		if ( fieldDef.section ) {
+		if ( fieldDef.fieldLabel ) {
 			blueFields.push( helpers.populateFieldTemplate(
 				fieldDef,
 				settings,
 				defaultSettings,
 			) )
 		} else {
-			blueFields.push( `<h3>${ fieldDef.fieldLabel }</h3>` )
+			blueFields.push( '<hr>' )
 		}
 	}
 	
@@ -264,10 +248,14 @@ export default function SettingsPanel() {
 	} ) )
 	
 	for ( const fieldDef of [ ...predatorFieldDefs, ...preyFieldDefs, ...blueFieldDefs ] ) {
-		if ( fieldDef.section ) {
+		if ( fieldDef.fieldLabel ) {
 			helpers.attachInputHandler( fieldDef, $element )
 		}
 	}
+	
+	$( 'input[type=number]', $element ).focus( function () {
+		$( this ).select()
+	} )
 	
 	return {
 		$element,
