@@ -37,7 +37,7 @@ const replicator = {
 	flipperStrength: 22000,
 	
 	numBodySegments: 3,
-	numInternalNeurons: 0,
+	numInternalNeurons: 3,
 	potentialDecayRate: 0.1,
 	
 	// collision values
@@ -71,8 +71,6 @@ const prey = {
 	radius: 26,
 	mass: 209,
 	metabolism: 0.005,
-	
-	potentialDecayRate: 0.0,
 	
 	// collision values
 	predatorValue:  0.0,
