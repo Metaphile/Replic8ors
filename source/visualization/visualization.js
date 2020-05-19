@@ -245,6 +245,9 @@ export default function Visualization( world ) {
 				cameraOp.follow( selection )
 				
 				event.preventDefault()
+			} else {
+				const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
+				cameraOp.smoothZoom( -1, clickPos_world )
 			}
 		} )
 		
