@@ -7,7 +7,7 @@ module.exports = {
 		extensions: ['.ts', '.js', '.json']
 	},
 	output: {
-		filename: 'bundle.js',
+		filename: 'bundle.js?' + Date.now(),
 		path: path.resolve(__dirname, 'build')
 	},
 	devtool: 'cheap-module-eval-source-map',
