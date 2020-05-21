@@ -19,7 +19,7 @@ import Visualization from './visualization/visualization'
 import GameLoop from './engine/game-loop'
 import ControlBar from './control-bar/control-bar'
 
-const CURRENT_VERSION = '1.2-wip'
+const CURRENT_VERSION = '2.0'
 
 // on DOM ready
 $( () => {
