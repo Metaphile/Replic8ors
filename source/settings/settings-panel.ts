@@ -1,12 +1,28 @@
 import * as $ from 'jquery'
 import * as helpers from './settings-panel-helpers'
 import settingsPanelTemplate from './settings-panel.ejs'
-import settings, { defaultSettings } from './settings'
+import settings, { defaultSettings, setSetting } from './settings'
+
+const tryLoadSettings = () => {
+	try {
+		const storedSettings = JSON.parse( localStorage.getItem( 'settings' ) )
+		
+		for ( const section in storedSettings ) {
+			for ( const key in storedSettings[ section ] ) {
+				setSetting( section, key, storedSettings[ section ][ key ] )
+			}
+		}
+	} catch ( e ) {
+		console.log( 'failed to load settings', e )
+	}
+}
 
 export default function SettingsPanel() {
 	const predatorFields = []
 	const preyFields = []
 	const blueFields = []
+	
+	tryLoadSettings()
 	
 	const replicatorFieldDefs1 = [
 		{

@@ -79,3 +79,18 @@ export function pointIsInCircle( point, circle ) {
 	const distance = Vector2.getLength( Vector2.subtract( circle.position, point, {} ) ) - circle.radius
 	return distance <= 0
 }
+
+export function debounce( fn, delay = 250 ) {
+	let timeoutId = null
+	
+	return () => {
+		if ( timeoutId !== null ) {
+			clearTimeout( timeoutId )
+		}
+		
+		timeoutId = setTimeout( () => {
+			timeoutId = null
+			fn()
+		}, delay )
+	}
+}

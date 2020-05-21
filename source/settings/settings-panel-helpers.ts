@@ -1,6 +1,7 @@
 import * as $ from 'jquery'
 import settingsPanelFieldTemplate from './settings-panel-field.ejs'
-import { setSetting, defaultSettings } from './settings'
+import settings, { setSetting, defaultSettings } from './settings'
+import { debounce } from '../helpers'
 
 export function round( number, precision = 3 ) {
 	number *= Math.pow( 10, precision )
@@ -67,6 +68,10 @@ export function populateFieldTemplate( fieldDef, settings, defaultSettings ) {
 	} )
 }
 
+const storeSettings = debounce( () => {
+	localStorage.setItem( 'settings', JSON.stringify( settings ) )
+}, 250 )
+
 export function attachInputHandler( fieldDef, $element ) {
 	const inputSelector       = `[name=${ fieldDef.section }_${ fieldDef.settingsKey }]`
 	const numberInputSelector = `${ inputSelector }[type=number]`
@@ -94,6 +99,7 @@ export function attachInputHandler( fieldDef, $element ) {
 				$other.removeClass( 'invalid' )
 				
 				setSetting( fieldDef.section, fieldDef.settingsKey, value )
+				storeSettings()
 			}
 		}
 	}
