@@ -27,6 +27,29 @@ export default function SettingsPanel() {
 	const replicatorFieldDefs1 = [
 		{
 			section: 'PLACEHOLDER',
+			settingsKey: 'radius',
+			fieldLabel: 'Size',
+			description: 'Radius',
+			step: 1,
+			rangeInputMinValue: 0,
+			rangeInputMaxValue: 96,
+			validator: helpers.isPositiveFloat,
+		},
+		{
+			section: 'PLACEHOLDER',
+			settingsKey: 'mass',
+			fieldLabel: 'Mass',
+			description: 'Mass',
+			step: 1,
+			rangeInputMinValue: 0,
+			rangeInputMaxValue: 512,
+			validator: helpers.isPositiveFloat,
+		},
+		{
+			fieldLabel: undefined,
+		},
+		{
+			section: 'PLACEHOLDER',
 			settingsKey: 'predatorValue',
 			fieldLabel: 'Red Calories',
 			description: 'Energy gained/lost from bumping into red replicators',
@@ -71,26 +94,6 @@ export default function SettingsPanel() {
 	]
 	
 	const replicatorFieldDefs2 = [
-		{
-			section: 'PLACEHOLDER',
-			settingsKey: 'radius',
-			fieldLabel: 'Size',
-			description: 'Radius',
-			step: 1,
-			rangeInputMinValue: 0,
-			rangeInputMaxValue: 96,
-			validator: helpers.isPositiveFloat,
-		},
-		{
-			section: 'PLACEHOLDER',
-			settingsKey: 'mass',
-			fieldLabel: 'Mass',
-			description: 'Mass',
-			step: 1,
-			rangeInputMinValue: 0,
-			rangeInputMaxValue: 512,
-			validator: helpers.isPositiveFloat,
-		},
 		{
 			section: 'PLACEHOLDER',
 			settingsKey: 'potentialDecayRate',
