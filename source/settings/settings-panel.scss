@@ -76,4 +76,15 @@ $blue: rgb(90, 195, 255);
 		display: block;
 		margin: 2rem 1rem;
 	}
+	
+	address {
+		margin: 2rem 1rem;
+		text-align: right;
+		
+		&, a {
+			color: white;
+		}
+		
+		font-style: normal;
+	}
 }
