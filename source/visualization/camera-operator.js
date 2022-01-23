@@ -1,7 +1,7 @@
 // TODO -> CameraController
 
 import Vector2 from '../engine/vector-2'
-import Math2 from '../engine/math-2'
+import * as Math2 from '../engine/math-2'
 
 const MIN_ZOOM = 0.5, MAX_ZOOM = 18
 

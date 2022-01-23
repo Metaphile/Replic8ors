@@ -9,7 +9,7 @@
 // cap connection width at weight, fire faster than refractory period would allow
 
 import Events from '../engine/events'
-import Math2 from '../engine/math-2'
+import * as Math2 from '../engine/math-2'
 import { potentialDecayFn } from './neuron-helpers'
 
 const defaultOpts = {

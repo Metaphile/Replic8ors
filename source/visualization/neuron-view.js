@@ -1,6 +1,5 @@
 import config from '../config'
 import * as assets from './neuron-assets'
-import Math2 from '../engine/math-2'
 import { potentialDecayFn } from '../simulation/neuron-helpers'
 
 const defaultOpts = {
