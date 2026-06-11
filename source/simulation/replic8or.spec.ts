@@ -8,14 +8,14 @@ const precision = 9
 
 describe( 'replicator', () => {
 	describe( 'replication', () => {
-		xit( 'replicates', () => {
+		it.skip( 'replicates', () => {
 			
 		} )
 		
 		it( 'automatically replicates when its stomach is full', () => {
 			const replicator = Replic8or()
 			
-			spyOn( replicator, 'replicate' )
+			vi.spyOn( replicator, 'replicate' ).mockImplementation( () => {} )
 			
 			replicator.energy = 1
 			replicator.update( 0, 0 )
@@ -186,7 +186,7 @@ describe( 'replicator', () => {
 	
 	it( 'dies if it runs out of energy', () => {
 		const replicator = Replic8or()
-		const spy = jasmine.createSpy()
+		const spy = vi.fn()
 		replicator.on( 'died', spy )
 		
 		replicator.energy = 0
@@ -212,7 +212,7 @@ describe( 'replicator', () => {
 		expect( replicator.age ).toBe( 1/60 )
 	} )
 	
-	xit( 'flagella push replicator in opposite direction', () => {
+	it.skip( 'flagella push replicator in opposite direction', () => {
 		const replicator = Replic8or( {
 			metabolism:  0,
 			numSegments: 3,
@@ -224,13 +224,13 @@ describe( 'replicator', () => {
 	it( 'releases event handlers when it dies', () => {
 		const replicator = Replic8or()
 		
-		const onDied = jasmine.createSpy()
+		const onDied = vi.fn()
 		replicator.on( 'died', onDied )
 		
-		const onFlipping = jasmine.createSpy()
+		const onFlipping = vi.fn()
 		replicator.flippers[0].on( 'flipping', onFlipping )
 		
-		const onFire = jasmine.createSpy()
+		const onFire = vi.fn()
 		replicator.brain.neurons[0].on( 'fire', onFire )
 		
 		replicator.die()

@@ -111,7 +111,7 @@ describe( 'neural network', () => {
 	} )
 } )
 
-xdescribe( 'Hebbian learning', () => {
+describe.skip( 'Hebbian learning', () => {
 	it( '', () => {
 		
 	} )

@@ -54,7 +54,7 @@ describe( 'physics', () => {
 	} )
 	
 	// TODO
-	xit( 'torque changes angular velocity proportionate to mass', () => {
+	it.skip( 'torque changes angular velocity proportionate to mass', () => {
 		
 	} )
 	

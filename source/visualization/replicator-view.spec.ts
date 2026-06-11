@@ -1,3 +1,4 @@
+// @vitest-environment happy-dom
 import ReplicatorView, { getSignalParts, SignalPart, SignalPartType } from './replicator-view'
 import Replic8or from '../simulation/replic8or'
 import Vector2 from '../engine/vector-2'
@@ -6,7 +7,7 @@ describe( 'replicator view', () => {
 	function expectSignalParts( actualParts, expectedParts ) {
 		const precision = 9
 		
-		expect( actualParts.length ).toBe( expectedParts.length, 'num parts' )
+		expect( actualParts.length ).toBe( expectedParts.length )
 		
 		for ( let i = 0; i < expectedParts.length; i++ ) {
 			for ( const key in expectedParts[ i ] ) {

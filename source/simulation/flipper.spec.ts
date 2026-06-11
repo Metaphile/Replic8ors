@@ -16,7 +16,7 @@ describe( 'flipper', () => {
 	it( 'emits a flipping event', () => {
 		const flipper = TestFlipper()
 		
-		const spy = jasmine.createSpy()
+		const spy = vi.fn()
 		flipper.on( 'flipping', spy )
 		
 		flipper.flip()
@@ -28,7 +28,7 @@ describe( 'flipper', () => {
 	it( 'flips for a little bit', () => {
 		const flipper = TestFlipper()
 		
-		const spy = jasmine.createSpy()
+		const spy = vi.fn()
 		flipper.on( 'flipping', spy )
 		
 		flipper.flip()
@@ -41,11 +41,11 @@ describe( 'flipper', () => {
 	it( 'flips quickly then slowly', () => {
 		const flipper = TestFlipper()
 		
-		const spy = jasmine.createSpy()
+		const spy = vi.fn()
 		flipper.on( 'flipping', spy )
 		
 		const forceStrength = () => {
-			const force = spy.calls.mostRecent().args[ 0 ]
+			const force = spy.mock.lastCall[ 0 ]
 			return Vector2.getLength( force )
 		}
 		

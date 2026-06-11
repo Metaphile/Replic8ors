@@ -1,3 +1,4 @@
+// @vitest-environment happy-dom
 import NeuronView from './neuron-view'
 
 const precision = 9

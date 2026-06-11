@@ -1,5 +1,3 @@
 describe( 'JavaScript', () => {
-	/* it( '', () => {
-		
-	} ) */
+	it.todo( 'placeholder for top-level integration tests' )
 } )

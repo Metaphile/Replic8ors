@@ -115,47 +115,47 @@ describe( 'debounce()', () => {
 	const { debounce } = helpers
 	
 	beforeEach( () => {
-		jasmine.clock().install()
+		vi.useFakeTimers()
 	} )
 	
 	afterEach( () => {
-		jasmine.clock().uninstall()
+		vi.useRealTimers()
 	} )
 	
 	it( 'calls debounced function after delay', () => {
-		const spy = jasmine.createSpy()
+		const spy = vi.fn()
 		const debouncedSpy = debounce( spy, 250 )
 		
 		debouncedSpy()
 		
 		expect( spy ).not.toHaveBeenCalled()
-		jasmine.clock().tick( 250 )
+		vi.advanceTimersByTime( 250 )
 		expect( spy ).toHaveBeenCalled()
 	} )
 	
 	it( 'consolidates consecutive function calls', () => {
-		const spy = jasmine.createSpy()
+		const spy = vi.fn()
 		const debouncedSpy = debounce( spy, 250 )
 		
 		debouncedSpy()
 		debouncedSpy()
 		
-		jasmine.clock().tick( 250 )
+		vi.advanceTimersByTime( 250 )
 		
 		expect( spy ).toHaveBeenCalledTimes( 1 )
 	} )
 	
 	it( 'resets delay with consecutive function calls', () => {
-		const spy = jasmine.createSpy()
+		const spy = vi.fn()
 		const debouncedSpy = debounce( spy, 250 )
 		
 		debouncedSpy()
-		jasmine.clock().tick( 250 - 1 ) // < 250
+		vi.advanceTimersByTime( 250 - 1 ) // < 250
 		debouncedSpy() // resets delay
-		jasmine.clock().tick( 250 - 1 ) // < 250
+		vi.advanceTimersByTime( 250 - 1 ) // < 250
 		
 		expect( spy ).not.toHaveBeenCalled()
-		jasmine.clock().tick( 1 )
+		vi.advanceTimersByTime( 1 )
 		expect( spy ).toHaveBeenCalledTimes( 1 )
 	} )
 	

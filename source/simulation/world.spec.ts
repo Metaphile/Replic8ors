@@ -88,7 +88,7 @@ describe( 'world', () => {
 		it( 'replicator added', () => {
 			const world = World()
 			
-			const spy = jasmine.createSpy()
+			const spy = vi.fn()
 			world.on( 'replicator-added', spy )
 			
 			const replicator = Prey()
@@ -100,7 +100,7 @@ describe( 'world', () => {
 		it( 'replicator died', () => {
 			const world = World()
 			
-			const spy = jasmine.createSpy()
+			const spy = vi.fn()
 			world.on( 'replicator-died', spy )
 			
 			const doomedReplicator = Prey()

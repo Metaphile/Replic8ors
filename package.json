@@ -10,7 +10,6 @@
   "devDependencies": {
     "@babel/core": "^7.9.6",
     "@babel/polyfill": "^7.8.7",
-    "@types/jasmine": "^3.5.10",
     "babel-loader": "^8.1.0",
     "base64-image-loader": "^1.2.0",
     "css-loader": "^3.5.3",
@@ -18,14 +17,6 @@
     "happy-dom": "^20.10.2",
     "html-loader": "^1.1.0",
     "html-webpack-plugin": "^4.3.0",
-    "jasmine-core": "^3.5.0",
-    "karma": "^5.0.8",
-    "karma-chrome-launcher": "^3.1.0",
-    "karma-jasmine": "^3.1.1",
-    "karma-mocha-reporter": "^2.0.4",
-    "karma-notify-reporter": "^1.2.0",
-    "karma-webpack": "^4.0.2",
-    "node-notifier": "^7.0.0",
     "sass": "^1.49.0",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
@@ -45,7 +36,8 @@
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "test": "karma start",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "build": "webpack"
   },
   "author": "Metaphile",

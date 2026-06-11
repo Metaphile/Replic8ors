@@ -12,7 +12,7 @@ describe( 'events mixin', () => {
 	it( 'notifies subscribers', () => {
 		const events = Events()
 		
-		const spy = jasmine.createSpy()
+		const spy = vi.fn()
 		events.on( 'event', spy )
 		
 		events.emit( 'event' )
@@ -23,7 +23,7 @@ describe( 'events mixin', () => {
 	it( 'notifies subscribers with arguments', () => {
 		const events = Events()
 		
-		const spy = jasmine.createSpy()
+		const spy = vi.fn()
 		events.on( 'event', spy )
 		
 		const arg1 = {}
@@ -44,7 +44,7 @@ describe( 'events mixin', () => {
 	it( 'subscription.unsubscribe() stops event notifications', () => {
 		const events = Events()
 		
-		const spy = jasmine.createSpy()
+		const spy = vi.fn()
 		const subscription = events.on( 'event', spy )
 		
 		subscription.unsubscribe()

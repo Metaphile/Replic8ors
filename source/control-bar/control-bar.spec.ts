@@ -16,13 +16,13 @@ describe( 'control bar', () => {
 			},
 		}
 		
-		spyOn( mockVisualization, 'attach' ).and.callThrough()
-		spyOn( mockVisualization, 'detach' ).and.callThrough()
+		vi.spyOn( mockVisualization, 'attach' )
+		vi.spyOn( mockVisualization, 'detach' )
 		
 		mockScenarioLoop = {
 			timestep: 1/60,
 			timescale: 1,
-			step: jasmine.createSpy( 'mockScenarioLoop.step' ),
+			step: vi.fn(),
 		}
 		
 		controlBar = ControlBar( mockScenarioLoop, mockVisualization )

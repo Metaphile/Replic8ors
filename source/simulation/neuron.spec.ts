@@ -16,12 +16,12 @@ describe( 'neuron', () => {
 		
 		neuron.stimulate( 1/60, excitatoryIndex )
 		neuron.update( 0 )
-		expect( neuron.potential > error ).toBe( true, 'excitatory' )
+		expect( neuron.potential > error ).toBe( true )
 		
 		neuron.potential = 0.9
 		neuron.stimulate( 1/60, inhibitoryIndex )
 		neuron.update( 0 )
-		expect( neuron.potential < 0.9 - error ).toBe( true, 'inhibitory' )
+		expect( neuron.potential < 0.9 - error ).toBe( true )
 	} )
 	
 	it( 'threshold potential activates neuron', () => {
@@ -76,7 +76,7 @@ describe( 'neuron', () => {
 	} )
 	
 	// TODO broken by input scaling
-	xit( 'neuron tracks inhibitory input', () => {
+	it.skip( 'neuron tracks inhibitory input', () => {
 		const neuron = Neuron()
 		const sourceIndex = 0
 		neuron.weights[ sourceIndex ] = -1.0
@@ -97,7 +97,7 @@ describe( 'neuron', () => {
 	it( 'emits fire event', () => {
 		const neuron = Neuron()
 		
-		const spy = jasmine.createSpy()
+		const spy = vi.fn()
 		neuron.on( 'fire', spy )
 		
 		neuron.potential = 1.0
