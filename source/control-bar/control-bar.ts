@@ -1,7 +1,7 @@
 import GameLoop from '../engine/game-loop'
-import * as $ from 'jquery'
-import formTemplate from './form.ejs'
-import infoTemplate from './info.ejs'
+import $ from 'jquery'
+import formTemplate from './form'
+import infoTemplate from './info'
 import { formatElapsedTime } from '../helpers'
 import SettingsPanel from '../settings/settings-panel'
 

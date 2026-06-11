@@ -10,9 +10,8 @@
 //                                                                            //
 // -------------------------------------------------------------------------- //
 
-import '@babel/polyfill'
 import './main.scss'
-import * as $ from 'jquery'
+import $ from 'jquery'
 import World from './simulation/world'
 import Scenario from './simulation/scenario'
 import Visualization from './visualization/visualization'

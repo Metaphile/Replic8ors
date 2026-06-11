@@ -1,5 +1,5 @@
-import * as $ from 'jquery'
-import settingsPanelFieldTemplate from './settings-panel-field.ejs'
+import $ from 'jquery'
+import { fieldTemplate as settingsPanelFieldTemplate } from './settings-panel-templates'
 import settings, { setSetting, defaultSettings } from './settings'
 import { debounce } from '../helpers'
 

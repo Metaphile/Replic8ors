@@ -1,6 +1,6 @@
-import * as $ from 'jquery'
+import $ from 'jquery'
 import * as helpers from './settings-panel-helpers'
-import settingsPanelTemplate from './settings-panel.ejs'
+import { panelTemplate as settingsPanelTemplate } from './settings-panel-templates'
 import settings, { defaultSettings, setSetting } from './settings'
 
 const tryLoadSettings = () => {

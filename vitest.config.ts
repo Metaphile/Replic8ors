@@ -8,17 +8,16 @@ export default defineConfig( {
 		// `// @vitest-environment happy-dom`.
 		environment: 'node',
 		include: [ 'source/**/*.spec.ts' ],
-		// TODO Phase 2: re-enable once the runtime EJS templates are rewritten as
-		// TS. These specs transitively import .ejs files, which the bundler can't
-		// parse yet (control-bar -> form.ejs/info.ejs; visualization -> control-bar).
 		exclude: [
 			'**/node_modules/**',
-			'source/control-bar/control-bar.spec.ts',
+			// These import the visualization layer, whose asset modules
+			// (replicator-assets -> prey-assets) build canvas gradients at module
+			// load, needing a real 2D context the headless DOM lacks.
+			// visualization.spec is an empty placeholder; replicator-view.spec's
+			// only real assertions cover the pure getSignalParts().
+			// TODO Phase 5: extract getSignalParts into a pure .model.ts, test it
+			// there, and verify rendering in-browser.
 			'source/visualization/visualization.spec.ts',
-			// Its only real assertions cover the pure getSignalParts(), but the
-			// import chain (replicator-assets -> prey-assets) builds canvas
-			// gradients at module load, needing a real 2D context. TODO Phase 5:
-			// extract getSignalParts into a pure .model.ts and test it there.
 			'source/visualization/replicator-view.spec.ts',
 		],
 	},

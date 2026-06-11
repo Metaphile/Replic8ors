@@ -1,10 +1,22 @@
+// @vitest-environment happy-dom
 import ControlBar, { State } from './control-bar'
 
 describe( 'control bar', () => {
 	let mockVisualization
 	let mockScenarioLoop
 	let controlBar
-	
+
+	// ControlBar spins up a GameLoop that self-schedules via
+	// requestAnimationFrame; neutralize it so the loop doesn't run (and throw)
+	// across tests in the headless DOM.
+	beforeEach( () => {
+		vi.stubGlobal( 'requestAnimationFrame', () => 0 )
+	} )
+
+	afterEach( () => {
+		vi.unstubAllGlobals()
+	} )
+
 	beforeEach( () => {
 		mockVisualization = {
 			attached: true,
