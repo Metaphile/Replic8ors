@@ -1,41 +1,41 @@
 interface Action {
-	delay: number
-	callback: () => void
+  delay: number;
+  callback: () => void;
 }
 
 export interface Timer {
-	scheduleAction( delay: number, callback: () => void ): void
-	cancelAllActions(): void
-	update( dt: number ): void
+  scheduleAction(delay: number, callback: () => void): void;
+  cancelAllActions(): void;
+  update(dt: number): void;
 }
 
 export default function Timer(): Timer {
-	const self = {} as Timer
-	const actions: Action[] = []
+  const self = {} as Timer;
+  const actions: Action[] = [];
 
-	self.scheduleAction = ( delay, callback ) => {
-		actions.push( { delay, callback } )
-	}
+  self.scheduleAction = (delay, callback) => {
+    actions.push({ delay, callback });
+  };
 
-	self.cancelAllActions = () => {
-		actions.length = 0
-	}
+  self.cancelAllActions = () => {
+    actions.length = 0;
+  };
 
-	self.update = ( dt ) => {
-		for ( let i = 0; i < actions.length; i++ ) {
-			const action = actions[ i ]
-			
-			action.delay -= dt
-			
-			if ( action.delay <= 0 ) {
-				action.callback()
-				
-				// remove from actions array and adjust loop index
-				actions.splice( i, 1 )
-				i--
-			}
-		}
-	}
-	
-	return self
+  self.update = (dt) => {
+    for (let i = 0; i < actions.length; i++) {
+      const action = actions[i];
+
+      action.delay -= dt;
+
+      if (action.delay <= 0) {
+        action.callback();
+
+        // remove from actions array and adjust loop index
+        actions.splice(i, 1);
+        i--;
+      }
+    }
+  };
+
+  return self;
 }

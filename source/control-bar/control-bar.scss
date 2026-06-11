@@ -1,141 +1,143 @@
-@import '../settings/settings-panel.scss';
+@import "../settings/settings-panel.scss";
 
-$blue: rgb( 90, 195, 255 );
-$hudColor: rgb( 255, 70, 0 );
+$blue: rgb(90, 195, 255);
+$hudColor: rgb(255, 70, 0);
 
 #control-bar-form {
-	$controlBarHeight: 42px;
-	$font-size: 12px;
-	$padding: 5px;
-	
-	background: black;
-	bottom: 0;
-	color: white;
-	font-size: $font-size;
-	line-height: $controlBarHeight - ( $padding * 2 );
-	overflow: auto;
-	padding: $padding;
-	position: absolute;
-	text-align: center;
-	width: 100%;
-	
-	[name=settings] {
-		float: right;
-	}
-	
-	button {
-		background: none;
-		border: none;
-		color: white;
-		height: $controlBarHeight - ( $padding * 2 );
-		line-height: $controlBarHeight - ( $padding * 2 );
-		margin: 0;
-		padding: 0;
-		width: $controlBarHeight - ( $padding * 2 );
-		outline-color: $hudColor;
-		
-		&:hover {
-			cursor: pointer;
-		}
-		
-		&.active {
-			color: $hudColor;
-		}
-	}
-	
-	[name=elapsed-sim-time] {
-		background: none;
-		border: none;
-		color: silver;
-		cursor: default;
-		font-family: monospace;
-		font-size: $font-size;
-		text-align: center;
-		
-		&:focus {
-			outline: none;
-		}
-	}
-	
-	[name=info] {
-		float: left;
-	}
+  $controlBarHeight: 42px;
+  $font-size: 12px;
+  $padding: 5px;
+
+  background: black;
+  bottom: 0;
+  color: white;
+  font-size: $font-size;
+  line-height: $controlBarHeight - ($padding * 2);
+  overflow: auto;
+  padding: $padding;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+
+  [name="settings"] {
+    float: right;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: white;
+    height: $controlBarHeight - ($padding * 2);
+    line-height: $controlBarHeight - ($padding * 2);
+    margin: 0;
+    padding: 0;
+    width: $controlBarHeight - ($padding * 2);
+    outline-color: $hudColor;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &.active {
+      color: $hudColor;
+    }
+  }
+
+  [name="elapsed-sim-time"] {
+    background: none;
+    border: none;
+    color: silver;
+    cursor: default;
+    font-family: monospace;
+    font-size: $font-size;
+    text-align: center;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  [name="info"] {
+    float: left;
+  }
 }
 
 #control-bar-info {
-	background: fade-out( black, 0.2 );
-	font-size: 10pt;
-	position: absolute;
-	width: 800px;
-	max-width: 50%;
-	top:    0;
-	left: 0;
-	bottom: 43px; // touch top of control bar
-	z-index: 999;
-	line-height: 1.5em;
-	
-	color: white;
-	overflow-y: scroll;
-	
-	#executive-summary {
-		line-height: 1.6em;
-		padding: 1em 2em;
-		margin: 3em 0;
-		
-		border-style: solid;
-		border-color: $hudColor;
-		border-width: 1px 14px;
-	h2 {
-		font-size: larger;
-	}
-	
-	h2, h3 {
-		// color: lighten($red, 25%);
-		color: $blue;
-		font-weight: normal;
-		border-bottom: 1px solid $blue;
-		margin-top: 2em;
-	}
-	
-	}
-	
-	a {
-		color: white;
-	}
-	
-	strong {
-		color: $blue;
-		font-weight: normal;
-	}
-	
-	// show pointer cursor over entire info modal (including close button)
-	// to indicate that it's clickable
-	&, & button {
-		cursor: pointer;
-	}
-	
-	button[name=close] {
-		background: none;
-		border: none;
-		color: white;
-		padding: 0;
-		width: 1.6em;
-		text-align: center;
-		font-size: x-large;
-		
-		// keep close button in top right corner when scrolling
-		position: sticky;
-		top: 0;
-		float: right;
-		
-		&:hover, &:focus {
-			outline: none;
-		}
-	}
-	
-	.column {
-		max-width: 640px;
-		padding: 1rem;
-		margin: 0 auto;
-	}
+  background: fade-out(black, 0.2);
+  font-size: 10pt;
+  position: absolute;
+  width: 800px;
+  max-width: 50%;
+  top: 0;
+  left: 0;
+  bottom: 43px; // touch top of control bar
+  z-index: 999;
+  line-height: 1.5em;
+
+  color: white;
+  overflow-y: scroll;
+
+  #executive-summary {
+    line-height: 1.6em;
+    padding: 1em 2em;
+    margin: 3em 0;
+
+    border-style: solid;
+    border-color: $hudColor;
+    border-width: 1px 14px;
+    h2 {
+      font-size: larger;
+    }
+
+    h2,
+    h3 {
+      // color: lighten($red, 25%);
+      color: $blue;
+      font-weight: normal;
+      border-bottom: 1px solid $blue;
+      margin-top: 2em;
+    }
+  }
+
+  a {
+    color: white;
+  }
+
+  strong {
+    color: $blue;
+    font-weight: normal;
+  }
+
+  // show pointer cursor over entire info modal (including close button)
+  // to indicate that it's clickable
+  &,
+  & button {
+    cursor: pointer;
+  }
+
+  button[name="close"] {
+    background: none;
+    border: none;
+    color: white;
+    padding: 0;
+    width: 1.6em;
+    text-align: center;
+    font-size: x-large;
+
+    // keep close button in top right corner when scrolling
+    position: sticky;
+    top: 0;
+    float: right;
+
+    &:hover,
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .column {
+    max-width: 640px;
+    padding: 1rem;
+    margin: 0 auto;
+  }
 }

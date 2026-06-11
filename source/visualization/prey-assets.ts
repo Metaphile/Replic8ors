@@ -1,52 +1,52 @@
 // @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import {
-	DamageEffect,
-	DeathEffect,
-	EnergyUpEffectFactory,
-	SpawnEffect,
-	backsideGradient,
-	ctx,
-	face,
-} from './replicator-assets'
+  DamageEffect,
+  DeathEffect,
+  EnergyUpEffectFactory,
+  SpawnEffect,
+  backsideGradient,
+  ctx,
+  face,
+} from "./replicator-assets";
 
-const energyGradient = ( () => {
-	// we want a crisp edge between the black and transparent color stops
-	// we can achieve this by positioning the stops on top of each other
-	// but the effect doesn't work at 0.0 or 1.0
-	// we get around this by defining the gradient from y = -1 to 1, and putting the overlapping stops in the middle
-	
-	const gradient = ctx.createLinearGradient( 0, -1, 0, 1 )
-	
-	gradient.addColorStop( 0.50, 'rgba(  13, 255, 112, 0.00 )' )
-	gradient.addColorStop( 0.50, 'rgba(  13, 255, 112, 0.50 )' )
-	gradient.addColorStop( 0.51, 'rgba(   1,  26,  11, 0.85 )' )
-	gradient.addColorStop( 1.00, 'rgba(   7, 141,  62, 0.88 )' )
-	
-	return gradient
-} )()
+const energyGradient = (() => {
+  // we want a crisp edge between the black and transparent color stops
+  // we can achieve this by positioning the stops on top of each other
+  // but the effect doesn't work at 0.0 or 1.0
+  // we get around this by defining the gradient from y = -1 to 1, and putting the overlapping stops in the middle
 
-const energyUpGradient = ( () => {
-	const gradient = ctx.createLinearGradient( 0, -1, 0, 1 )
-	
-	gradient.addColorStop( 0.0, 'rgba(   0, 255,   0, 0.0 )' )
-	gradient.addColorStop( 0.5, 'rgba(   0, 255,   0, 0.3 )' )
-	gradient.addColorStop( 0.5, 'rgba(   0, 255,   0, 0.8 )' )
-	gradient.addColorStop( 1.0, 'rgba(   0, 255,   0, 0.2 )' )
-	
-	return gradient
-} )()
+  const gradient = ctx.createLinearGradient(0, -1, 0, 1);
 
-const EnergyUpEffect = EnergyUpEffectFactory( energyUpGradient )
+  gradient.addColorStop(0.5, "rgba(  13, 255, 112, 0.00 )");
+  gradient.addColorStop(0.5, "rgba(  13, 255, 112, 0.50 )");
+  gradient.addColorStop(0.51, "rgba(   1,  26,  11, 0.85 )");
+  gradient.addColorStop(1.0, "rgba(   7, 141,  62, 0.88 )");
 
-const skinColor = 'rgba( 0, 13, 11, 0.7 )'
+  return gradient;
+})();
+
+const energyUpGradient = (() => {
+  const gradient = ctx.createLinearGradient(0, -1, 0, 1);
+
+  gradient.addColorStop(0.0, "rgba(   0, 255,   0, 0.0 )");
+  gradient.addColorStop(0.5, "rgba(   0, 255,   0, 0.3 )");
+  gradient.addColorStop(0.5, "rgba(   0, 255,   0, 0.8 )");
+  gradient.addColorStop(1.0, "rgba(   0, 255,   0, 0.2 )");
+
+  return gradient;
+})();
+
+const EnergyUpEffect = EnergyUpEffectFactory(energyUpGradient);
+
+const skinColor = "rgba( 0, 13, 11, 0.7 )";
 
 export {
-	DamageEffect,
-	DeathEffect,
-	EnergyUpEffect,
-	SpawnEffect,
-	backsideGradient,
-	energyGradient,
-	face,
-	skinColor,
-}
+  DamageEffect,
+  DeathEffect,
+  EnergyUpEffect,
+  SpawnEffect,
+  backsideGradient,
+  energyGradient,
+  face,
+  skinColor,
+};

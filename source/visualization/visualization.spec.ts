@@ -1,5 +1,5 @@
-import Visualization from './visualization'
+import Visualization from "./visualization";
 
-describe( 'visualization', () => {
-	// ...
-} )
+describe("visualization", () => {
+  // ...
+});

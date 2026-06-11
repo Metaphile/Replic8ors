@@ -1,7 +1,5 @@
-import PanEvents from './pan-events'
+import PanEvents from "./pan-events";
 
-describe( 'pan events mixin', () => {
-	it( '', () => {
-		
-	} )
-} )
+describe("pan events mixin", () => {
+  it("", () => {});
+});

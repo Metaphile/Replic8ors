@@ -2,65 +2,72 @@
 // settings-panel-field.ejs runtime EJS templates with typed string builders.
 
 export interface FieldTemplateData {
-	description: string
-	defaultValue: number
-	fieldLabel: string
-	inputName: string
-	step: number
-	value: number
-	rangeInputMinValue: number
-	rangeInputMaxValue: number
-	datalistId: string
+  description: string;
+  defaultValue: number;
+  fieldLabel: string;
+  inputName: string;
+  step: number;
+  value: number;
+  rangeInputMinValue: number;
+  rangeInputMaxValue: number;
+  datalistId: string;
 }
 
-export function fieldTemplate( data: FieldTemplateData ): string {
-	const {
-		description, defaultValue, fieldLabel, inputName, step, value,
-		rangeInputMinValue, rangeInputMaxValue, datalistId,
-	} = data
+export function fieldTemplate(data: FieldTemplateData): string {
+  const {
+    description,
+    defaultValue,
+    fieldLabel,
+    inputName,
+    step,
+    value,
+    rangeInputMinValue,
+    rangeInputMaxValue,
+    datalistId,
+  } = data;
 
-	return `
-<label title='${ description } (default: ${ defaultValue })'>
-	<span>${ fieldLabel }</span>
+  return `
+<label title='${description} (default: ${defaultValue})'>
+	<span>${fieldLabel}</span>
 
 	<!-- number input -->
-	<input type='number' name='${ inputName }' step='${ step }' value='${ value }'>
+	<input type='number' name='${inputName}' step='${step}' value='${value}'>
 
 	<!-- range input -->
-	<input type='range' name='${ inputName }' step='${ step }' min='${ rangeInputMinValue }' max='${ rangeInputMaxValue }' value='${ value }' list='${ datalistId }'>
+	<input type='range' name='${inputName}' step='${step}' min='${rangeInputMinValue}' max='${rangeInputMaxValue}' value='${value}' list='${datalistId}'>
 
-	<datalist id='${ datalistId }'>
+	<datalist id='${datalistId}'>
 		<option value='0'></option>
 	</datalist>
 </label>
-`
+`;
 }
 
 export interface PanelTemplateData {
-	predatorFields: string[]
-	preyFields: string[]
-	blueFields: string[]
+  predatorFields: string[];
+  preyFields: string[];
+  blueFields: string[];
 }
 
-export function panelTemplate( data: PanelTemplateData ): string {
-	const { predatorFields, preyFields, blueFields } = data
+export function panelTemplate(data: PanelTemplateData): string {
+  const { predatorFields, preyFields, blueFields } = data;
 
-	return `
+  return `
 <form id='settings-panel'>
 	<div class='row'>
 		<div class='column'>
 			<h2>Reds</h2>
-			${ predatorFields.join( '\n' ) }
+			${predatorFields.join("\n")}
 		</div>
 
 		<div class='column'>
 			<h2>Greens</h2>
-			${ preyFields.join( '\n' ) }
+			${preyFields.join("\n")}
 		</div>
 
 		<div class='column'>
 			<h2>Blues</h2>
-			${ blueFields.join( '\n' ) }
+			${blueFields.join("\n")}
 		</div>
 	</div>
 
@@ -75,5 +82,5 @@ export function panelTemplate( data: PanelTemplateData ): string {
 		</div>
 	</div>
 </form>
-`
+`;
 }

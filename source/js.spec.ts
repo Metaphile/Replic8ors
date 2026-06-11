@@ -1,3 +1,3 @@
-describe( 'JavaScript', () => {
-	it.todo( 'placeholder for top-level integration tests' )
-} )
+describe("JavaScript", () => {
+  it.todo("placeholder for top-level integration tests");
+});

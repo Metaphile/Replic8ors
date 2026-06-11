@@ -1,13 +1,13 @@
 // Info modal markup. Replaces the former info.ejs (static template).
-import logo from './logo.png'
+import logo from "./logo.png";
 
 export default function infoTemplate(): string {
-	return `
+  return `
 <section id='control-bar-info' style='display: none;'>
 	<button name='close'>×</button>
 
 	<div class='column'>
-		<h1 style='text-align: center;'><img src='${ logo }' alt='Replic8ors' style='image-rendering: pixelated; width: 520px; max-width: 100%;'></h1>
+		<h1 style='text-align: center;'><img src='${logo}' alt='Replic8ors' style='image-rendering: pixelated; width: 520px; max-width: 100%;'></h1>
 
 		<div id='executive-summary'>
 			<p>Replic8ors is a behavioral evolution simulator with fully visualized neural networks. It works best in desktop <a href='https://www.google.com/chrome/' target='_blank'>Chrome</a>.</p>
@@ -43,5 +43,5 @@ export default function infoTemplate(): string {
 		<p>Ultimately the networks translate sensory input into motor output. Over many generations, they approximate some survival function which is determined by their environment.</p>
 	</div>
 </section>
-`
+`;
 }

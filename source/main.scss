@@ -1,38 +1,39 @@
-@import 'visualization/visualization.scss';
-@import 'control-bar/control-bar.scss';
+@import "visualization/visualization.scss";
+@import "control-bar/control-bar.scss";
 
 * {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-	font: 10pt sans-serif;
-	margin: 0;
-	overflow: hidden;
+  font: 10pt sans-serif;
+  margin: 0;
+  overflow: hidden;
 }
 
-$green: rgb(7, 141,  62);
+$green: rgb(7, 141, 62);
 $blue: rgb(90, 195, 255);
 $red: rgb(110, 0, 0);
 
-html, body {
-	height: 100%;
+html,
+body {
+  height: 100%;
 }
 
 #visualization {
-	height: 100%;
+  height: 100%;
 }
 
 #version-number {
-	color: white;
-	font-size: x-small;
-	// display: inline-block;
-	display: none;
-	margin: 0;
-	padding: 0.25rem 0.5rem;
-	position: absolute;
-	right: 0;
-	bottom: 0;
-	// display over top of info box
-	z-index: 9999;
+  color: white;
+  font-size: x-small;
+  // display: inline-block;
+  display: none;
+  margin: 0;
+  padding: 0.25rem 0.5rem;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  // display over top of info box
+  z-index: 9999;
 }
