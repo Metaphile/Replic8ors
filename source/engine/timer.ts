@@ -1,15 +1,26 @@
-export default function Timer() {
-	const self = {}
-	const actions = []
-	
+interface Action {
+	delay: number
+	callback: () => void
+}
+
+export interface Timer {
+	scheduleAction( delay: number, callback: () => void ): void
+	cancelAllActions(): void
+	update( dt: number ): void
+}
+
+export default function Timer(): Timer {
+	const self = {} as Timer
+	const actions: Action[] = []
+
 	self.scheduleAction = ( delay, callback ) => {
 		actions.push( { delay, callback } )
 	}
-	
+
 	self.cancelAllActions = () => {
 		actions.length = 0
 	}
-	
+
 	self.update = ( dt ) => {
 		for ( let i = 0; i < actions.length; i++ ) {
 			const action = actions[ i ]

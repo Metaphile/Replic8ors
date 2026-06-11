@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import config from '../config'
 import * as preyAssets from './prey-assets'
 import * as predatorAssets from './predator-assets'

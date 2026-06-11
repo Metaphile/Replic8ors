@@ -1,6 +1,18 @@
 {
 	"compilerOptions": {
-    "target": "es6",
-		"sourceMap": true
-	}
+		"target": "ES2020",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"lib": [ "ES2020", "DOM", "DOM.Iterable" ],
+		"strict": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"sourceMap": true,
+		"noEmit": true,
+		"types": [ "vitest/globals" ]
+	},
+	"include": [ "source" ]
 }

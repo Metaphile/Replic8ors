@@ -1,7 +1,7 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import WorldView from './world-view'
 import Camera from '../engine/camera'
 import CameraOperator from './camera-operator'
-import $ from 'jquery'
 import Hud from './hud'
 import HudMarker from './hud-marker'
 import Vector2 from '../engine/vector-2'
@@ -9,20 +9,22 @@ import { CtxPartialStateStack, pointIsInCircle } from '../helpers'
 
 export default function Visualization( world ) {
 	const self = {}
-	
-	const $container = $( '<div class="visualization-container"/>' )
-	
-	const $canvas = $Canvas()
-	const canvas = $canvas[0]
+
+	const container = document.createElement( 'div' )
+	container.className = 'visualization-container'
+
+	const { canvas, sizeToParent } = makeCanvas()
 	const ctx = canvas.getContext( '2d' )
 	CtxPartialStateStack( ctx )
-	
-	$container.append( $canvas )
-	
-	$container.on( 'appended', () => $canvas.trigger( 'appended' ) )
-	
-	self.$element = $container
-	
+
+	container.appendChild( canvas )
+
+	// custom 'appended' event, dispatched by the host once the element is in the
+	// document (so the canvas can size itself to its parent).
+	container.addEventListener( 'appended', () => sizeToParent() )
+
+	self.element = container
+
 	self.attached = false
 	
 	const camera = Camera()
@@ -63,107 +65,102 @@ export default function Visualization( world ) {
 	// panning
 	{
 		// mousedown followed by mousemove > threshold == drag
-		
+
 		// prevent scrolling while dragging on touchscreen devices
-		$( 'body' ).on( 'touchmove', event => event.preventDefault() )
-		
+		document.body.addEventListener( 'touchmove', event => event.preventDefault() )
+
 		let isDragging = false
 		let dragLast_screen = null
 		const dragThreshold = 4
-		
-		$canvas.on( 'mousedown', ( event ) => {
-			$canvas.trigger( 'pointerdown', [ event.offsetX, event.offsetY ] )
-		} )
-		
-		$canvas.on( 'touchstart', ( event ) => {
-			if ( !event.originalEvent.touches[ 0 ] ) return
-			
-			const offsetX = event.originalEvent.touches[ 0 ].pageX - event.originalEvent.touches[ 0 ].target.offsetLeft
-			const offsetY = event.originalEvent.touches[ 0 ].pageY - event.originalEvent.touches[ 0 ].target.offsetTop
-			
-			$canvas.trigger( 'pointerdown', [ offsetX, offsetY ] )
-		} )
-		
-		$canvas.on( 'pointerdown', ( event, offsetX, offsetY ) => {
+
+		// unified pointer-down for mouse and touch
+		const onPointerDown = ( offsetX, offsetY ) => {
 			isDragging = false
 			dragLast_screen = { x: offsetX, y: offsetY }
-		} )
-		
-		$canvas.on( 'mousemove', ( event ) => {
-			$canvas.trigger( 'mypointermove', [ event.offsetX, event.offsetY ] )
-		} )
-		
-		$canvas.on( 'touchmove', ( event ) => {
-			if ( !event.originalEvent.touches[ 0 ] ) return
-			
-			const offsetX = event.originalEvent.touches[ 0 ].pageX - event.originalEvent.touches[ 0 ].target.offsetLeft
-			const offsetY = event.originalEvent.touches[ 0 ].pageY - event.originalEvent.touches[ 0 ].target.offsetTop
-			
-			$canvas.trigger( 'mypointermove', [ offsetX, offsetY ] )
-		} )
-		
-		// originally "pointermove" but that's now a standard event, oops
-		// TODO look into pointer* events which consolidate mouse/touch/pen events
-		$canvas.on( 'mypointermove', ( event, offsetX, offsetY ) => {
+		}
+
+		// unified pointer-move for mouse and touch
+		// (named "my" historically because "pointermove" became a standard event)
+		const onPointerMove = ( offsetX, offsetY ) => {
 			if ( !isDragging && dragLast_screen ) {
 				const mousePos_screen = { x: offsetX, y: offsetY }
 				const distance = Vector2.distance( mousePos_screen, dragLast_screen )
-				
+
 				if ( distance > dragThreshold ) {
 					isDragging = true
 				}
 			}
-			
+
 			if ( isDragging ) {
 				// important! previous world coords are probably wrong now due to camera movement
 				// always get fresh coords
 				const dragLast_world = camera.toWorld( dragLast_screen )
-				
+
 				const dragNow_screen = { x: offsetX, y: offsetY }
 				const dragNow_world  = camera.toWorld( dragNow_screen )
-				
+
 				const dragDelta_world = Vector2.subtract( dragLast_world, dragNow_world, {} )
-				
+
 				cameraOp.smoothPan( dragDelta_world )
-				
+
 				Vector2.set( dragLast_screen, dragNow_screen )
 			}
+		}
+
+		const touchOffset = ( touch ) => ( {
+			x: touch.pageX - touch.target.offsetLeft,
+			y: touch.pageY - touch.target.offsetTop,
 		} )
-		
-		$canvas.on( 'touchend', () => {
-			if ( !event.originalEvent.touches[ 0 ] ) return
-			
-			$canvas.trigger( 'mouseup' )
+
+		canvas.addEventListener( 'mousedown', event => onPointerDown( event.offsetX, event.offsetY ) )
+
+		canvas.addEventListener( 'touchstart', event => {
+			const touch = event.touches[ 0 ]
+			if ( !touch ) return
+			const { x, y } = touchOffset( touch )
+			onPointerDown( x, y )
 		} )
-		
-		$canvas.on( 'mouseup', () => {
+
+		canvas.addEventListener( 'mousemove', event => onPointerMove( event.offsetX, event.offsetY ) )
+
+		canvas.addEventListener( 'touchmove', event => {
+			const touch = event.touches[ 0 ]
+			if ( !touch ) return
+			const { x, y } = touchOffset( touch )
+			onPointerMove( x, y )
+		} )
+
+		const onPointerUp = () => {
 			dragLast_screen = null
-		} )
-		
-		$canvas.on( 'click', ( event ) => {
+		}
+
+		canvas.addEventListener( 'touchend', onPointerUp )
+		canvas.addEventListener( 'mouseup', onPointerUp )
+
+		canvas.addEventListener( 'click', event => {
 			// cancel click if drag before mouseup
 			if ( isDragging ) {
 				isDragging = false
 				event.stopImmediatePropagation()
 			}
 		} )
-		
-		$canvas.on( 'mouseout', () => {
+
+		canvas.addEventListener( 'mouseout', () => {
 			isDragging = false
 			dragLast_screen = null
 		} )
 	}
-	
+
 	// zooming
-	$canvas.on( 'wheel', ( event ) => {
+	canvas.addEventListener( 'wheel', event => {
 		event.preventDefault()
-		const { deltaMode, deltaY, offsetX, offsetY } = event.originalEvent
-		
+		const { deltaMode, deltaY, offsetX, offsetY } = event
+
 		const deltaIsInPixels = deltaMode === 0
 		const scrollFactor = deltaIsInPixels ? -800 : -14
-		
+
 		cameraOp.smoothZoom( deltaY / scrollFactor, camera.toWorld( offsetX, offsetY ) )
-	} )
+	}, { passive: false } )
 	
 	// selection
 	{
@@ -188,9 +185,9 @@ export default function Visualization( world ) {
 			}
 		}
 		
-		$canvas.on( 'click', ( event ) => {
+		canvas.addEventListener( 'click', ( event ) => {
 			const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
-			
+
 			// reverse z-order (topmost first)
 			const replicatorViews = worldView.replicatorViews.slice().reverse()
 			
@@ -235,7 +232,7 @@ export default function Visualization( world ) {
 			}
 		} )
 		
-		$canvas.on( 'dblclick', ( event ) => {
+		canvas.addEventListener( 'dblclick', ( event ) => {
 			if ( selection ) {
 				const clickPos_world = camera.toWorld( event.offsetX, event.offsetY )
 				const inspectZoomLevel = 7.7
@@ -287,8 +284,8 @@ export default function Visualization( world ) {
 		}
 		
 		self.attached = true
-		
-		self.$element.removeClass( 'detached' )
+
+		self.element.classList.remove( 'detached' )
 	},
 	
 	self.detach = () => {
@@ -305,8 +302,8 @@ export default function Visualization( world ) {
 		hud = dummyHud
 		
 		self.attached = false
-		
-		self.$element.addClass( 'detached' )
+
+		self.element.classList.add( 'detached' )
 	},
 	
 	self.update = ( dt_real, dt_sim ) => {
@@ -329,43 +326,38 @@ export default function Visualization( world ) {
 	// fisheye
 	
 	const mousePos_screen = { x: Number.MAX_SAFE_INTEGER, y: Number.MAX_SAFE_INTEGER }
-	
-	$canvas.on( 'mousemove', event => {
+
+	canvas.addEventListener( 'mousemove', event => {
 		mousePos_screen.x = event.offsetX
 		mousePos_screen.y = event.offsetY
 	} )
-	
-	$canvas.on( 'mouseout', () => {
+
+	canvas.addEventListener( 'mouseout', () => {
 		mousePos_screen.x = Number.MAX_SAFE_INTEGER
 		mousePos_screen.y = Number.MAX_SAFE_INTEGER
 	} )
-	
+
 	self.attach()
-	
+
 	return self
 }
 
-function $Canvas() {
-	const $canvas = $( '<canvas class="world"/>' )
-	
+function makeCanvas() {
+	const canvas = document.createElement( 'canvas' )
+	canvas.className = 'world'
+
 	function sizeToParent() {
-		const $parent = $canvas.parent()
-		
-		$canvas.attr( 'width',  $parent.width() )
+		const parent = canvas.parentElement
+		if ( !parent ) return
+
+		canvas.width = parent.clientWidth
 		// TODO actual control bar height is zero at first
 		// canvas isn't sized properly until first window resize
 		const controlBarHeight = 43
-		$canvas.attr( 'height', $parent.height() - controlBarHeight )
+		canvas.height = parent.clientHeight - controlBarHeight
 	}
-	
-	$( window ).resize( sizeToParent )
-	
-	// custom event; must be triggered manually :\
-	$canvas.on( 'appended', () => {
-		sizeToParent()
-		// don't bubble
-		return false
-	} )
-	
-	return $canvas
+
+	window.addEventListener( 'resize', sizeToParent )
+
+	return { canvas, sizeToParent }
 }

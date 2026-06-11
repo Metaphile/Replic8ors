@@ -4,14 +4,10 @@
   "description": "Behavioral evolution in your browser",
   "type": "module",
   "main": "source/main.ts",
-  "dependencies": {
-    "@types/jquery": "^3.3.38",
-    "jquery": "^3.5.1"
-  },
   "devDependencies": {
     "happy-dom": "^20.10.2",
     "sass": "^1.49.0",
-    "typescript": "^3.9.2",
+    "typescript": "^5.9.3",
     "vite": "^7.1.12",
     "vitest": "^4.1.8"
   },
@@ -19,6 +15,7 @@
     "start": "vite",
     "test": "vitest run",
     "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
     "build": "vite build",
     "preview": "vite preview"
   },

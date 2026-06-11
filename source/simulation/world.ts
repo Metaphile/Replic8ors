@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import Events from '../engine/events'
 import {
 	areCloserThan,

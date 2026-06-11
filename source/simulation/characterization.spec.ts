@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 // Characterization (golden-master) test for the simulation.
 //
 // This is the behavior oracle for the modernization + functional port. It runs

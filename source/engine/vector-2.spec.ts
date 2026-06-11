@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import Vector2 from './vector-2'
 
 const precision = 9

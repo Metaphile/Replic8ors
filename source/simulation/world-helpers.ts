@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 export function forEachUniquePair( items: any[], operation ) {
 	for ( let i = 0, n = items.length; i < n; i++ ) {
 		const item_i = items[ i ]

@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import faceImageSrc from './replicator-face.png'
 
 const ctx = document.createElement( 'canvas' ).getContext( '2d' )

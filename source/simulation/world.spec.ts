@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import World from './world'
 import Replic8or from './replic8or'
 import Vector2 from '../engine/vector-2'

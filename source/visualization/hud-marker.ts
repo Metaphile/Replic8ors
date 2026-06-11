@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 export default function Marker( opts = {} ) {
 	const self = Object.create( Marker.prototype )
 	Object.assign( self, opts )

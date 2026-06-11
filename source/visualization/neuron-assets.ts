@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import predatorImageSrc   from './icons/predator.png'
 import preyImageSrc       from './icons/prey.png'
 import blueImageSrc       from './icons/blue.png'

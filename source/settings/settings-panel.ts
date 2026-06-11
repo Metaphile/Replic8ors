@@ -1,4 +1,5 @@
-import $ from 'jquery'
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
+import { htmlToElement } from '../engine/dom'
 import * as helpers from './settings-panel-helpers'
 import { panelTemplate as settingsPanelTemplate } from './settings-panel-templates'
 import settings, { defaultSettings, setSetting } from './settings'
@@ -260,23 +261,23 @@ export default function SettingsPanel() {
 		}
 	}
 	
-	const $element = $( settingsPanelTemplate( {
+	const element = htmlToElement( settingsPanelTemplate( {
 		predatorFields,
 		preyFields,
 		blueFields,
 	} ) )
-	
+
 	for ( const fieldDef of [ ...predatorFieldDefs, ...preyFieldDefs, ...blueFieldDefs ] ) {
 		if ( fieldDef.fieldLabel ) {
-			helpers.attachInputHandler( fieldDef, $element )
+			helpers.attachInputHandler( fieldDef, element )
 		}
 	}
-	
-	$( 'input[type=number]', $element ).focus( function () {
-		$( this ).select()
-	} )
-	
+
+	element.querySelectorAll( 'input[type=number]' ).forEach( input =>
+		input.addEventListener( 'focus', () => input.select() ),
+	)
+
 	return {
-		$element,
+		element,
 	}
 }

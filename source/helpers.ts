@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import Vector2 from './engine/vector-2'
 
 function leftPadInt( integer: number, maxLength: number = 2, fillString: string = '0' ): string {

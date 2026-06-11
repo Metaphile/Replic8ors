@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 function interpolate( startValue, endValue, bias ) {
 	return startValue + ( endValue - startValue ) * bias
 }

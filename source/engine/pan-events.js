@@ -1,7 +1,0 @@
-// mixin that adds pan (drag) events to any DOM element
-
-import $ from 'jquery'
-
-export default function PanEvents( element, opts = {} ) {
-	
-}

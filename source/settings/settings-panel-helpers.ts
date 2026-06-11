@@ -1,4 +1,4 @@
-import $ from 'jquery'
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import { fieldTemplate as settingsPanelFieldTemplate } from './settings-panel-templates'
 import settings, { setSetting, defaultSettings } from './settings'
 import { debounce } from '../helpers'
@@ -72,38 +72,41 @@ const storeSettings = debounce( () => {
 	localStorage.setItem( 'settings', JSON.stringify( settings ) )
 }, 250 )
 
-export function attachInputHandler( fieldDef, $element ) {
+export function attachInputHandler( fieldDef, element ) {
 	const inputSelector       = `[name=${ fieldDef.section }_${ fieldDef.settingsKey }]`
 	const numberInputSelector = `${ inputSelector }[type=number]`
 	const rangeInputSelector  = `${ inputSelector }[type=range]`
-	
+
 	function applyValue( otherInputSelector ) {
 		return function () {
-			const $self = $( this )
-			const $other = $( otherInputSelector )
-			
-			if ( $self.val() != defaultSettings[ fieldDef.section ][ fieldDef.settingsKey ] ) {
-				$self.closest( 'label' ).addClass( 'modified' )
+			const self = this
+			// names are unique per field, so a document-wide lookup matches the
+			// original jQuery behavior (which wasn't scoped to the panel either).
+			const other = document.querySelector( otherInputSelector )
+
+			const label = self.closest( 'label' )
+			if ( self.value != defaultSettings[ fieldDef.section ][ fieldDef.settingsKey ] ) {
+				label && label.classList.add( 'modified' )
 			} else {
-				$self.closest( 'label' ).removeClass( 'modified' )
+				label && label.classList.remove( 'modified' )
 			}
-			
-			const value = round( $self.val() )
-			$other.val( value )
-			
-			if ( !fieldDef.validator( <string>$self.val() ) ) {
-				$self.addClass( 'invalid' )
-				$other.addClass( 'invalid' )
+
+			const value = round( self.value )
+			if ( other ) other.value = value
+
+			if ( !fieldDef.validator( self.value ) ) {
+				self.classList.add( 'invalid' )
+				other && other.classList.add( 'invalid' )
 			} else {
-				$self.removeClass( 'invalid' )
-				$other.removeClass( 'invalid' )
-				
+				self.classList.remove( 'invalid' )
+				other && other.classList.remove( 'invalid' )
+
 				setSetting( fieldDef.section, fieldDef.settingsKey, value )
 				storeSettings()
 			}
 		}
 	}
-	
-	$( numberInputSelector, $element ).on( 'change', applyValue( rangeInputSelector ) )
-	$( rangeInputSelector, $element ).on( 'input', applyValue( numberInputSelector ) )
+
+	element.querySelectorAll( numberInputSelector ).forEach( el => el.addEventListener( 'change', applyValue( rangeInputSelector ) ) )
+	element.querySelectorAll( rangeInputSelector ).forEach( el => el.addEventListener( 'input', applyValue( numberInputSelector ) ) )
 }

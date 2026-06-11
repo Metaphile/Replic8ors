@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 export default function Vector2( x = 0, y = 0 ) {
 	return { x, y }
 }

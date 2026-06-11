@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 // you can have multiple cameras per canvas
 //
 // worldCamera.applyView( ctx1 )

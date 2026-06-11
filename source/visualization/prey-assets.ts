@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import {
 	DamageEffect,
 	DeathEffect,
@@ -16,10 +17,10 @@ const energyGradient = ( () => {
 	
 	const gradient = ctx.createLinearGradient( 0, -1, 0, 1 )
 	
-	gradient.addColorStop( 0.500, 'rgba( 160,   0,  20, 0.00 )' )
-	gradient.addColorStop( 0.500, 'rgba( 160,   0,  20, 0.60 )' )
-	gradient.addColorStop( 0.504, 'rgba(   0,   0,   0, 1.00 )' )
-	gradient.addColorStop( 1.000, 'rgba( 160,   0,  20, 1.00 )' )
+	gradient.addColorStop( 0.50, 'rgba(  13, 255, 112, 0.00 )' )
+	gradient.addColorStop( 0.50, 'rgba(  13, 255, 112, 0.50 )' )
+	gradient.addColorStop( 0.51, 'rgba(   1,  26,  11, 0.85 )' )
+	gradient.addColorStop( 1.00, 'rgba(   7, 141,  62, 0.88 )' )
 	
 	return gradient
 } )()
@@ -27,17 +28,17 @@ const energyGradient = ( () => {
 const energyUpGradient = ( () => {
 	const gradient = ctx.createLinearGradient( 0, -1, 0, 1 )
 	
-	gradient.addColorStop( 0.0, 'rgba( 255,   0,   0, 0.0 )' )
-	gradient.addColorStop( 0.5, 'rgba( 255,   0,   0, 0.3 )' )
-	gradient.addColorStop( 0.5, 'rgba( 255,   0,   0, 0.8 )' )
-	gradient.addColorStop( 1.0, 'rgba( 255,   0,   0, 0.2 )' )
+	gradient.addColorStop( 0.0, 'rgba(   0, 255,   0, 0.0 )' )
+	gradient.addColorStop( 0.5, 'rgba(   0, 255,   0, 0.3 )' )
+	gradient.addColorStop( 0.5, 'rgba(   0, 255,   0, 0.8 )' )
+	gradient.addColorStop( 1.0, 'rgba(   0, 255,   0, 0.2 )' )
 	
 	return gradient
 } )()
 
 const EnergyUpEffect = EnergyUpEffectFactory( energyUpGradient )
 
-const skinColor = 'rgba( 23, 9, 0, 0.6 )'
+const skinColor = 'rgba( 0, 13, 11, 0.7 )'
 
 export {
 	DamageEffect,

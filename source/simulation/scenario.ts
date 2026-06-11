@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import RingBuffer from '../engine/ring-buffer'
 import * as Math2 from '../engine/math-2'
 import settings, { settingsEvents } from '../settings/settings'

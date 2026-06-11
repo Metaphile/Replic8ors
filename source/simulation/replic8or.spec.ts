@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import Replic8or from './replic8or'
 import Network   from './neural-network'
 import Neuron    from './neuron'

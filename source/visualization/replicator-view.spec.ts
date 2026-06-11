@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import ReplicatorView, { getSignalParts, SignalPart, SignalPartType } from './replicator-view'
 import Replic8or from '../simulation/replic8or'
 import Vector2 from '../engine/vector-2'

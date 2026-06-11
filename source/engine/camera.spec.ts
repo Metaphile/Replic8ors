@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import Camera from './camera'
 
 const precision = 9

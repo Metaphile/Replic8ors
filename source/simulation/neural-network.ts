@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 // TODO noise in neural networks?
 
 export default function NeuralNetwork() {

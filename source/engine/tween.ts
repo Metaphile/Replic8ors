@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 export default function Tween( start, end, duration = 1, tweener = Tween.linear ) {
 	const self = Object.create( Tween.prototype )
 	self.reset()

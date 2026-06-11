@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 // TODO -> CameraController
 
 import Vector2 from '../engine/vector-2'

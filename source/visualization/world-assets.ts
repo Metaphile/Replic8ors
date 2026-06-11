@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 const defaultOpts = {
 	numParticles: 32,
 	minParticleSize: 2,

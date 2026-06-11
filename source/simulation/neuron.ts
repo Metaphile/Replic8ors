@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 // TODO degenerate neuron for sensory input
 
 // TODO track sensory input per simulation tick

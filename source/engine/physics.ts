@@ -1,3 +1,4 @@
+// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import Vector2 from './vector-2'
 import * as Math2 from './math-2'
 
