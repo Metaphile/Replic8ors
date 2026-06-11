@@ -1,4 +1,5 @@
 import Vector2 from './vector-2'
+import * as Math2 from './math-2'
 
 const defaultOpts = {
 	mass: 1,
@@ -55,7 +56,7 @@ Physics.prototype = {
 		// if bodies are exactly on top of each other,
 		// pick a random direction to repel in
 		if ( offset.x === 0 && offset.y === 0 ) {
-			const angle = Math.random() * Math.PI * 2
+			const angle = Math2.random() * Math.PI * 2
 			offset.x = Math.cos( angle ) * 0.001
 			offset.y = Math.sin( angle ) * 0.001
 		}

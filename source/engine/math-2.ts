@@ -11,7 +11,17 @@ export const createRandRange: CreateRandRange = ( rng ) => {
   }
 }
 
-export const randRange: RandRange = createRandRange( Math.random )
+// module-level random source, swappable for deterministic tests via setRng().
+// defaults to Math.random so behavior is unchanged in production.
+let _rng: Rng = Math.random
+
+export const setRng = ( rng: Rng ): void => {
+  _rng = rng
+}
+
+export const random: Rng = () => _rng()
+
+export const randRange: RandRange = ( min, max ) => min + ( random() * ( max - min ) )
 
 export const clamp: Clamp = ( value, min, max ) => {
   if ( value < min ) {

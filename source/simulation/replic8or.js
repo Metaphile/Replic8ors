@@ -208,7 +208,7 @@ Replic8or.prototype = {
 	mutateWeights: function ( neurons, mutationRate ) {
 		for ( const neuron of neurons ) {
 			neuron.weights = neuron.weights.map( weight => {
-				if ( mutationRate > Math.random() ) {
+				if ( mutationRate > Math2.random() ) {
 					// -1..1, biased toward 0
 					const mutation = Math.pow( Math2.randRange( -1, 1 ), 3 )
 					const mutatedWeight = Math.sin( Math.asin( weight ) + Math.asin( mutation ) )

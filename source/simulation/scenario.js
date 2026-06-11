@@ -1,4 +1,5 @@
 import RingBuffer from '../engine/ring-buffer'
+import * as Math2 from '../engine/math-2'
 import settings, { settingsEvents } from '../settings/settings'
 import Replic8or from './replic8or'
 
@@ -149,13 +150,13 @@ export default function Scenario( world, opts = {} ) {
 		const ownSpokeOffset = 0
 		
 		createPopulation( howMany, geneBank.blue, replicateReplicator, () => createReplicator( 'blue' ) ).forEach( blue => {
-			const radiusScale = Math.pow( Math.random(), 1 / Math.PI )
+			const radiusScale = Math.pow( Math2.random(), 1 / Math.PI )
 			const radius = radiusScale * world.radius
 			
 			const tau = Math.PI * 2
 			const minAngle = ( ( ownSpokeOffset + blueSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) - ( tau / numSpokes / 2 )
 			const maxAngle = ( ( ownSpokeOffset + blueSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) + ( tau / numSpokes / 2 )
-			const angle = minAngle + ( Math.random() * ( maxAngle - minAngle ) )
+			const angle = minAngle + ( Math2.random() * ( maxAngle - minAngle ) )
 			
 			blue.position.x = Math.cos( angle ) * radius
 			blue.position.y = Math.sin( angle ) * radius
@@ -171,13 +172,13 @@ export default function Scenario( world, opts = {} ) {
 		const ownSpokeOffset = 1
 		
 		createPopulation( howMany, geneBank.prey, replicateReplicator, () => createReplicator( 'prey' ) ).forEach( prey => {
-			const radiusScale = Math.pow( Math.random(), 1 / Math.PI )
+			const radiusScale = Math.pow( Math2.random(), 1 / Math.PI )
 			const radius = radiusScale * world.radius
 			
 			const tau = Math.PI * 2
 			const minAngle = ( ( ownSpokeOffset + preySpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) - ( tau / numSpokes / 2 )
 			const maxAngle = ( ( ownSpokeOffset + preySpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) + ( tau / numSpokes / 2 )
-			const angle = minAngle + ( Math.random() * ( maxAngle - minAngle ) )
+			const angle = minAngle + ( Math2.random() * ( maxAngle - minAngle ) )
 			
 			prey.position.x = Math.cos( angle ) * radius
 			prey.position.y = Math.sin( angle ) * radius
@@ -193,13 +194,13 @@ export default function Scenario( world, opts = {} ) {
 		const ownSpokeOffset = 2
 		
 		createPopulation( howMany, geneBank.predator, replicateReplicator, () => createReplicator( 'predator' ) ).forEach( predator => {
-			const radiusScale = Math.pow( Math.random(), 1 / Math.PI )
+			const radiusScale = Math.pow( Math2.random(), 1 / Math.PI )
 			const radius = radiusScale * world.radius
 			
 			const tau = Math.PI * 2
 			const minAngle = ( ( ownSpokeOffset + predatorSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) - ( tau / numSpokes / 2 )
 			const maxAngle = ( ( ownSpokeOffset + predatorSpokeIndex ) * ( tau / numSpokes ) - ( radiusScale * Math.PI * 0.5 ) ) + ( tau / numSpokes / 2 )
-			const angle = minAngle + ( Math.random() * ( maxAngle - minAngle ) )
+			const angle = minAngle + ( Math2.random() * ( maxAngle - minAngle ) )
 			
 			predator.position.x = Math.cos( angle ) * radius
 			predator.position.y = Math.sin( angle ) * radius
