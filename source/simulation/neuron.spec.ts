@@ -75,8 +75,7 @@ describe("neuron", () => {
     expect(neuron.potential < 0.9 - error).toBe(true);
   });
 
-  // TODO broken by input scaling
-  it.skip("neuron tracks inhibitory input", () => {
+  it("neuron tracks inhibitory input", () => {
     const neuron = Neuron();
     const sourceIndex = 0;
     neuron.weights[sourceIndex] = -1.0;
