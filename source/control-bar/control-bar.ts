@@ -59,10 +59,6 @@ export default function ControlBar(scenarioLoop, visualization) {
     pause() {
       this.setState(State.pause);
       scenarioLoop.paused = true;
-
-      if (!visualization.attached) {
-        visualization.attach();
-      }
     },
 
     step() {
@@ -88,27 +84,21 @@ export default function ControlBar(scenarioLoop, visualization) {
       this.setState(State.play);
       scenarioLoop.paused = false;
       scenarioLoop.timescale = this.playTimescale;
-
-      if (!visualization.attached) {
-        visualization.attach();
-      }
     },
 
     fastForward() {
       this.setState(State.fastForward);
       scenarioLoop.paused = false;
       scenarioLoop.timescale = this.fastForwardTimescale;
-
-      if (!visualization.attached) {
-        visualization.attach();
-      }
     },
 
     turbo() {
+      // turbo runs the worker flat-out; the visualization stays attached and
+      // renders the ~1Hz snapshot stream (no detach, unlike the old main-thread
+      // turbo that went blind to save CPU).
       this.setState(State.turbo);
       scenarioLoop.paused = false;
       scenarioLoop.timescale = this.turboTimescale;
-      visualization.detach();
     },
 
     // convenience method for toggling between pause state and play state

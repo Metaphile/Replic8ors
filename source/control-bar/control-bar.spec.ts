@@ -41,35 +41,20 @@ describe("control bar", () => {
     controlBar = ControlBar(mockScenarioLoop, mockVisualization);
   });
 
-  it("detaches visualization when entering turbo state", () => {
+  // In the worker model the visualization renders the ~1Hz snapshot stream at
+  // turbo instead of detaching — the control bar no longer attaches/detaches it.
+  it("does not detach the visualization at turbo", () => {
     controlBar.turbo();
-    expect(mockVisualization.detach).toHaveBeenCalled();
+    expect(mockVisualization.detach).not.toHaveBeenCalled();
   });
 
-  describe("attaches visualization when exiting turbo state", () => {
-    beforeEach(() => {
-      controlBar.turbo();
-    });
-
-    it("turbo -> pause", () => {
-      controlBar.pause();
-      expect(mockVisualization.attach).toHaveBeenCalled();
-    });
-
-    it("turbo -> play", () => {
-      controlBar.play();
-      expect(mockVisualization.attach).toHaveBeenCalled();
-    });
-
-    it("turbo -> fast forward", () => {
-      controlBar.fastForward();
-      expect(mockVisualization.attach).toHaveBeenCalled();
-    });
-  });
-
-  it("doesn't attach attached visualization", () => {
+  it("does not attach/detach the visualization across speed changes", () => {
+    controlBar.turbo();
+    controlBar.play();
+    controlBar.fastForward();
     controlBar.pause();
     expect(mockVisualization.attach).not.toHaveBeenCalled();
+    expect(mockVisualization.detach).not.toHaveBeenCalled();
   });
 
   it("toggles between pause and play", () => {

@@ -12,42 +12,72 @@
 // -------------------------------------------------------------------------- //
 
 import "./main.scss";
-import { createScenario, update as updateScenario } from "./functional/scenario/scenario.model";
-import { toSnapshot } from "./functional/world/snapshot";
 import Visualization from "./visualization/visualization";
 import GameLoop from "./engine/game-loop";
 import ControlBar from "./control-bar/control-bar";
+import type { Command, SimMessage } from "./worker/protocol";
 
 const CURRENT_VERSION = "2.0";
 
 function main() {
   document.getElementById("version-number").innerHTML = CURRENT_VERSION;
 
-  // the functional simulation: a plain-data scenario advanced by pure transition.
-  // each sim tick produces a render snapshot the visualization reconciles by id.
-  // (Phase 6 runs this on the main thread first; the worker drops in next.)
-  let scenario = createScenario();
+  // the functional simulation runs flat-out in a Web Worker and streams render
+  // snapshots back; the main thread only renders. This decouples sim cadence
+  // from the 60fps render loop — turbo can run as fast as the hardware allows
+  // while we keep drawing the most recent snapshot.
+  const worker = new Worker(new URL("./worker/sim.worker.ts", import.meta.url), {
+    type: "module",
+  });
 
   const visualization = Visualization();
   document.getElementById("visualization").appendChild(visualization.element);
   // initialize dimensions
   visualization.element.dispatchEvent(new Event("appended"));
-  visualization.ingest(toSnapshot(scenario.world), []);
 
-  // drive the simulation. control-bar pauses / scales / steps this loop; each
-  // tick advances the scenario and feeds the visualization a fresh snapshot.
-  const scenarioLoop = GameLoop(
-    (dt) => {
-      const result = updateScenario(scenario, dt);
-      scenario = result.scenario;
-      // skip snapshotting while detached (turbo) — nothing is rendering
-      if (visualization.attached) {
-        visualization.ingest(toSnapshot(scenario.world), result.collisions);
-      }
+  worker.onmessage = (event: MessageEvent<SimMessage>) => {
+    const msg = event.data;
+    if (msg.type === "snapshot") {
+      simController.elapsed = msg.elapsed;
+      // collisions are derived by the renderer from snapshot deltas; the worker
+      // does not stream the per-tick list (it would be unbounded at turbo).
+      visualization.ingest(msg.snapshot, []);
+    }
+  };
+
+  const post = (command: Command) => worker.postMessage(command);
+
+  // Adapter presenting the control-bar's expected loop interface while posting
+  // worker commands. setting `timescale` selects the speed mode; `paused` and
+  // `step` map to commands; `elapsed` is fed back from snapshot messages.
+  const simController = {
+    elapsed: 0,
+    _paused: false,
+    _timescale: 1,
+    get paused() {
+      return this._paused;
     },
-    () => {},
-    { timestep: 1 / 30 },
-  );
+    set paused(value: boolean) {
+      this._paused = value;
+      this._sync();
+    },
+    get timescale() {
+      return this._timescale;
+    },
+    set timescale(value: number) {
+      this._timescale = value;
+      this._sync();
+    },
+    step() {
+      post({ type: "step" });
+    },
+    _sync() {
+      if (this._paused) post({ type: "pause" });
+      else if (this._timescale >= 60) post({ type: "turbo" });
+      else if (this._timescale >= 10) post({ type: "fastForward" });
+      else post({ type: "play" });
+    },
+  };
 
   // drive the visualization at 60fps, independent of sim speed: advance
   // view-owned animations in real time and draw the most recent snapshot.
@@ -57,8 +87,13 @@ function main() {
     () => visualization.draw(),
   );
 
-  const controlBar = ControlBar(scenarioLoop, visualization);
+  const controlBar = ControlBar(simController, visualization);
   document.getElementById("control-bar").appendChild(controlBar.element);
+
+  // populate the world, then start playing (matches the control-bar's default
+  // play state)
+  post({ type: "init" });
+  post({ type: "play" });
 }
 
 // module scripts are deferred, but guard against being run before the DOM in
