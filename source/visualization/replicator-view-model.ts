@@ -121,6 +121,8 @@ export const updateViewModel = (vm: ReplicatorViewModel, snap: ReplicatorSnapsho
   vm.velocity.y = snap.velocity.y;
   vm.rotation = snap.rotation;
   vm.energy = snap.energy;
+  // radius can change at runtime via the settings panel (Size), so refresh it
+  vm.radius = snap.radius;
 
   const neurons = vm.brain.neurons;
   for (let i = 0; i < neurons.length; i++) {
@@ -130,6 +132,9 @@ export const updateViewModel = (vm: ReplicatorViewModel, snap: ReplicatorSnapsho
     n.firing = s.firing;
     n.sensoryPotential = s.sensoryPotential;
     n.inhibitoryInput = s.inhibitoryInput;
+    // potentialDecayRate is settings-driven (Neuron Decay) and feeds the
+    // neuron-view's decay animation, so keep it current too
+    n.potentialDecayRate = s.potentialDecayRate;
     n.weights = s.weights;
   }
 
