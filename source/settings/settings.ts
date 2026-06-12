@@ -2,7 +2,7 @@
 import Events from "../engine/events";
 
 export const setSetting = (section, key, value) => {
-  const oldValue = settings[key];
+  const oldValue = settings[section][key];
 
   if (value !== oldValue) {
     settings[section][key] = value;

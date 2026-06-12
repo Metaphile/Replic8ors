@@ -15,6 +15,7 @@ import "./main.scss";
 import Visualization from "./visualization/visualization";
 import GameLoop from "./engine/game-loop";
 import ControlBar from "./control-bar/control-bar";
+import settings, { settingsEvents } from "./settings/settings";
 import type { Command, SimMessage } from "./worker/protocol";
 
 const CURRENT_VERSION = "2.0";
@@ -92,12 +93,19 @@ function main() {
     () => visualization.draw(),
   );
 
+  // ControlBar builds the settings panel, which loads any saved settings from
+  // localStorage into the canonical `settings` before we sync them to the worker.
   const controlBar = ControlBar(simController, visualization);
   document.getElementById("control-bar").appendChild(controlBar.element);
 
-  // populate the world, then start playing (matches the control-bar's default
-  // play state)
-  post({ type: "init" });
+  // main owns the canonical settings; forward every change to the worker so it
+  // live-updates the running sim (and future replicators)
+  settingsEvents.on("setting-changed", (section: string, key: string, value: number | string) => {
+    post({ type: "setting", section, key, value });
+  });
+
+  // populate the world (with the user's saved settings), then start playing
+  post({ type: "init", settings });
   post({ type: "play" });
 }
 

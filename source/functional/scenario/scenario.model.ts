@@ -229,6 +229,48 @@ const balancePopulations = (scenario: Scenario, rng: Math2.Rng): Scenario => {
   return s;
 };
 
+// Apply a live settings change to the RUNNING scenario. Scenario-section keys
+// (min/max populations) update the scenario directly; type-section keys (radius,
+// metabolism, potentialDecayRate, …) propagate to every live replicator of that
+// type and the banked specimens — `potentialDecayRate` also rewrites each
+// neuron. Mirrors the prototype's settingsEvents handler. (Future replicators
+// pick the change up from the settings module, handled by the worker.)
+export const applySetting = (
+  scenario: Scenario,
+  section: string,
+  key: string,
+  value: number | string,
+): Scenario => {
+  if (section === "scenario") {
+    return { ...scenario, [key]: value } as Scenario;
+  }
+
+  if (section !== "predator" && section !== "prey" && section !== "blue") {
+    return scenario;
+  }
+  const type = section as ReplicatorType;
+
+  const apply = (r: Replicator): Replicator => {
+    const next = { ...r, [key]: value } as Replicator;
+    if (key === "potentialDecayRate") {
+      const neurons = r.brain.neurons.map((n) => ({ ...n, potentialDecayRate: value as number }));
+      return { ...next, brain: { neurons } };
+    }
+    return next;
+  };
+
+  const arrayName = ARRAY_OF[type];
+  const world = { ...scenario.world, [arrayName]: scenario.world[arrayName].map(apply) };
+
+  const ring = scenario.geneBank[type];
+  const geneBank = {
+    ...scenario.geneBank,
+    [type]: { ...ring, items: ring.items.map((s) => (s ? apply(s) : s)) },
+  };
+
+  return { ...scenario, world, geneBank };
+};
+
 export interface ScenarioTick {
   readonly scenario: Scenario;
   readonly collisions: readonly Collision[];

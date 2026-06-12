@@ -10,9 +10,14 @@ import { SimMode } from "./sim-driver";
 
 // --- main -> worker ---------------------------------------------------------
 
+// section -> key -> value, the settings module shape (main owns the canonical
+// copy incl. localStorage; sent on init so the worker matches before populating)
+export type SettingsSnapshot = Record<string, Record<string, number | string>>;
+
 export interface InitCommand {
   readonly type: "init";
   readonly pops?: ScenarioOpts;
+  readonly settings?: SettingsSnapshot;
 }
 
 export interface ModeCommand {

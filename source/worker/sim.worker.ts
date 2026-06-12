@@ -14,6 +14,7 @@ import settings from "../settings/settings";
 import {
   createScenario,
   update,
+  applySetting,
   Scenario,
   ScenarioOpts,
 } from "../functional/scenario/scenario.model";
@@ -118,11 +119,21 @@ const reset = (): void => {
   post();
 };
 
+// the worker has its own settings module instance; mirror main's canonical copy
+const workerSettings = settings as unknown as Record<string, Record<string, number | string>>;
+
 ctx.onmessage = (event) => {
   const msg = event.data;
   switch (msg.type) {
     case "init":
       pops = msg.pops ?? {};
+      // sync main's settings (incl. localStorage) into the worker's copy before
+      // populating, so creatures are built with the user's saved values
+      if (msg.settings) {
+        for (const section of Object.keys(msg.settings)) {
+          Object.assign(workerSettings[section], msg.settings[section]);
+        }
+      }
       reset();
       break;
     case "pause":
@@ -148,14 +159,11 @@ ctx.onmessage = (event) => {
       reset();
       break;
     case "setting":
-      // canonical settings live on the main thread; apply the delta to the
-      // worker's copy so future replicators pick it up. (Fixes the prototype's
-      // setSetting bug: index by [section][key], not [key].)
-      // TODO live-propagate to existing replicators (the prototype's
-      // settingsEvents handler) — a follow-up once the renderer is wired.
-      (settings as unknown as Record<string, Record<string, number | string>>)[msg.section][
-        msg.key
-      ] = msg.value;
+      // canonical settings live on the main thread. Apply the delta to the
+      // worker's copy (so FUTURE replicators pick it up) and live-propagate it to
+      // the EXISTING population + gene bank via the scenario.
+      workerSettings[msg.section][msg.key] = msg.value;
+      scenario = applySetting(scenario, msg.section, msg.key, msg.value);
       break;
   }
 };
