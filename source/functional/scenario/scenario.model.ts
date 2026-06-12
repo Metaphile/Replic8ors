@@ -244,16 +244,19 @@ export const update = (
   rng: Math2.Rng = Math2.random,
 ): ScenarioTick => {
   // gene-bank copies of replication parents, drawn in-loop (RNG-stream-correct).
-  // NOTE: cloning via replicate() reproduces a prototype quirk — the clone's
-  // parent-energy-halving side effect leaks onto the live parent, so a banked
-  // replicator is penalized an extra half its energy. Almost certainly a latent
-  // bug (banking a genome shouldn't drain the parent); preserved here so the
-  // port stays bit-identical, to be fixed as a separate, isolated change.
+  // The prototype cloned the genome with `parent.replicate(true, 0)`, whose
+  // parent-energy-halving side effect leaked onto the live parent — so banking a
+  // successful replicator penalized it an extra half its energy (it ended a
+  // reproduction tick at E/4 instead of E/2). That's a latent bug: banking a
+  // genome is bookkeeping and must not touch the live simulation. We still draw
+  // the clone (preserving the RNG stream) and bank its genome, but return the
+  // parent UNCHANGED — fixing the energy drain. This intentionally diverges from
+  // the prototype at the first replication (see equivalence.spec).
   const banked: { type: ReplicatorType; specimen: Replicator }[] = [];
   const afterReplicate = (parent: Replicator): Replicator => {
     const result = replicate(parent, 0, rng);
     banked.push({ type: parent.type as ReplicatorType, specimen: result.child });
-    return result.parent;
+    return parent;
   };
 
   const tickResult = tick(scenario.world, dt, rng, afterReplicate);

@@ -104,34 +104,61 @@ function assertTrajectoriesMatch(proto: unknown[], func: unknown[], ticks: numbe
   }
 }
 
-describe("functional sim ≡ prototype sim", () => {
-  it("reproduces a small run tick-for-tick (300 ticks, 2 of each)", () => {
+// 1-based tick of the first digest mismatch, or -1 if identical throughout
+function firstDivergence(proto: unknown[], func: unknown[], ticks: number): number {
+  for (let i = 0; i < ticks; i++) {
+    if (JSON.stringify(proto[i]) !== JSON.stringify(func[i])) return i + 1;
+  }
+  return -1;
+}
+
+// The functional sim is a faithful port of the prototype EXCEPT for one
+// deliberate fix: the prototype's gene bank drained a replicating parent's
+// energy an extra half (E/4 instead of E/2 — see scenario.model). So the two
+// agree exactly until the first replication, then diverge.
+describe("functional sim vs prototype sim", () => {
+  const DENSE = {
+    minReds: 12,
+    maxReds: 12,
+    minGreens: 12,
+    maxGreens: 12,
+    minBlues: 12,
+    maxBlues: 12,
+  };
+
+  it("matches the prototype tick-for-tick when nothing replicates (300 ticks, 2 of each)", () => {
     const pops = { minReds: 2, maxReds: 2, minGreens: 2, maxGreens: 2, minBlues: 2, maxBlues: 2 };
     const proto = runPrototype(pops, 300);
     const func = runFunctional(pops, 300);
     setRng(Math.random);
 
+    // at this density nothing reaches the replication threshold (births stay at
+    // the initial 6), so the gene-bank fix never triggers and the trajectories
+    // are identical — proving every non-replication path is a faithful port
+    expect(func.births).toBe(6);
     assertTrajectoriesMatch(proto, func.digests, 300);
   });
 
-  it("reproduces a dense run that replicates, dies and gene-banks (250 ticks, 12 of each)", () => {
-    // dense, capped populations force collisions -> energy gain -> replication
-    // -> over-cap culling, exercising the gene bank, child spawning and death.
-    const pops = {
-      minReds: 12,
-      maxReds: 12,
-      minGreens: 12,
-      maxGreens: 12,
-      minBlues: 12,
-      maxBlues: 12,
-    };
-    const proto = runPrototype(pops, 250);
-    const func = runFunctional(pops, 250);
+  it("diverges from the prototype at the first replication (gene-bank fix)", () => {
+    const proto = runPrototype(DENSE, 250);
+    const func = runFunctional(DENSE, 250);
     setRng(Math.random);
 
-    // sanity: the run must actually exercise replication (more than the initial 36)
+    // replication is actually exercised here (well past the initial 36)
     expect(func.births).toBeGreaterThan(36);
 
-    assertTrajectoriesMatch(proto, func.digests, 250);
+    // identical for many ticks (faithful port), then the energy fix kicks in at
+    // the first replication. (If the fix were reverted, this would be -1.)
+    const divergence = firstDivergence(proto, func.digests, 250);
+    expect(divergence).not.toBe(-1);
+    expect(divergence).toBeGreaterThan(50);
+  });
+
+  it("is deterministic on a dense run (same seed → identical trajectory)", () => {
+    const a = runFunctional(DENSE, 250);
+    const b = runFunctional(DENSE, 250);
+    setRng(Math.random);
+
+    expect(JSON.stringify(a.digests)).toBe(JSON.stringify(b.digests));
   });
 });
