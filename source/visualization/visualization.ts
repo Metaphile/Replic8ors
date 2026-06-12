@@ -105,11 +105,15 @@ export default function Visualization() {
 
   const reconcileOpts = { onAdded: onViewAdded, onRemoving: onViewRemoving };
 
-  // Feed a new render snapshot (+ this tick's collisions) to the view.
-  self.ingest = (snapshot, collisions) => {
+  // Feed a new render snapshot (+ this tick's collisions) to the view. At turbo
+  // each snapshot is a coarse ~1Hz sample spanning thousands of ticks, so the
+  // per-sample transition effects (spawn/death/drift/energy flashes) are
+  // suppressed — creatures pop in/out cleanly. Continuous animations still run.
+  self.ingest = (snapshot, collisions, mode) => {
     self.latestSnapshot = snapshot;
     if (self.attached) {
-      worldView.reconcile(snapshot, reconcileOpts);
+      const animate = mode !== "turbo";
+      worldView.reconcile(snapshot, { ...reconcileOpts, animate });
       worldView.addCollisions(collisions, snapshot);
     }
   };

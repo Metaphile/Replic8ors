@@ -37,11 +37,16 @@ function main() {
 
   worker.onmessage = (event: MessageEvent<SimMessage>) => {
     const msg = event.data;
-    if (msg.type === "snapshot") {
+    if (msg.type === "stats") {
+      // lightweight clock heartbeat (~30Hz) — keeps the elapsed display smooth
+      // even when full snapshots only arrive ~1Hz at turbo
+      simController.elapsed = msg.elapsed;
+    } else if (msg.type === "snapshot") {
       simController.elapsed = msg.elapsed;
       // collisions are derived by the renderer from snapshot deltas; the worker
       // does not stream the per-tick list (it would be unbounded at turbo).
-      visualization.ingest(msg.snapshot, []);
+      // `mode` lets the renderer treat a coarse turbo sample without transition fx.
+      visualization.ingest(msg.snapshot, [], msg.mode);
     }
   };
 

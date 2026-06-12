@@ -5,6 +5,7 @@
 
 import { WorldSnapshot } from "../functional/world/snapshot";
 import { ScenarioOpts } from "../functional/scenario/scenario.model";
+import { SimMode } from "./sim-driver";
 
 // --- main -> worker ---------------------------------------------------------
 
@@ -34,6 +35,16 @@ export interface SnapshotMessage {
   readonly snapshot: WorldSnapshot;
   // total elapsed simulation time (seconds)
   readonly elapsed: number;
+  // the speed mode this snapshot was sampled under — lets the renderer treat a
+  // coarse turbo sample differently (suppress per-sample transition effects)
+  readonly mode: SimMode;
 }
 
-export type SimMessage = SnapshotMessage;
+// lightweight clock heartbeat: streamed ~30Hz independent of the (expensive,
+// ~1Hz at turbo) snapshot, so the elapsed-time display stays smooth
+export interface StatsMessage {
+  readonly type: "stats";
+  readonly elapsed: number;
+}
+
+export type SimMessage = SnapshotMessage | StatsMessage;

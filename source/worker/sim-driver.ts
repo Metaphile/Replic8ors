@@ -31,8 +31,11 @@ const MAX_PENDING_TICKS = 30;
 const MAX_PENDING = SIM_TIMESTEP * MAX_PENDING_TICKS;
 
 // ticks per turbo loop iteration before yielding to drain the worker's message
-// queue (so pause/mode commands stay responsive at full speed)
-export const TURBO_BATCH = 120;
+// queue (so pause/mode commands stay responsive at full speed). Kept coprime
+// with the 30Hz tick rate (121 = 11²) so a batch never advances elapsed by a
+// whole number of seconds — that keeps the sub-second clock digits churning at
+// turbo instead of freezing.
+export const TURBO_BATCH = 121;
 
 // seconds between turbo snapshots (~1Hz)
 export const TURBO_SNAPSHOT_INTERVAL = 1.0;

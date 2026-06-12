@@ -23,9 +23,19 @@ export default function WorldView() {
 
   const viewsById = new Map();
 
+  const removeView = (view) => {
+    viewsById.delete(view.replicator.id);
+    const i = self.replicatorViews.indexOf(view);
+    if (i > -1) self.replicatorViews.splice(i, 1);
+  };
+
   // Reconcile the view set against a new snapshot. `onAdded(view)` /
   // `onRemoving(view)` let the visualization track/untrack and clear selection.
-  self.reconcile = (snapshot, { onAdded, onRemoving } = {}) => {
+  // `animate` (default true) plays the per-sample transition effects — spawn,
+  // death, dead-reckon drift, energy gain/damage. It's false for a coarse turbo
+  // sample (~1Hz, thousands of ticks apart), where those effects are meaningless
+  // churn: creatures simply appear/disappear and state jumps to the new sample.
+  self.reconcile = (snapshot, { onAdded, onRemoving, animate = true } = {}) => {
     self.worldRadius = snapshot.radius;
 
     const present = new Set();
@@ -39,33 +49,37 @@ export default function WorldView() {
         updateViewModel(view.replicator, snap);
 
         // discrete energy jumps -> gain / damage effects
-        const delta = snap.energy - previousEnergy;
-        if (delta > ENERGY_EFFECT_THRESHOLD) {
-          view.doEnergyUpEffect();
-        } else if (delta < -ENERGY_EFFECT_THRESHOLD && delta > -REPLICATION_DROP) {
-          view.doDamageEffect();
+        if (animate) {
+          const delta = snap.energy - previousEnergy;
+          if (delta > ENERGY_EFFECT_THRESHOLD) {
+            view.doEnergyUpEffect();
+          } else if (delta < -ENERGY_EFFECT_THRESHOLD && delta > -REPLICATION_DROP) {
+            view.doDamageEffect();
+          }
         }
       } else if (!view) {
-        const newView = ReplicatorView(createViewModel(snap));
+        const newView = ReplicatorView(createViewModel(snap), { suppressSpawn: !animate });
         viewsById.set(snap.id, newView);
         self.replicatorViews.push(newView);
         if (onAdded) onAdded(newView);
       }
     }
 
-    // ids that disappeared from the snapshot have died: play the death effect,
-    // then remove the view once it finishes
+    // ids that disappeared from the snapshot have died
     for (const view of self.replicatorViews) {
       if (!present.has(view.replicator.id) && !view.dying) {
-        view.dying = true;
-        view.replicator.dead = true;
         if (onRemoving) onRemoving(view);
 
-        view.doDeathEffect().then(() => {
-          viewsById.delete(view.replicator.id);
-          const i = self.replicatorViews.indexOf(view);
-          if (i > -1) self.replicatorViews.splice(i, 1);
-        });
+        if (animate) {
+          // play the death effect (and let it dead-reckon), then remove the view
+          view.dying = true;
+          view.replicator.dead = true;
+          view.doDeathEffect().then(() => removeView(view));
+        } else {
+          // coarse turbo sample: drop it immediately (never enters the dying/dead
+          // state, so no death animation and no drift)
+          removeView(view);
+        }
       }
     }
   };

@@ -36,8 +36,22 @@ let elapsed = 0;
 let timer: ReturnType<typeof setTimeout> | null = null;
 let lastTime = performance.now();
 
+// clock heartbeat cadence — decoupled from the (expensive, ~1Hz at turbo)
+// snapshot so the elapsed-time display stays smooth
+const STATS_INTERVAL_MS = 1000 / 30;
+let lastStats = performance.now();
+
 const post = (): void => {
-  ctx.postMessage({ type: "snapshot", snapshot: toSnapshot(scenario.world), elapsed });
+  ctx.postMessage({
+    type: "snapshot",
+    snapshot: toSnapshot(scenario.world),
+    elapsed,
+    mode: driver.mode,
+  });
+};
+
+const postStats = (): void => {
+  ctx.postMessage({ type: "stats", elapsed });
 };
 
 const runTicks = (ticks: number): void => {
@@ -57,6 +71,13 @@ const loop = (): void => {
   const step = advance(driver, dtWall);
   driver = step.state;
   runTicks(step.ticks);
+
+  // smooth clock: heartbeat the elapsed time at ~30Hz (cheap), independent of
+  // the full snapshot (which a turbo sample only posts ~1Hz)
+  if (now - lastStats >= STATS_INTERVAL_MS) {
+    postStats();
+    lastStats = now;
+  }
   if (step.snapshot) post();
 
   schedule();

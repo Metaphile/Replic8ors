@@ -245,7 +245,9 @@ export default function ReplicatorView(replicator, opts = {}) {
   // energy up effect is stackable
   self.effects.energyUps = [];
 
-  self.doSpawnEffect();
+  // a coarse turbo sample creates views without the spawn animation (it would
+  // fire for every creature born across the ~1Hz gap)
+  if (!opts.suppressSpawn) self.doSpawnEffect();
 
   // energy up/down effects are driven by the renderer from snapshot energy
   // deltas (see world-view), not by events on a live replicator.
