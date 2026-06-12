@@ -5,6 +5,7 @@
 
 import { WorldSnapshot } from "../functional/world/snapshot";
 import { ScenarioOpts } from "../functional/scenario/scenario.model";
+import { Collision } from "../functional/world/world.model";
 import { SimMode } from "./sim-driver";
 
 // --- main -> worker ---------------------------------------------------------
@@ -38,6 +39,9 @@ export interface SnapshotMessage {
   // the speed mode this snapshot was sampled under — lets the renderer treat a
   // coarse turbo sample differently (suppress per-sample transition effects)
   readonly mode: SimMode;
+  // collisions since the previous snapshot (capped), for collision particle fx.
+  // rendered only at play/fast-forward — at turbo the renderer suppresses them.
+  readonly collisions: readonly Collision[];
 }
 
 // lightweight clock heartbeat: streamed ~30Hz independent of the (expensive,

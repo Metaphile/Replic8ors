@@ -43,10 +43,10 @@ function main() {
       simController.elapsed = msg.elapsed;
     } else if (msg.type === "snapshot") {
       simController.elapsed = msg.elapsed;
-      // collisions are derived by the renderer from snapshot deltas; the worker
-      // does not stream the per-tick list (it would be unbounded at turbo).
-      // `mode` lets the renderer treat a coarse turbo sample without transition fx.
-      visualization.ingest(msg.snapshot, [], msg.mode);
+      // `mode` lets the renderer treat a coarse turbo sample without transition
+      // fx; `collisions` (capped, since the last snapshot) drive particle fx,
+      // rendered only at play/fast-forward.
+      visualization.ingest(msg.snapshot, msg.collisions, msg.mode);
     }
   };
 

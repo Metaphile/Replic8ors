@@ -114,7 +114,8 @@ export default function Visualization() {
     if (self.attached) {
       const animate = mode !== "turbo";
       worldView.reconcile(snapshot, { ...reconcileOpts, animate });
-      worldView.addCollisions(collisions, snapshot);
+      // collision sparkles are per-sample transition fx too — skip at turbo
+      if (animate) worldView.addCollisions(collisions, snapshot);
     }
   };
 

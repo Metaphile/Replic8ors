@@ -18,6 +18,7 @@ import {
   ScenarioOpts,
 } from "../functional/scenario/scenario.model";
 import { toSnapshot } from "../functional/world/snapshot";
+import { Collision } from "../functional/world/world.model";
 import { SIM_TIMESTEP, DriverState, createDriver, setMode, advance, stepOnce } from "./sim-driver";
 import { Command, SimMessage } from "./protocol";
 
@@ -41,13 +42,20 @@ let lastTime = performance.now();
 const STATS_INTERVAL_MS = 1000 / 30;
 let lastStats = performance.now();
 
+// collisions accumulated since the last snapshot (capped); the renderer turns
+// these into particle effects (and ignores them at turbo)
+const MAX_PENDING_COLLISIONS = 64;
+let pendingCollisions: Collision[] = [];
+
 const post = (): void => {
   ctx.postMessage({
     type: "snapshot",
     snapshot: toSnapshot(scenario.world),
     elapsed,
     mode: driver.mode,
+    collisions: pendingCollisions,
   });
+  pendingCollisions = [];
 };
 
 const postStats = (): void => {
@@ -56,8 +64,13 @@ const postStats = (): void => {
 
 const runTicks = (ticks: number): void => {
   for (let i = 0; i < ticks; i++) {
-    scenario = update(scenario, SIM_TIMESTEP).scenario;
+    const result = update(scenario, SIM_TIMESTEP);
+    scenario = result.scenario;
     elapsed += SIM_TIMESTEP;
+    for (const c of result.collisions) {
+      if (pendingCollisions.length >= MAX_PENDING_COLLISIONS) break;
+      pendingCollisions.push(c);
+    }
   }
 };
 
