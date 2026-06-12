@@ -12,8 +12,8 @@
 // -------------------------------------------------------------------------- //
 
 import "./main.scss";
-import World from "./simulation/world";
-import Scenario from "./simulation/scenario";
+import { createScenario, update as updateScenario } from "./functional/scenario/scenario.model";
+import { toSnapshot } from "./functional/world/snapshot";
 import Visualization from "./visualization/visualization";
 import GameLoop from "./engine/game-loop";
 import ControlBar from "./control-bar/control-bar";
@@ -23,40 +23,39 @@ const CURRENT_VERSION = "2.0";
 function main() {
   document.getElementById("version-number").innerHTML = CURRENT_VERSION;
 
-  // create empty world for replicators and other entities to inhabit
-  // world updates entities, mediates interactions, emits events
-  const world = World();
+  // the functional simulation: a plain-data scenario advanced by pure transition.
+  // each sim tick produces a render snapshot the visualization reconciles by id.
+  // (Phase 6 runs this on the main thread first; the worker drops in next.)
+  let scenario = createScenario();
 
-  // set up and monitor experimental scenario
-  // (add replicators, subscribe to events, etc.)
-  const scenario = Scenario(world);
-
-  // drive scenario/world
-
-  const scenarioLoop = (() => {
-    const update = (dt, t) => scenario.update(dt, t);
-    const draw = () => {};
-    const opts = {
-      timestep: 1 / 30,
-    };
-
-    return GameLoop(update, draw, opts);
-  })();
-
-  const visualization = Visualization(world);
+  const visualization = Visualization();
   document.getElementById("visualization").appendChild(visualization.element);
   // initialize dimensions
   visualization.element.dispatchEvent(new Event("appended"));
+  visualization.ingest(toSnapshot(scenario.world), []);
 
-  // drive visualization
-  const visualizationLoop = GameLoop(
-    (dt) => visualization.update(dt, dt * (scenarioLoop.paused ? 0 : scenarioLoop.timescale)),
-    () => visualization.draw(0),
+  // drive the simulation. control-bar pauses / scales / steps this loop; each
+  // tick advances the scenario and feeds the visualization a fresh snapshot.
+  const scenarioLoop = GameLoop(
+    (dt) => {
+      const result = updateScenario(scenario, dt);
+      scenario = result.scenario;
+      // skip snapshotting while detached (turbo) — nothing is rendering
+      if (visualization.attached) {
+        visualization.ingest(toSnapshot(scenario.world), result.collisions);
+      }
+    },
+    () => {},
+    { timestep: 1 / 30 },
   );
 
-  scenarioLoop.on("step", (dt) => {
-    visualization.update(dt, dt);
-  });
+  // drive the visualization at 60fps, independent of sim speed: advance
+  // view-owned animations in real time and draw the most recent snapshot.
+  // (GameLoop self-starts via requestAnimationFrame.)
+  GameLoop(
+    (dt) => visualization.update(dt),
+    () => visualization.draw(),
+  );
 
   const controlBar = ControlBar(scenarioLoop, visualization);
   document.getElementById("control-bar").appendChild(controlBar.element);

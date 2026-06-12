@@ -30,6 +30,7 @@ export interface NeuronSnapshot {
 export interface FlipperSnapshot {
   readonly angle: number;
   readonly flipProgress: number;
+  readonly flipTime: number;
   readonly neuronIndex: number;
 }
 
@@ -94,6 +95,7 @@ const replicatorSnapshot = (replicator: Replicator): ReplicatorSnapshot => ({
   flippers: replicator.flippers.map((f) => ({
     angle: f.angle,
     flipProgress: f.flipProgress,
+    flipTime: f.flipTime,
     neuronIndex: f.neuronIndex,
   })),
   receptors: replicator.receptors.map((r) => ({

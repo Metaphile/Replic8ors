@@ -6,6 +6,7 @@ import * as blueAssets from "./blue-assets";
 import NeuronView from "./neuron-view";
 import Vector2 from "../engine/vector-2";
 import { areCloserThan } from "../simulation/world-helpers";
+import { deadReckon } from "./replicator-view-model";
 
 const pseudoNeuronRadius = 0.3;
 
@@ -246,8 +247,8 @@ export default function ReplicatorView(replicator, opts = {}) {
 
   self.doSpawnEffect();
 
-  replicator.on("gained-energy", () => self.doEnergyUpEffect());
-  replicator.on("lost-energy", () => self.doDamageEffect());
+  // energy up/down effects are driven by the renderer from snapshot energy
+  // deltas (see world-view), not by events on a live replicator.
 
   return self;
 }
@@ -328,12 +329,11 @@ ReplicatorView.prototype = {
     if (this.effects.damage) this.effects.damage.update(Math.min(dt_sim, dt_real));
     if (this.effects.death) this.effects.death.update(Math.min(dt_sim, dt_real));
 
-    // dead replicators are removed immediately from the world and no longer updated,
-    // but the view persists for a second or two while the death animation plays out
-    // for looks, we manually update the flippers and physics
+    // dead replicators vanish from the snapshot immediately, but the view
+    // persists for a second or two while the death animation plays out. for
+    // looks, dead-reckon its motion and wind down its flippers locally.
     if (this.replicator.dead) {
-      for (const flipper of this.replicator.flippers) flipper.update(dt_sim);
-      this.replicator.updatePhysics(dt_sim);
+      deadReckon(this.replicator, Math.min(dt_sim, dt_real));
     }
   },
 
