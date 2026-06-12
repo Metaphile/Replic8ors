@@ -66,6 +66,10 @@ export interface Stimulus {
 }
 
 export interface Replicator extends Body {
+  // stable identity assigned by the world at birth (e.g. "r:3"). Empty until
+  // added to a world. Replaces the prototype's object-identity tracking and is
+  // what the Phase-6 renderer reconciles snapshots by.
+  readonly id: string;
   readonly type: string;
   readonly brain: Network;
   readonly flippers: readonly Flipper[];
@@ -233,6 +237,7 @@ export const createReplicator = (
   brain = programNonsense(brain, numBodySegments, randRange);
 
   const replicator: Replicator = {
+    id: "",
     type: config.type as string,
     position: { x: 0, y: 0 },
     velocity: { x: 0, y: 0 },
@@ -391,10 +396,18 @@ export interface ReplicatorStep {
 //   5. integrate physics
 //   6. replicate if energy reached capacity
 //   7. pay metabolic cost; die if out of energy
+//
+// `afterReplicate` lets the environment react to a birth and further transform
+// the parent, in the prototype's exact stream position (right after the split,
+// before metabolism). This makes explicit what the prototype hid inside a
+// 'replicated' event: the scenario's gene-bank clone re-used replicate(), whose
+// parent-energy-halving side effect leaked onto the live parent. Default is
+// identity (no reaction).
 export const update = (
   replicator: Replicator,
   dt: number,
   rng: Math2.Rng = Math2.random,
+  afterReplicate: (parent: Replicator) => Replicator = (parent) => parent,
 ): ReplicatorStep => {
   // 1. stimulate hunger neuron _before_ updating the brain
   const hungerInput = Math.pow(1 - clamp(replicator.energy, 0, 1), 2) * 30 * dt;
@@ -436,11 +449,11 @@ export const update = (
   // 5. integrate physics
   body = updatePhysics(body, dt);
 
-  // 6. replicate when the stomach is full
+  // 6. replicate when the stomach is full, then let the environment react
   let child: Replicator | null = null;
   if (body.energy >= 1) {
     const result = replicate(body, undefined, rng);
-    body = result.parent;
+    body = afterReplicate(result.parent);
     child = result.child;
   }
 
