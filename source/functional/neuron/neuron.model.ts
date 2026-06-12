@@ -8,7 +8,7 @@
 // a hidden event subscription — decides what happens when a neuron fires.
 
 import { clamp } from "../../engine/math-2";
-import { potentialDecayFn } from "../../simulation/neuron-helpers";
+import { potentialDecayFn } from "./neuron-helpers";
 
 export interface Neuron {
   // connection weights, indexed by source neuron index

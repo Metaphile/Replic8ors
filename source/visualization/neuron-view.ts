@@ -1,7 +1,7 @@
 // @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
 import config from "../config";
 import * as assets from "./neuron-assets";
-import { potentialDecayFn } from "../simulation/neuron-helpers";
+import { potentialDecayFn } from "../functional/neuron/neuron-helpers";
 
 const defaultOpts = {
   radius: 2.7,

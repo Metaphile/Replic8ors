@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`simulation characterization > reproduces a deterministic run 1`] = `
+exports[`functional simulation characterization > reproduces a deterministic run 1`] = `
 {
   "1": {
     "counts": {

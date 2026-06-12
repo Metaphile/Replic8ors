@@ -1,18 +1,18 @@
-// @ts-nocheck — TODO Phase 3 ratchet: type this file and remove
-// Characterization (golden-master) test for the simulation.
+// Characterization (golden-master) test for the functional simulation.
 //
-// This is the behavior oracle for the modernization + functional port. It runs
-// the *current* prototype-based simulation with a seeded RNG and snapshots a
-// digest of world state at fixed checkpoints. Any change to simulation logic
-// (JS->TS conversion, the functional port) must reproduce this snapshot, OR the
-// divergence must be a deliberate, documented decision (then re-baseline).
+// This is the behavior oracle for the sim now that the prototype is gone (it
+// replaces the deleted source/simulation/characterization.spec.ts, and the
+// A/B equivalence test that proved the port faithful). It seeds the RNG, runs a
+// small fixed world, and snapshots a digest of world state at fixed checkpoints.
+// Any unintended change to sim logic must reproduce this snapshot; a deliberate
+// change re-baselines it (`vitest -u`).
 //
-// Determinism relies on Math2.setRng() routing every random source in the sim
-// (replic8or weights/mutation, scenario placement, physics overlap-nudge).
+// Determinism relies on setRng() routing every random source in the sim
+// (replicator weights/mutation, scenario placement, physics overlap-nudge).
 
-import { setRng } from "../engine/math-2";
-import World from "./world";
-import Scenario from "./scenario";
+import { describe, it, expect } from "vitest";
+import { setRng } from "../../engine/math-2";
+import { createScenario, update } from "./scenario.model";
 
 // mulberry32 — tiny seeded PRNG, deterministic across platforms.
 function mulberry32(seed: number): () => number {
@@ -32,9 +32,7 @@ const round = (x: number, places = 4): number => {
   return Math.round(x * f) / f;
 };
 
-type Replicator = any;
-
-function replicatorDigest(r: Replicator) {
+function replicatorDigest(r: any) {
   return {
     type: r.type,
     pos: [round(r.position.x, 2), round(r.position.y, 2)],
@@ -57,14 +55,13 @@ function worldDigest(world: any) {
   };
 }
 
-describe("simulation characterization", () => {
+describe("functional simulation characterization", () => {
   it("reproduces a deterministic run", () => {
     setRng(mulberry32(0x5eed));
 
-    const world = World();
-    // small, fixed populations so the digest stays readable but still
-    // exercises predator/prey/blue sensing, collisions and energy transfer.
-    const scenario = Scenario(world, {
+    // small, fixed populations so the digest stays readable but still exercises
+    // predator/prey/blue sensing, collisions and energy transfer.
+    let scenario = createScenario({
       minReds: 2,
       maxReds: 2,
       minGreens: 2,
@@ -79,9 +76,9 @@ describe("simulation characterization", () => {
 
     const maxTick = Math.max(...checkpoints);
     for (let tick = 1; tick <= maxTick; tick++) {
-      scenario.update(dt);
+      scenario = update(scenario, dt).scenario;
       if (checkpoints.includes(tick)) {
-        digests[tick] = worldDigest(world);
+        digests[tick] = worldDigest(scenario.world);
       }
     }
 

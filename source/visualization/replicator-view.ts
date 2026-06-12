@@ -5,7 +5,7 @@ import * as predatorAssets from "./predator-assets";
 import * as blueAssets from "./blue-assets";
 import NeuronView from "./neuron-view";
 import Vector2 from "../engine/vector-2";
-import { areCloserThan } from "../simulation/world-helpers";
+import { areCloserThan } from "../functional/world/world-helpers.model";
 import { deadReckon } from "./replicator-view-model";
 
 const pseudoNeuronRadius = 0.3;
