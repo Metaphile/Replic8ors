@@ -23,8 +23,11 @@ export interface Neuron {
   readonly simTimeSinceLastFired: number;
   readonly index: number;
   // input is buffered (not applied immediately) so all upstream neurons get
-  // equal footing when the sum is applied on the next update()
-  readonly inputBuffer: readonly number[];
+  // equal footing when the sum is applied on the next update(). The prototype
+  // kept an array and summed it; since it's only ever summed, a running scalar
+  // is equivalent (same accumulation order → same float result) and allocates
+  // nothing per stimulate — the hot path runs ~hundreds of K stimulates/frame.
+  readonly bufferedInput: number;
   readonly potentialDecayRate: number;
   readonly refractoryPeriod: number;
 }
@@ -50,7 +53,7 @@ export const createNeuron = (opts: NeuronOpts = {}): Neuron => ({
   firing: false,
   simTimeSinceLastFired: 0,
   index: opts.index ?? -1,
-  inputBuffer: [],
+  bufferedInput: 0,
   potentialDecayRate: opts.potentialDecayRate ?? defaults.potentialDecayRate,
   refractoryPeriod: opts.refractoryPeriod ?? defaults.refractoryPeriod,
 });
@@ -67,11 +70,11 @@ export const stimulate = (
   const w = neuron.weights[sourceIndex];
   const input = w * dt;
 
-  let { inhibitoryInput, inputBuffer, sensoryPotential, gotSensoryInput } = neuron;
+  let { inhibitoryInput, bufferedInput, sensoryPotential, gotSensoryInput } = neuron;
 
   if (!neuron.firing) {
     inhibitoryInput += (1 - (w + 1) / 2) * dt;
-    inputBuffer = [...inputBuffer, input];
+    bufferedInput += input;
   }
 
   if (sourceIndex === neuron.index) {
@@ -79,7 +82,7 @@ export const stimulate = (
     gotSensoryInput = true;
   }
 
-  return { ...neuron, inhibitoryInput, inputBuffer, sensoryPotential, gotSensoryInput };
+  return { ...neuron, inhibitoryInput, bufferedInput, sensoryPotential, gotSensoryInput };
 };
 
 // Transition the neuron into its firing state. No-op if already firing.
@@ -109,10 +112,9 @@ export const update = (neuron: Neuron, dt: number): NeuronStep => {
   let fired = false;
 
   if (!n.firing) {
-    const summedInput = n.inputBuffer.reduce((sum, value) => sum + value, 0);
     n = {
       ...n,
-      potential: n.potential + summedInput - potentialDecayFn(n.potentialDecayRate) * dt,
+      potential: n.potential + n.bufferedInput - potentialDecayFn(n.potentialDecayRate) * dt,
     };
   }
 
@@ -131,7 +133,7 @@ export const update = (neuron: Neuron, dt: number): NeuronStep => {
     neuron: {
       ...n,
       // any input not processed by this point is discarded
-      inputBuffer: [],
+      bufferedInput: 0,
       simTimeSinceLastFired: n.simTimeSinceLastFired + dt,
       sensoryPotential: n.gotSensoryInput ? n.sensoryPotential : 0,
       potential: clamp(n.potential, 0, 1),

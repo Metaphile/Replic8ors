@@ -72,6 +72,19 @@ describe("neuron model", () => {
     expect(neuron.potential).toBeLessThan(0.9 - error);
   });
 
+  it("sums multiple buffered inputs before applying on update", () => {
+    // multiple stimulations between updates accumulate, then apply together
+    let neuron = createNeuron({ weights: [1.0, 1.0, 1.0] });
+
+    neuron = stimulate(neuron, 0.1, 0);
+    neuron = stimulate(neuron, 0.2, 1);
+    neuron = stimulate(neuron, 0.3, 2);
+    neuron = update(neuron, 0).neuron;
+
+    // 0.1 + 0.2 + 0.3, no decay at dt=0
+    expect(neuron.potential).toBeCloseTo(0.6, precision);
+  });
+
   it("neuron tracks inhibitory input", () => {
     // previously disabled in the prototype spec ("broken by input scaling");
     // as a pure function it's a single deterministic call to assert on.

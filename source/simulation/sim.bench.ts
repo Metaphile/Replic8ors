@@ -34,8 +34,9 @@ const WARMUP_TICKS = 200;
 // neurons) and let it reach steady state before timing.
 function makeFullWorld() {
   setRng(mulberry32(0x5eed));
-  const world = World();
-  const scenario = Scenario(world, {
+  // prototype sim is @ts-nocheck, so its factories return loosely-typed objects
+  const world: any = World();
+  const scenario: any = Scenario(world, {
     minReds: 32,
     maxReds: 32,
     minGreens: 32,
